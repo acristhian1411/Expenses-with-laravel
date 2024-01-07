@@ -9,20 +9,6 @@ class CountriesControllerTest extends TestCase
 {
     // use RefreshDatabase;
     use WithFaker;
-    public function testStore()
-    {
-        $requestData = [
-            'country_name' => $this->faker->country,
-            'country_code' => $this->faker->countryCode,
-        ];
-        $response = $this->post('/api/countries', $requestData);
-        $response->assertStatus(201)
-            ->assertJson([
-                'data' => $requestData,
-            ]);
-
-        $this->assertDatabaseHas('countries', $requestData);
-    }
     public function testIndex()
     {
         // Crear algunos datos de prueba
@@ -38,6 +24,20 @@ class CountriesControllerTest extends TestCase
         $response->assertJson([
             'data' => $countries->toArray(),
         ]);
+    }
+    public function testStore()
+    {
+        $requestData = [
+            'country_name' => $this->faker->country,
+            'country_code' => $this->faker->countryCode,
+        ];
+        $response = $this->post('/api/countries', $requestData);
+        $response->assertStatus(201)
+            ->assertJson([
+                'data' => $requestData,
+            ]);
+
+        $this->assertDatabaseHas('countries', $requestData);
     }
     public function testShow()
     {
