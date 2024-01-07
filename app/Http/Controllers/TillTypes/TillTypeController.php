@@ -13,20 +13,15 @@ class TillTypeController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    /**
- * @OA\Get(
- *     path="/api/tilltypes",
- *     summary="Get a list of tilltypes",
- *     tags={"TillType"},
- *     @OA\Response(response=200, description="Successful operation"),
- *     @OA\Response(response=400, description="Invalid request")
- * )
- */
+   
     public function index()
     {
         //
-        $tillTypes = TillType::all();
-        return $this->showAll($tillTypes,200);
+        $t = TillType::query()->first();
+        $query = TillType::query();
+        $query = $this->filterData($query, $t);
+        $datos = $query->get();
+        return $this->showAll($datos, 200);
     }
 
     /**
@@ -49,7 +44,7 @@ class TillTypeController extends ApiController
         $tillType = TillType::create($validatedData);
 
         // Return a success response
-        return response()->json($tillType, 200);
+        return $this->showOne($tillType, 200);
         
     }
 
@@ -84,7 +79,7 @@ class TillTypeController extends ApiController
         $tillType->update($validatedData);
 
         // Return a success response
-        return response()->json($tillType, 200);
+        return $this->showOne($tillType, 200);
         
     }
 

@@ -72,14 +72,12 @@ trait ApiResponser
 	public function filterData(Builder $collection, $transformer)
 	{
 		$flag = 0;
-		//select * from "subjects" where "subj_code"::text ILIKE 'a' and "subjects"."deleted_at"...
 		//$instance=$collection->getModel();
+		if (is_null($transformer)) {
+			return $collection;
+		}
 		$instance = $transformer->getAttributes();
-		//dd($instance);
 		foreach (request()->query() as $query => $value) {
-			//$attribute = $transformer::originalAttribute($query);
-			//dd($instance->getAttributes());
-			//if (property_exists($instance,$query)) {
 			if (array_key_exists($query, $instance)) {
 				$attribute = $query;
 			} else {
@@ -101,7 +99,6 @@ trait ApiResponser
 						$collection = $collection->orWhere($attribute, 'ILIKE', '%' . $value . '%');
 					}
 				}
-				// $collection = $collection->where($attribute,'ILIKE',$value);
 			}
 		}
 

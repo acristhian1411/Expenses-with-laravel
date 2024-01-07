@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Purchases;
 
 use App\Models\Purchases;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ApiController;
 
-class PurchasesController extends Controller
+class PurchasesController extends ApiController
 {
     /**
      * Display a listing of the resource.
