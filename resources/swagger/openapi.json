@@ -1,0 +1,190 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Expenses API",
+    "version": "1.0.0",
+    "description": "An API for managing expenses",
+    "contact":{
+      "name":"API Support",
+      "url":"http://www.example.com/support",
+      "email":"N6wY7@example.com"
+    }
+  },
+  "servers":[
+    { 
+    "url": "http://localhost:8000",
+    "description": "Development server"
+    }
+  ],
+  "components":{
+    "schemas": {
+      "Countries": {
+        "type": "object",
+        "properties": {
+          "country_name": {
+            "type": "string"
+          },
+          "country_code": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "tags":[
+    {
+      "name": "Countries",
+      "description": "Manage countries"
+    }
+  ],
+  "paths": {
+  "/api/countries": {
+    "get": {
+      "summary": "Lists all the Countries",
+      "tags": ["Countries"],
+      "responses": {
+        "200": {
+          "description": "The list of the Countries",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Countries"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "summary": "Create a new country",
+      "tags": ["Countries"],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Countries"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "The created country.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Countries"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Some server error"
+        }
+      }
+    }
+  },
+  "/api/countries/{id}": {
+    "get": {
+      "summary": "Get the country by id",
+      "tags": ["Countries"],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "The country id"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "The country response by id",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Countries"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "The country was not found"
+        }
+      }
+    },
+    "put": {
+      "summary": "Update the country by the id",
+      "tags": ["Countries"],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "The country id"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Countries"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "The country was updated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Countries"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "The country was not found"
+        },
+        "500": {
+          "description": "Some error happened"
+        }
+      }
+    },
+    "delete": {
+      "summary": "Remove the country by id",
+      "tags": ["Countries"],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "The country id"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "The country was deleted"
+        },
+        "404": {
+          "description": "The country was not found"
+        }
+      }
+    }
+  }
+}
+}
