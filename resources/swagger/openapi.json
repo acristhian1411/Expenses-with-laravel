@@ -1,5 +1,15 @@
 {
   "openapi": "3.0.0",
+  "servers":[
+    { 
+    "url": "http://localhost:8000",
+    "description": "Development server"
+    },
+    {
+      "url": "https://api.server.test/v1",
+      "description": "Server description"
+    }
+  ],
   "info": {
     "title": "Expenses API",
     "version": "1.0.0",
@@ -10,12 +20,6 @@
       "email":"N6wY7@example.com"
     }
   },
-  "servers":[
-    { 
-    "url": "http://localhost:8000",
-    "description": "Development server"
-    }
-  ],
   "components":{
     "schemas": {
       "Countries": {
@@ -36,6 +40,20 @@
             "type": "number"
           },
           "state_name": {
+            "type": "string"
+          }
+        }
+      },
+      "Cities": {
+        "type": "object",
+        "properties": {
+          "state_id": {
+            "type": "number"
+          },
+          "city_name": {
+            "type": "string"
+          },
+          "city_code": {
             "type": "string"
           }
         }
@@ -349,6 +367,154 @@
         },
         "404": {
           "description": "The state was not found"
+        }
+      }
+    }
+  },
+  "/api/cities": {
+    "get": {
+      "summary": "Lists all the Cities",
+      "tags": ["Cities"],
+      "responses": {
+        "200": {
+          "description": "The list of the Cities",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Cities"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "summary": "Create a new city",
+      "tags": ["Cities"],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Cities"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "The created city.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cities"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Some server error"
+        }
+      }
+    }
+  },
+  "/api/cities/{id}": {
+    "get": {
+      "summary": "Get the city by id",
+      "tags": ["Cities"],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "The city id"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "The city response by id",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cities"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "The city was not found"
+        }
+      }
+    },
+    "put": {
+      "summary": "Update the city by the id",
+      "tags": ["Cities"],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "The city id"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Cities"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "The city was updated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cities"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "The city was not found"
+        },
+        "500": {
+          "description": "Some error happened"
+        }
+      }
+    },
+    "delete": {
+      "summary": "Remove the city by id",
+      "tags": ["Cities"],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "The city id"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "The city was deleted"
+        },
+        "404": {
+          "description": "The city was not found"
         }
       }
     }
