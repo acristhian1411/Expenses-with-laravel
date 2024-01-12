@@ -28,6 +28,17 @@
             "type": "string"
           }
         }
+      },
+      "States": {
+        "type": "object",
+        "properties": {
+          "country_id": {
+            "type": "number"
+          },
+          "state_name": {
+            "type": "string"
+          }
+        }
       }
     }
   },
@@ -35,6 +46,14 @@
     {
       "name": "Countries",
       "description": "Manage countries"
+    },
+    {
+      "name": "States",
+      "description": "Manage States"
+    },
+    {
+      "name": "Cities",
+      "description": "Manage Cities"
     }
   ],
   "paths": {
@@ -182,6 +201,154 @@
         },
         "404": {
           "description": "The country was not found"
+        }
+      }
+    }
+  },
+  "/api/states": {
+    "get": {
+      "summary": "Lists all the States",
+      "tags": ["States"],
+      "responses": {
+        "200": {
+          "description": "The list of the States",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/States"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "summary": "Create a new state",
+      "tags": ["States"],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/States"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "The created state.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/States"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Some server error"
+        }
+      }
+    }
+  },
+  "/api/states/{id}": {
+    "get": {
+      "summary": "Get the state by id",
+      "tags": ["States"],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "The state id"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "The state response by id",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/States"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "The state was not found"
+        }
+      }
+    },
+    "put": {
+      "summary": "Update the state by the id",
+      "tags": ["States"],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "The state id"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/States"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "The state was updated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/States"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "The state was not found"
+        },
+        "500": {
+          "description": "Some error happened"
+        }
+      }
+    },
+    "delete": {
+      "summary": "Remove the state by id",
+      "tags": ["States"],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "The state id"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "The state was deleted"
+        },
+        "404": {
+          "description": "The state was not found"
         }
       }
     }
