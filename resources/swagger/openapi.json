@@ -1,15 +1,5 @@
 {
   "openapi": "3.0.0",
-  "servers":[
-    { 
-    "url": "http://localhost:8000",
-    "description": "Development server"
-    },
-    {
-      "url": "https://api.server.test/v1",
-      "description": "Server description"
-    }
-  ],
   "info": {
     "title": "Expenses API",
     "version": "1.0.0",
@@ -21,7 +11,16 @@
     }
   },
   "components":{
+    
     "schemas": {
+      "Categories": {
+        "type": "object",
+        "properties": {
+          "cat_desc": {
+            "type": "string"
+          }
+        }
+      },
       "Countries": {
         "type": "object",
         "properties": {
@@ -62,6 +61,10 @@
   },
   "tags":[
     {
+      "name": "Categories",
+      "description": "Manage Categories"
+    },
+    {
       "name": "Countries",
       "description": "Manage countries"
     },
@@ -74,11 +77,233 @@
       "description": "Manage Cities"
     }
   ],
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "Local server"
+    }
+  ],
   "paths": {
+    "/api/categories": {
+      "get": {
+        "summary": "Lists all the Categories",
+        "tags": ["Categories"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page"
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The quantity of results per page"
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The field by sort"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The direction of the sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the Categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Categories"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new category",
+        "tags": ["Categories"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Categories"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created category.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Categories"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server error"
+          }
+        }
+      }
+    },
+    "/api/categories/{id}": {
+      "get": {
+        "summary": "Get the category by id",
+        "tags": ["Categories"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The category id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The category response by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Categories"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The category was not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update the category by the id",
+        "tags": ["Categories"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The category id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Categories"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The category was updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Categories"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The category was not found"
+          },
+          "500": {
+            "description": "Some error happened"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove the category by id",
+        "tags": ["Categories"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The category id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The category was deleted"
+          },
+          "404": {
+            "description": "The category was not found"
+          }
+        }
+      }
+    },
   "/api/countries": {
     "get": {
       "summary": "Lists all the Countries",
       "tags": ["Countries"],
+      "parameters": [
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer"
+          },
+          "description": "The page"
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer"
+          },
+          "description": "The quantity of results per page"
+        },
+        {
+          "in": "query",
+          "name": "sort_by",
+          "schema": {
+            "type": "string"
+          },
+          "description": "The field by sort"
+        },
+        {
+          "in": "query",
+          "name": "order",
+          "schema": {
+            "type": "string"
+          },
+          "description": "The direction of the sort"
+        }
+      ],
       "responses": {
         "200": {
           "description": "The list of the Countries",
@@ -227,6 +452,40 @@
     "get": {
       "summary": "Lists all the States",
       "tags": ["States"],
+      "parameters": [
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer"
+          },
+          "description": "The page"
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer"
+          },
+          "description": "The quantity of results per page"
+        },
+        {
+          "in": "query",
+          "name": "sort_by",
+          "schema": {
+            "type": "string"
+          },
+          "description": "The field by sort"
+        },
+        {
+          "in": "query",
+          "name": "order",
+          "schema": {
+            "type": "string"
+          },
+          "description": "The direction of the sort"
+        }
+      ],
       "responses": {
         "200": {
           "description": "The list of the States",
@@ -375,6 +634,40 @@
     "get": {
       "summary": "Lists all the Cities",
       "tags": ["Cities"],
+      "parameters": [
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer"
+          },
+          "description": "The page"
+        },
+        {
+          "in": "query",
+          "name": "per_page",
+          "schema": {
+            "type": "integer"
+          },
+          "description": "The quantity of results per page"
+        },
+        {
+          "in": "query",
+          "name": "sort_by",
+          "schema": {
+            "type": "string"
+          },
+          "description": "The field by sort"
+        },
+        {
+          "in": "query",
+          "name": "order",
+          "schema": {
+            "type": "string"
+          },
+          "description": "The direction of the sort"
+        }
+      ],
       "responses": {
         "200": {
           "description": "The list of the Cities",
