@@ -20,3 +20,7 @@ Este es un proyecto de API desarrollado con Laravel para el registro de gastos p
 7. Ejecuta las migraciones: `php artisan migrate`
 8. Lanza la aplicación: `php artisan serve`
 9. Ve a la documentación de la api en: `http://localhost:8000/docs`
+
+## Imagenes relacionadas
+
+![Documentación](public/img/swagger.png)
