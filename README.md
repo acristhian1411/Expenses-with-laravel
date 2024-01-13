@@ -1,6 +1,8 @@
-# API de Registro de Gastos Personales con Laravel
+# API de Registro de Ingresos y Gastos Personales con Laravel
 
-Este es un proyecto de API desarrollado con Laravel para el registro de gastos personales. Proporciona endpoints para la creación, consulta, actualización y eliminación de registros de gastos.
+Este es un proyecto de API desarrollado con Laravel para el registro de ingresos y gastos personales.
+Proporciona endpoints para la creación, consulta, actualización y eliminación de registros de gastos, ademas de todo lo relacionado
+como registro de clientes, proveedores, productos. etc.
 
 ## Requisitos
 
@@ -19,7 +21,7 @@ Este es un proyecto de API desarrollado con Laravel para el registro de gastos p
 6. Genera la clave de la aplicación: `php artisan key:generate`
 7. Ejecuta las migraciones: `php artisan migrate`
 8. Lanza la aplicación: `php artisan serve`
-9. Ve a la documentación de la api en: `http://localhost:8000/docs`
+9. Ve a la documentación de la api en: [http://localhost:8000/docs]
 
 ## Imagenes relacionadas
 
