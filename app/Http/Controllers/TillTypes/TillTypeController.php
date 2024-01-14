@@ -44,7 +44,7 @@ class TillTypeController extends ApiController
         $tillType = TillType::create($validatedData);
 
         // Return a success response
-        return $this->showOne($tillType, 200);
+        return $this->showOne($tillType, 201);
         
     }
 
@@ -67,7 +67,7 @@ class TillTypeController extends ApiController
      * @param  \App\Models\TillType  $tillType
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request,$id)
     {
         //add code to update a till type
         $validatedData = $request->validate([
@@ -75,7 +75,7 @@ class TillTypeController extends ApiController
         ]);
 
         // Update the till type
-        $tillType = TillType::find($validatedData['id']);
+        $tillType = TillType::findOrFail($id);
         $tillType->update($validatedData);
 
         // Return a success response
@@ -89,10 +89,10 @@ class TillTypeController extends ApiController
      * @param  \App\Models\TillType  $tillType
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TillType $tillType)
+    public function destroy($id)
     {
         //add code to delete a till type using findOrFail function that provide the model
-        $tillType = TillType::findOrFail($tillType);
+        $tillType = TillType::findOrFail($id);
 
         // Delete the till type
         $tillType->delete();
