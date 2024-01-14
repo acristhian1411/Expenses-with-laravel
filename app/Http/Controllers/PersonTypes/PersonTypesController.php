@@ -50,7 +50,7 @@ class PersonTypesController extends ApiController
     {
         //
         $personType = PersonTypes::find($id);
-        return response()->json($personType);
+        return $this->showOne($personType,200);
     }
 
     /**
@@ -59,7 +59,7 @@ class PersonTypesController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request,$id)
     {
         //
         $validatedData = $request->validate([
@@ -67,12 +67,10 @@ class PersonTypesController extends ApiController
         ]);
 
         // Update the till type
-        $personTypes = PersonTypes::find($validatedData['id']);
-
+        $personTypes = PersonTypes::findOrFail($id);
         $personTypes->update($validatedData);
-
         // Return a success response
-        return response()->json($personTypes, 200);
+        return $this->showOne($personTypes, 200);
         
     }
 
