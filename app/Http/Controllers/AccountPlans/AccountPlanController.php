@@ -36,7 +36,7 @@ class AccountPlanController extends ApiController
     {
         //
         $rules=[
-            'plan_desc' => 'required|string|max:255',
+            'account_desc' => 'required|string|max:255',
         ];
         $this->validate($request, $rules);
         $accountPlan = AccountPlan::create($request->all());
@@ -69,7 +69,7 @@ class AccountPlanController extends ApiController
     {
         //add code to validate and update
         $rules = [
-            'plan_desc' => 'required|string|max:255',
+            'account_desc' => 'required|string|max:255',
         ];
         $this->validate($request, $rules);
 
