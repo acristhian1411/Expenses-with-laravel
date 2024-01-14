@@ -16,7 +16,7 @@ class StatesFactory extends Factory
     {
         $countries = Countries::factory()->count(3)->create();
         return [
-            //add state_name from faker and country_id from existing country
+            //
             'state_name'=>$this->faker->unique()->state(),
             'country_id'=>$countries->random()->id
 
