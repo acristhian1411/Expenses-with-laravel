@@ -15,7 +15,8 @@ class Tills extends Model
     protected $fillable = [
         'till_name',
         'till_account_number',
-        't_type_id'
+        't_type_id',
+        'till_status'
     ];
 
     public function type()
