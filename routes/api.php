@@ -38,14 +38,12 @@ Route::post('tilltypes', [TillTypeController::class, 'store']);
 Route::put('tilltypes/{id}', [TillTypeController::class, 'update']);
 Route::get('tilltypes/{id}', [TillTypeController::class, 'show']);
 Route::delete('tilltypes/{id}', [TillTypeController::class, 'destroy']);
-
 //routes for personTypes
 Route::get('persontypes', [PersonTypesController::class, 'index']);
 Route::post('persontypes', [PersonTypesController::class, 'store']);
 Route::put('persontypes/{id}', [PersonTypesController::class, 'update']);
 Route::get('persontypes/{id}', [PersonTypesController::class, 'show']);
 Route::delete('persontypes/{id}', [PersonTypesController::class, 'destroy']);
-
 //routes for accountplans
 Route::get('accountplans', [AccountPlanController::class, 'index']);
 Route::post('accountplans', [AccountPlanController::class, 'store']);
@@ -148,7 +146,6 @@ Route::post('purchasesdetails', [PurchasesDetailsController::class, 'store']);
 Route::put('purchasesdetails/{id}', [PurchasesDetailsController::class, 'update']);
 Route::get('purchasesdetails/{id}', [PurchasesDetailsController::class, 'show']);
 Route::delete('purchasesdetails/{id}', [PurchasesDetailsController::class, 'destroy']);
-
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

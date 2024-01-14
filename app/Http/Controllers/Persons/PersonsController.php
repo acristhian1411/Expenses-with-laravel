@@ -31,20 +31,7 @@ class PersonsController extends ApiController
      */
     public function store(Request $request)
     {
-        //
-        // protected $fillable = [
-        //     'person_fname',
-        //     'person_lastname',
-        //     'person_corpname',
-        //     'person_idnumber',
-        //     'person_ruc',
-        //     'person_birtdate',
-        //     'person_photo',
-        //     'person_address',
-        //     'person_type_id',
-        //     'country_id',
-        //     'city_id'
-        // ];
+
 
         $reglas = [
             'person_fname' => 'required|string|max:255',
@@ -53,9 +40,8 @@ class PersonsController extends ApiController
             'person_idnumber' => 'required|string|max:50',
             'person_ruc' => 'nullable|string|max:50',
             'person_birtdate' => 'required|date',
-            'person_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'person_address' => 'required|string|max:255',
-            'person_type_id' => 'required|integer',
+            'p_type_id' => 'required|integer',
             'country_id' => 'required|integer',
             'city_id' => 'required|integer',
         ];
@@ -94,9 +80,8 @@ class PersonsController extends ApiController
             'person_idnumber' => 'required|string|max:50',
             'person_ruc' => 'nullable|string|max:50',
             'person_birtdate' => 'required|date',
-            'person_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'person_address' => 'required|string|max:255',
-            'person_type_id' => 'required|integer',
+            'p_type_id' => 'required|integer',
             'country_id' => 'required|integer',
             'city_id' => 'required|integer',
         ];

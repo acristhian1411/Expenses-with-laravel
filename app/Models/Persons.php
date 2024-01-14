@@ -22,7 +22,7 @@ class Persons extends Model
     'person_birtdate',
     'person_photo',
     'person_address',
-    'person_type_id',
+    'p_type_id',
     'country_id',
     'city_id'
 ];
