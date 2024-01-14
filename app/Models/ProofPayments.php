@@ -19,5 +19,4 @@ class ProofPayments extends Model
     {
         return $this->belongsTo(PaymentTypes::class);
     }
-    
 }

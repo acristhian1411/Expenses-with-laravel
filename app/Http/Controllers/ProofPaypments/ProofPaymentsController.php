@@ -73,7 +73,6 @@ class ProofPaymentsController extends ApiController
         $proofPayments = ProofPayments::findOrFail($id);
         $proofPayments->update($request->all());
         return $this->showOne($proofPayments, 200);
-
     }
 
     /**
