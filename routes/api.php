@@ -123,8 +123,10 @@ Route::delete('tilldetailproofpayments/{id}', [TillDetailProofPaymentsController
 //routes for ProofPaypments
 Route::get('proofpaypments', [ProofPaymentsController::class, 'index']);
 Route::post('proofpaypments', [ProofPaymentsController::class, 'store']);
+Route::post('proofpaypments_multiple', [ProofPaymentsController::class, 'storeMultiple']);
 Route::put('proofpaypments/{id}', [ProofPaymentsController::class, 'update']);
 Route::get('proofpaypments/{id}', [ProofPaymentsController::class, 'show']);
+Route::get('proofpaypments_type/{id}', [ProofPaymentsController::class, 'showByType']);
 Route::delete('proofpaypments/{id}', [ProofPaymentsController::class, 'destroy']);
 //routes for sales
 Route::get('sales', [SalesController::class, 'index']);

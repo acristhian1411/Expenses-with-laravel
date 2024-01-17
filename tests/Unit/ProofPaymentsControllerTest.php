@@ -38,6 +38,34 @@ class ProofPaymentsControllerTest extends TestCase
             ]);
         $this->assertDatabaseHas('proof_payments', $requestData);
     }
+
+    public function testStoreMultiple()
+{
+    $paymentTypes = PaymentTypes::factory()->create();
+    
+    $requestData1 = [
+        'proof_payment_desc' => $this->faker->sentence($nbWords = 6, $variableNbWords = true),
+        'payment_type_id' => $paymentTypes->id,
+    ];
+
+    $requestData2 = [
+        'proof_payment_desc' => $this->faker->sentence($nbWords = 6, $variableNbWords = true),
+        'payment_type_id' => $paymentTypes->id,
+    ];
+
+    $requestDataArray = [$requestData1, $requestData2];
+    
+    $response = $this->post('/api/proofpaypments_multiple', $requestDataArray);
+    
+    $response->assertStatus(200)
+        ->assertJson([
+            'data' => $requestDataArray,
+        ]);
+
+    $this->assertDatabaseHas('proof_payments', $requestData1);
+    $this->assertDatabaseHas('proof_payments', $requestData2);
+}
+
     public function testShow()
     {
         // Crear un país de prueba
@@ -52,6 +80,54 @@ class ProofPaymentsControllerTest extends TestCase
         ]);
     }
 
+    public function testShowByType()
+    {
+        // Crear un país de prueba
+        $proofpayment = ProofPayments::factory()->count(3)->create();
+        $paymentType = PaymentTypes::inRandomOrder()->first();
+        // Realizar la solicitud GET a la ruta del detalle del país
+        $response = $this->get('/api/proofpaypments_type/' . $paymentType->id);
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(200);
+
+        if($response['data'] == []){
+            $response->assertJson([
+                'data' => [],
+            ]);
+        }else{
+            $response->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                    'proof_payment_desc',
+                    'payment_type_id',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at',
+                    'payment_type_desc',
+                ],
+            ],
+            'first_page_url',
+            'from',
+            'last_page',
+            'last_page_url',
+            'current_page',
+            'links' => [
+                '*' => [
+                    'url',
+                    'label',
+                    'active',
+                ],
+            ],
+            'next_page_url',
+            'path',
+            'per_page',
+            'prev_page_url',
+            'to',
+            'total',
+        ]);
+    }
+    }
     public function testUpdate()
     {
         // Crear un país de prueba

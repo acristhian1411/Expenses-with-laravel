@@ -42,6 +42,25 @@ class ProofPaymentsController extends ApiController
         return $this->showOne($dato, 201);
     }
 
+    //
+    public function storeMultiple(Request $request)
+    {
+        //
+        $proofPayments = ProofPayments::insert($request->all());
+        return response()->json(['data'=>$proofPayments]);
+    }
+
+    //
+    public function showByType($payment_type_id){
+        $proofPayments = ProofPayments::join('payment_types','payment_types.id','=','proof_payments.payment_type_id')
+        ->where('payment_type_id', $payment_type_id)
+        ->select('proof_payments.*','payment_types.payment_type_desc')
+        ->get();
+        
+        return $this->showAll($proofPayments, 200);
+    }
+
+
     /**
      * Display the specified resource.
      *
