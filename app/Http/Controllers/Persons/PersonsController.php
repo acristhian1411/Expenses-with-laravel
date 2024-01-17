@@ -63,6 +63,11 @@ class PersonsController extends ApiController
         return $this->showOne($persons, 200);
     }
 
+    //
+    public function personByType($id){
+        $persons = Persons::where('p_type_id', $id)->get();
+        return $this->showAll($persons, 200);
+    }
     /**
      * Update the specified resource in storage.
      *
