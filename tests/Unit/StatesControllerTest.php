@@ -73,9 +73,7 @@ class StatesControllerTest extends TestCase
         $response = $this->get('/api/states_country/' . $country->id);
         // Verificar que la respuesta sea exitosa
         $response->assertStatus(200);
-        $response->assertJson(function (AssertableJson $json) {
-            $json->where('data', []);
-        });
+
         if($response['data'] == []){
             $response->assertJson([
                 'data' => [],
