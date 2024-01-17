@@ -1584,6 +1584,134 @@
         }
       }
     },
+    "/api/cities_state/{id}": {
+      "get": {
+        "summary": "Lists all the Cities filtered by State",
+        "tags": ["Cities"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "required": true,
+            "description": "The state id"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page"
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The quantity of results per page"
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The field by sort"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The direction of the sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the Cities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Cities"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cities_country/{id}": {
+      "get": {
+        "summary": "Lists all the Cities filtered by country",
+        "tags": ["Cities"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "required": true,
+            "description": "The country id"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page"
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The quantity of results per page"
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The field by sort"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The direction of the sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the Cities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Cities"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/cities/{id}": {
       "get": {
         "summary": "Get the city by id",

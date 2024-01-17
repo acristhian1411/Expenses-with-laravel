@@ -77,13 +77,13 @@ class CitiesController extends ApiController
         return $this->showOne($cities, 201);
     }
 
-    //add function to get cities by state_id
+    //
     public function cityByStateId($id){
         $cities = Cities::where('state_id', $id)->get();
         return $this->showAll($cities, 200);
     }
 
-    //add function to get cities by country_id
+    //
     public function cityByCountryId($id){
         $cities = Cities::join('states','states.id','=','cities.state_id')
         ->where('states.country_id', $id)->get();

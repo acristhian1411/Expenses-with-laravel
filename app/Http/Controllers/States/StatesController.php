@@ -55,7 +55,7 @@ class StatesController extends ApiController
         return $this->showOne($states, 200);
     }
 
-    //add function to return states by country_id
+    //
     public function getStatesByCountry($id)
     {
         $states = States::where('country_id', $id)->get();
