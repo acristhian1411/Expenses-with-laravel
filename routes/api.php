@@ -106,6 +106,7 @@ Route::get('tills', [TillsController::class, 'index']);
 Route::post('tills', [TillsController::class, 'store']);
 Route::put('tills/{id}', [TillsController::class, 'update']);
 Route::get('tills/{id}', [TillsController::class, 'show']);
+Route::get('tills_tilltype/{id}', [TillsController::class, 'getByTypeId']);
 Route::delete('tills/{id}', [TillsController::class, 'destroy']);
 //routes for tilldetails
 Route::get('tilldetails', [TillDetailsController::class, 'index']);

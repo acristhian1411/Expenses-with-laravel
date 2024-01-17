@@ -55,6 +55,12 @@ class TillsController extends ApiController
         return $this->showOne($till, 200);
     }
 
+//
+public function getByTypeId($id){
+    $tills = Tills::where('t_type_id', $id)->get();
+    return $this->showAll($tills, 200);
+}
+
     /**
      * Update the specified resource in storage.
      *

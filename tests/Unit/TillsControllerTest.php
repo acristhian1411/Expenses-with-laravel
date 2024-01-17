@@ -54,6 +54,55 @@ class TillsControllerTest extends TestCase
         ]);
     }
 
+    public function testGetCitiesByCountry()
+    {
+        // Crear un país de prueba
+        $tills = Tills::factory()->count(3)->create();
+        $tilltype = TillType::inRandomOrder()->first();
+        // Realizar la solicitud GET a la ruta del detalle del país
+        $response = $this->get('/api/tills_tilltype/' . $tilltype->id);
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(200);
+
+        if($response['data'] == []){
+            $response->assertJson([
+                'data' => [],
+            ]);
+        }else{
+            $response->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                    'till_name',
+                    'till_account_number',
+                    't_type_id',
+                    'till_status',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at',
+                ],
+            ],
+            'first_page_url',
+            'from',
+            'last_page',
+            'last_page_url',
+            'current_page',
+            'links' => [
+                '*' => [
+                    'url',
+                    'label',
+                    'active',
+                ],
+            ],
+            'next_page_url',
+            'path',
+            'per_page',
+            'prev_page_url',
+            'to',
+            'total',
+        ]);
+    }
+    }
     public function testUpdate()
     {
         // Crear un país de prueba
