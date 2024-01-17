@@ -13,11 +13,73 @@
   "components":{
     
     "schemas": {
+      "TillTypes": {
+        "type": "object",
+        "properties": {
+          "till_type_desc": {
+            "type": "string"
+          }
+        }
+      },
+      "Tills": {
+        "type": "object",
+        "properties": {
+          "till_name": {
+            "type": "string"
+          },
+          "till_account_number": {
+            "type": "string"
+          },
+          "t_type_id": {
+            "type": "number"
+          },
+          "till_status": {
+            "type": "boolean"
+          }
+        }
+      },
       "Categories": {
         "type": "object",
         "properties": {
           "cat_desc": {
             "type": "string"
+          }
+        }
+      },
+      "IvaTypes": {
+        "type": "object",
+        "properties": {
+          "iva_type_desc": {
+            "type": "string"
+          },
+          "iva_type_percent": {
+            "type": "number"
+          }
+        }
+      },
+      "Products": {
+        "type": "object",
+        "properties": {
+          "product_name": {
+            "type": "string"
+          },
+          "product_desc": {
+            "type": "string"
+          },
+          "product_cost_price": {
+            "type": "number"
+          },
+          "product_quantity": {
+            "type": "number"
+          },
+          "product_selling_price": {
+            "type": "number"
+          },
+          "category_id": {
+            "type": "number"
+          },
+          "iva_type_id": {
+            "type": "number"
           }
         }
       },
@@ -61,8 +123,24 @@
   },
   "tags":[
     {
+      "name": "TillTypes",
+      "description": "Manage TillTypes"
+    },
+    {
+      "name": "Tills",
+      "description": "Manage Tills"
+    },
+    {
       "name": "Categories",
       "description": "Manage Categories"
+    },
+    {
+      "name": "IvaTypes",
+      "description": "Manage IvaTypes"
+    },
+    {
+      "name": "Products",
+      "description": "Manage Products"
     },
     {
       "name": "Countries",
@@ -84,6 +162,552 @@
     }
   ],
   "paths": {
+    "/api/tilltypes": {
+      "get": {
+        "summary": "Lists all the TillTypes",
+        "tags": ["TillTypes"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page"
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The quantity of results per page"
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The field by sort"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The direction of the sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the TillTypes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TillTypes"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new tilltype",
+        "tags": ["TillTypes"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TillTypes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created tilltype.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TillTypes"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server error"
+          }
+        }
+      }
+    },
+    "/api/tilltypes/{id}": {
+      "get": {
+        "summary": "Get the tilltype by id",
+        "tags": ["TillTypes"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The tilltype id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tilltype response by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TillTypes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The tilltype was not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update the tilltype by the id",
+        "tags": ["TillTypes"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The tilltype id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TillTypes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The tilltype was updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TillTypes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The tilltype was not found"
+          },
+          "500": {
+            "description": "Some error happened"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove the tilltype by id",
+        "tags": ["TillTypes"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "required": true,
+            "description": "The tilltype id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tilltype was deleted"
+          },
+          "404": {
+            "description": "The tilltype was not found"
+          }
+        }
+      }
+    },
+    "/api/tills": {
+      "get": {
+        "summary": "Lists all the Tills",
+        "tags": ["Tills"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page"
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The quantity of results per page"
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The field by sort"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The direction of the sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the Tills",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tills"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new till",
+        "tags": ["Tills"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tills"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created till.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tills"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server error"
+          }
+        }
+      }
+    },
+    "/api/tills/{id}": {
+      "get": {
+        "summary": "Get the till by id",
+        "tags": ["Tills"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The till id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The till response by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tills"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The till was not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update the till by the id",
+        "tags": ["Tills"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The till id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tills"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The till was updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tills"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The till was not found"
+          },
+          "500": {
+            "description": "Some error happened"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove the till by id",
+        "tags": ["Tills"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The till id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The till was deleted"
+          },
+          "404": {
+            "description": "The till was not found"
+          }
+        }
+      }
+    },
+    "/api/ivatypes": {
+      "get": {
+        "summary": "Lists all the IvaTypes",
+        "tags": ["IvaTypes"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page"
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The quantity of results per page"
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The field by sort"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The direction of the sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the IvaTypes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IvaTypes"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new ivatype",
+        "tags": ["IvaTypes"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IvaTypes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created ivatype.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IvaTypes"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server error"
+          }
+        }
+      }
+    },
+    "/api/ivatypes/{id}": {
+      "get": {
+        "summary": "Get the ivatype by id",
+        "tags": ["IvaTypes"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The ivatype id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The ivatype response by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IvaTypes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The ivatype was not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update the ivatype by the id",
+        "tags": ["IvaTypes"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The ivatype id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IvaTypes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The ivatype was updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IvaTypes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The ivatype was not found"
+          },
+          "500": {
+            "description": "Some error happened"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove the ivatype by id",
+        "tags": ["IvaTypes"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The ivatype id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The ivatype was deleted"
+          },
+          "404": {
+            "description": "The ivatype was not found"
+          }
+        }
+      }
+    },
     "/api/categories": {
       "get": {
         "summary": "Lists all the Categories",
@@ -266,551 +890,733 @@
         }
       }
     },
-  "/api/countries": {
-    "get": {
-      "summary": "Lists all the Countries",
-      "tags": ["Countries"],
-      "parameters": [
-        {
-          "in": "query",
-          "name": "page",
-          "schema": {
-            "type": "integer"
+    "/api/products": {
+      "get": {
+        "summary": "Lists all the Products",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page"
           },
-          "description": "The page"
-        },
-        {
-          "in": "query",
-          "name": "per_page",
-          "schema": {
-            "type": "integer"
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The quantity of results per page"
           },
-          "description": "The quantity of results per page"
-        },
-        {
-          "in": "query",
-          "name": "sort_by",
-          "schema": {
-            "type": "string"
+          {
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The field by sort"
           },
-          "description": "The field by sort"
-        },
-        {
-          "in": "query",
-          "name": "order",
-          "schema": {
-            "type": "string"
-          },
-          "description": "The direction of the sort"
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The direction of the sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the Products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Products"
+                  }
+                }
+              }
+            }
+          }
         }
-      ],
-      "responses": {
-        "200": {
-          "description": "The list of the Countries",
+      },
+      "post": {
+        "summary": "Create a new category",
+        "tags": ["Products"],
+        "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
+                "$ref": "#/components/schemas/Products"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created category.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Products"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server error"
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "summary": "Get the category by id",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The category id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The category response by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Products"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The category was not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update the category by the id",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The category id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Products"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The category was updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Products"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The category was not found"
+          },
+          "500": {
+            "description": "Some error happened"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove the category by id",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The category id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The category was deleted"
+          },
+          "404": {
+            "description": "The category was not found"
+          }
+        }
+      }
+    },
+    "/api/countries": {
+      "get": {
+        "summary": "Lists all the Countries",
+        "tags": ["Countries"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page"
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The quantity of results per page"
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The field by sort"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The direction of the sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the Countries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Countries"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new country",
+        "tags": ["Countries"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Countries"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created country.",
+            "content": {
+              "application/json": {
+                "schema": {
                   "$ref": "#/components/schemas/Countries"
                 }
               }
             }
+          },
+          "500": {
+            "description": "Some server error"
           }
         }
       }
     },
-    "post": {
-      "summary": "Create a new country",
-      "tags": ["Countries"],
-      "requestBody": {
-        "required": true,
-        "content": {
-          "application/json": {
+    "/api/countries/{id}": {
+      "get": {
+        "summary": "Get the country by id",
+        "tags": ["Countries"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/Countries"
+              "type": "string"
+            },
+            "required": true,
+            "description": "The country id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The country response by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Countries"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The country was not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update the country by the id",
+        "tags": ["Countries"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The country id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Countries"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The country was updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Countries"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The country was not found"
+          },
+          "500": {
+            "description": "Some error happened"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove the country by id",
+        "tags": ["Countries"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The country id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The country was deleted"
+          },
+          "404": {
+            "description": "The country was not found"
+          }
+        }
+      }
+    },
+    "/api/states": {
+      "get": {
+        "summary": "Lists all the States",
+        "tags": ["States"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page"
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The quantity of results per page"
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The field by sort"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The direction of the sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the States",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/States"
+                  }
+                }
+              }
             }
           }
         }
       },
-      "responses": {
-        "200": {
-          "description": "The created country.",
+      "post": {
+        "summary": "Create a new state",
+        "tags": ["States"],
+        "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Countries"
+                "$ref": "#/components/schemas/States"
               }
             }
           }
         },
-        "500": {
-          "description": "Some server error"
-        }
-      }
-    }
-  },
-  "/api/countries/{id}": {
-    "get": {
-      "summary": "Get the country by id",
-      "tags": ["Countries"],
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "schema": {
-            "type": "string"
-          },
-          "required": true,
-          "description": "The country id"
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "The country response by id",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Countries"
-              }
-            }
-          }
-        },
-        "404": {
-          "description": "The country was not found"
-        }
-      }
-    },
-    "put": {
-      "summary": "Update the country by the id",
-      "tags": ["Countries"],
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "schema": {
-            "type": "string"
-          },
-          "required": true,
-          "description": "The country id"
-        }
-      ],
-      "requestBody": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/Countries"
-            }
-          }
-        }
-      },
-      "responses": {
-        "200": {
-          "description": "The country was updated",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Countries"
-              }
-            }
-          }
-        },
-        "404": {
-          "description": "The country was not found"
-        },
-        "500": {
-          "description": "Some error happened"
-        }
-      }
-    },
-    "delete": {
-      "summary": "Remove the country by id",
-      "tags": ["Countries"],
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "schema": {
-            "type": "string"
-          },
-          "required": true,
-          "description": "The country id"
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "The country was deleted"
-        },
-        "404": {
-          "description": "The country was not found"
-        }
-      }
-    }
-  },
-  "/api/states": {
-    "get": {
-      "summary": "Lists all the States",
-      "tags": ["States"],
-      "parameters": [
-        {
-          "in": "query",
-          "name": "page",
-          "schema": {
-            "type": "integer"
-          },
-          "description": "The page"
-        },
-        {
-          "in": "query",
-          "name": "per_page",
-          "schema": {
-            "type": "integer"
-          },
-          "description": "The quantity of results per page"
-        },
-        {
-          "in": "query",
-          "name": "sort_by",
-          "schema": {
-            "type": "string"
-          },
-          "description": "The field by sort"
-        },
-        {
-          "in": "query",
-          "name": "order",
-          "schema": {
-            "type": "string"
-          },
-          "description": "The direction of the sort"
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "The list of the States",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
+        "responses": {
+          "200": {
+            "description": "The created state.",
+            "content": {
+              "application/json": {
+                "schema": {
                   "$ref": "#/components/schemas/States"
                 }
               }
             }
+          },
+          "500": {
+            "description": "Some server error"
           }
         }
       }
     },
-    "post": {
-      "summary": "Create a new state",
-      "tags": ["States"],
-      "requestBody": {
-        "required": true,
-        "content": {
-          "application/json": {
+    "/api/states/{id}": {
+      "get": {
+        "summary": "Get the state by id",
+        "tags": ["States"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/States"
+              "type": "string"
+            },
+            "required": true,
+            "description": "The state id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The state response by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/States"
+                }
+              }
             }
+          },
+          "404": {
+            "description": "The state was not found"
           }
         }
       },
-      "responses": {
-        "200": {
-          "description": "The created state.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/States"
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "Some server error"
-        }
-      }
-    }
-  },
-  "/api/states/{id}": {
-    "get": {
-      "summary": "Get the state by id",
-      "tags": ["States"],
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "schema": {
-            "type": "string"
-          },
-          "required": true,
-          "description": "The state id"
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "The state response by id",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/States"
-              }
-            }
-          }
-        },
-        "404": {
-          "description": "The state was not found"
-        }
-      }
-    },
-    "put": {
-      "summary": "Update the state by the id",
-      "tags": ["States"],
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "schema": {
-            "type": "string"
-          },
-          "required": true,
-          "description": "The state id"
-        }
-      ],
-      "requestBody": {
-        "required": true,
-        "content": {
-          "application/json": {
+      "put": {
+        "summary": "Update the state by the id",
+        "tags": ["States"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/States"
+              "type": "string"
+            },
+            "required": true,
+            "description": "The state id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/States"
+              }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The state was updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/States"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The state was not found"
+          },
+          "500": {
+            "description": "Some error happened"
           }
         }
       },
-      "responses": {
-        "200": {
-          "description": "The state was updated",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/States"
-              }
-            }
+      "delete": {
+        "summary": "Remove the state by id",
+        "tags": ["States"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The state id"
           }
-        },
-        "404": {
-          "description": "The state was not found"
-        },
-        "500": {
-          "description": "Some error happened"
+        ],
+        "responses": {
+          "200": {
+            "description": "The state was deleted"
+          },
+          "404": {
+            "description": "The state was not found"
+          }
         }
       }
     },
-    "delete": {
-      "summary": "Remove the state by id",
-      "tags": ["States"],
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "schema": {
-            "type": "string"
+    "/api/cities": {
+      "get": {
+        "summary": "Lists all the Cities",
+        "tags": ["Cities"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page"
           },
-          "required": true,
-          "description": "The state id"
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "The state was deleted"
-        },
-        "404": {
-          "description": "The state was not found"
-        }
-      }
-    }
-  },
-  "/api/cities": {
-    "get": {
-      "summary": "Lists all the Cities",
-      "tags": ["Cities"],
-      "parameters": [
-        {
-          "in": "query",
-          "name": "page",
-          "schema": {
-            "type": "integer"
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The quantity of results per page"
           },
-          "description": "The page"
-        },
-        {
-          "in": "query",
-          "name": "per_page",
-          "schema": {
-            "type": "integer"
+          {
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The field by sort"
           },
-          "description": "The quantity of results per page"
-        },
-        {
-          "in": "query",
-          "name": "sort_by",
-          "schema": {
-            "type": "string"
-          },
-          "description": "The field by sort"
-        },
-        {
-          "in": "query",
-          "name": "order",
-          "schema": {
-            "type": "string"
-          },
-          "description": "The direction of the sort"
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "The list of the Cities",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Cities"
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The direction of the sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the Cities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Cities"
+                  }
                 }
               }
             }
           }
         }
+      },
+      "post": {
+        "summary": "Create a new city",
+        "tags": ["Cities"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cities"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created city.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cities"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server error"
+          }
+        }
       }
     },
-    "post": {
-      "summary": "Create a new city",
-      "tags": ["Cities"],
-      "requestBody": {
-        "required": true,
-        "content": {
-          "application/json": {
+    "/api/cities/{id}": {
+      "get": {
+        "summary": "Get the city by id",
+        "tags": ["Cities"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/Cities"
+              "type": "string"
+            },
+            "required": true,
+            "description": "The city id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The city response by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cities"
+                }
+              }
             }
+          },
+          "404": {
+            "description": "The city was not found"
           }
         }
       },
-      "responses": {
-        "200": {
-          "description": "The created city.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Cities"
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "Some server error"
-        }
-      }
-    }
-  },
-  "/api/cities/{id}": {
-    "get": {
-      "summary": "Get the city by id",
-      "tags": ["Cities"],
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "schema": {
-            "type": "string"
-          },
-          "required": true,
-          "description": "The city id"
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "The city response by id",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Cities"
-              }
-            }
-          }
-        },
-        "404": {
-          "description": "The city was not found"
-        }
-      }
-    },
-    "put": {
-      "summary": "Update the city by the id",
-      "tags": ["Cities"],
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "schema": {
-            "type": "string"
-          },
-          "required": true,
-          "description": "The city id"
-        }
-      ],
-      "requestBody": {
-        "required": true,
-        "content": {
-          "application/json": {
+      "put": {
+        "summary": "Update the city by the id",
+        "tags": ["Cities"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/Cities"
+              "type": "string"
+            },
+            "required": true,
+            "description": "The city id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cities"
+              }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The city was updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cities"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The city was not found"
+          },
+          "500": {
+            "description": "Some error happened"
           }
         }
       },
-      "responses": {
-        "200": {
-          "description": "The city was updated",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Cities"
-              }
-            }
+      "delete": {
+        "summary": "Remove the city by id",
+        "tags": ["Cities"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The city id"
           }
-        },
-        "404": {
-          "description": "The city was not found"
-        },
-        "500": {
-          "description": "Some error happened"
-        }
-      }
-    },
-    "delete": {
-      "summary": "Remove the city by id",
-      "tags": ["Cities"],
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "schema": {
-            "type": "string"
+        ],
+        "responses": {
+          "200": {
+            "description": "The city was deleted"
           },
-          "required": true,
-          "description": "The city id"
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "The city was deleted"
-        },
-        "404": {
-          "description": "The city was not found"
+          "404": {
+            "description": "The city was not found"
+          }
         }
       }
     }
-  }
 }
 }
