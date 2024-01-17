@@ -3,7 +3,9 @@
 namespace Tests\Unit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Cities;
+use Illuminate\Testing\Fluent\AssertableJson;
 use App\Models\States;
+use App\Models\Countries;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 
@@ -61,6 +63,106 @@ class CitiesControllerTest extends TestCase
         $response->assertJson([
             'data' => $city->toArray(),
         ]);
+    }
+
+    public function testGetCitiesByState()
+    {
+        // Crear un país de prueba
+        $cities = Cities::factory()->count(3)->create();
+        $country = Countries::inRandomOrder()->first();
+        // Realizar la solicitud GET a la ruta del detalle del país
+        $response = $this->get('/api/cities_country/' . $country->id);
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(200);
+        $response->assertJson(function (AssertableJson $json) {
+            $json->where('data', []);
+        });
+        if($response['data'] == []){
+            $response->assertJson([
+                'data' => [],
+            ]);
+        }else{
+            $response->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                    'city_name',
+                    'city_code',
+                    'state_id',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at',
+                ],
+            ],
+            'first_page_url',
+            'from',
+            'last_page',
+            'last_page_url',
+            'current_page',
+            'links' => [
+                '*' => [
+                    'url',
+                    'label',
+                    'active',
+                ],
+            ],
+            'next_page_url',
+            'path',
+            'per_page',
+            'prev_page_url',
+            'to',
+            'total',
+        ]);
+    }
+    }
+
+    public function testGetCitiesByCountry()
+    {
+        // Crear un país de prueba
+        $cities = Cities::factory()->count(3)->create();
+        $states = States::inRandomOrder()->first();
+        // Realizar la solicitud GET a la ruta del detalle del país
+        $response = $this->get('/api/cities_state/' . $states->id);
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(200);
+
+        if($response['data'] == []){
+            $response->assertJson([
+                'data' => [],
+            ]);
+        }else{
+            $response->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                    'city_name',
+                    'city_code',
+                    'state_id',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at',
+                ],
+            ],
+            'first_page_url',
+            'from',
+            'last_page',
+            'last_page_url',
+            'current_page',
+            'links' => [
+                '*' => [
+                    'url',
+                    'label',
+                    'active',
+                ],
+            ],
+            'next_page_url',
+            'path',
+            'per_page',
+            'prev_page_url',
+            'to',
+            'total',
+        ]);
+    }
     }
 
     public function testUpdate()

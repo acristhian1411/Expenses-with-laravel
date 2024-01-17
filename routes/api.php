@@ -61,6 +61,8 @@ Route::get('cities', [CitiesController::class, 'index']);
 Route::post('cities', [CitiesController::class, 'store']);
 Route::put('cities/{id}', [CitiesController::class, 'update']);
 Route::get('cities/{id}', [CitiesController::class, 'show']);
+Route::get('cities_state/{id}', [CitiesController::class, 'cityByStateId']);
+Route::get('cities_country/{id}', [CitiesController::class, 'cityByCountryId']);
 Route::delete('cities/{id}', [CitiesController::class, 'destroy']);
 //routes for countries
 Route::get('countries', [CountriesController::class, 'index']);
