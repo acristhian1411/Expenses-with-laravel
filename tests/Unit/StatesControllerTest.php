@@ -2,6 +2,8 @@
 
 namespace Tests\Unit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+//import AssertableJson
+use Illuminate\Testing\Fluent\AssertableJson;
 use App\Models\States;
 use App\Models\Countries;
 use Tests\TestCase;
@@ -60,6 +62,56 @@ class StatesControllerTest extends TestCase
         $response->assertJson([
             'data' => $state->toArray(),
         ]);
+    }
+
+    public function testGetStatesByCountry()
+    {
+        // Crear un país de prueba
+        $state = States::factory()->count(3)->create();
+        $country = Countries::inRandomOrder()->first();
+        // Realizar la solicitud GET a la ruta del detalle del país
+        $response = $this->get('/api/states_country/' . $country->id);
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(200);
+        $response->assertJson(function (AssertableJson $json) {
+            $json->where('data', []);
+        });
+        if($response['data'] == []){
+            $response->assertJson([
+                'data' => [],
+            ]);
+        }else{
+            $response->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                    'state_name',
+                    'country_id',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at',
+                ],
+            ],
+            'first_page_url',
+            'from',
+            'last_page',
+            'last_page_url',
+            'current_page',
+            'links' => [
+                '*' => [
+                    'url',
+                    'label',
+                    'active',
+                ],
+            ],
+            'next_page_url',
+            'path',
+            'per_page',
+            'prev_page_url',
+            'to',
+            'total',
+        ]);
+    }
     }
 
     public function testUpdate()

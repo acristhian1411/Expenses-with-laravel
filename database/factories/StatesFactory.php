@@ -14,11 +14,11 @@ class StatesFactory extends Factory
      */
     public function definition()
     {
-        $countries = Countries::factory()->create();
+        $countries = Countries::factory()->count(3)->create();
         return [
             //
             'state_name'=>$this->faker->unique()->state(),
-            'country_id'=>$countries->id
+            'country_id'=>$countries->random()->id
         ];
     }
 }

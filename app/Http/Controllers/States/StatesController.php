@@ -32,8 +32,6 @@ class StatesController extends ApiController
     public function store(Request $request)
     {
         //
-
-        
         $rules = [
             'state_name' => 'required',
             'country_id' => 'required',
@@ -55,6 +53,13 @@ class StatesController extends ApiController
         //
         $states = States::findOrFail($id);
         return $this->showOne($states, 200);
+    }
+
+    //add function to return states by country_id
+    public function getStatesByCountry($id)
+    {
+        $states = States::where('country_id', $id)->get();
+        return $this->showAll($states, 200);
     }
 
     /**

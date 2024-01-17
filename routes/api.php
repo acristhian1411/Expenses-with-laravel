@@ -97,6 +97,7 @@ Route::get('states', [StatesController::class, 'index']);
 Route::post('states', [StatesController::class, 'store']);
 Route::put('states/{id}', [StatesController::class, 'update']);
 Route::get('states/{id}', [StatesController::class, 'show']);
+Route::get('states_country/{id}', [StatesController::class, 'getStatesByCountry']);
 Route::delete('states/{id}', [StatesController::class, 'destroy']);
 //routes for tills
 Route::get('tills', [TillsController::class, 'index']);
