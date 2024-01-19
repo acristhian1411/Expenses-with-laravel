@@ -16,7 +16,7 @@ class PersonsFactory extends Factory
     {
         $cities = Cities::factory()->create();
         $countries = Countries::factory()->create();
-        $personTypes = PersonTypes::factory()->create();
+        $personTypes = PersonTypes::factory()->count(3)->create();
         return [
             //
             'person_fname' => $this->faker->firstName(),
@@ -27,7 +27,7 @@ class PersonsFactory extends Factory
             'person_birtdate' => $this->faker->date(),
             'person_photo' => $this->faker->imageUrl(),
             'person_address' => $this->faker->address(),
-            'p_type_id' => $personTypes->id,
+            'p_type_id' => $personTypes->random()->id,
             'country_id' => $countries->id,
             'city_id' => $cities->id,
         ];

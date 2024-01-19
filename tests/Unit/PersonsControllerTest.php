@@ -61,6 +61,64 @@ class PersonsControllerTest extends TestCase
         ]);
     }
 
+/**
+ * Test the 'personByType' function.
+ *
+ * This function tests the retrieval of persons by type and validates the expected response structure.
+ *
+ * @return void
+ */
+public function testPersonByType()
+{
+    // Arrange
+    
+    $person = Persons::factory()->create();
+    $personTypes = PersonTypes::inRandomOrder()->first();
+    
+    // Act
+    $response = $this->get('/api/personsbytype/' . $personTypes->id);
+
+    // Assert
+    $response->assertStatus(200);
+    if($response['data'] == []){
+        $response->assertJsonStructure([
+            'data'=>[]
+        ]);
+    }else{
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'city_name',
+                    'city_code',
+                    'state_id',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at',
+                ],
+            ],
+            'first_page_url',
+            'from',
+            'last_page',
+            'last_page_url',
+            'current_page',
+            'links' => [
+                '*' => [
+                    'url',
+                    'label',
+                    'active',
+                ],
+            ],
+            'next_page_url',
+            'path',
+            'per_page',
+            'prev_page_url',
+            'to',
+            'total',
+        ]);
+    }
+}
+    
     public function testUpdate()
     {
         // Crear un país de prueba

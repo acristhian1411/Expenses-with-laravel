@@ -87,6 +87,7 @@ Route::get('persons', [PersonsController::class, 'index']);
 Route::post('persons', [PersonsController::class, 'store']);
 Route::put('persons/{id}', [PersonsController::class, 'update']);
 Route::get('persons/{id}', [PersonsController::class, 'show']);
+Route::get('personsbytype/{id}', [PersonsController::class, 'personByType']);
 Route::delete('persons/{id}', [PersonsController::class, 'destroy']);
 //routes for products
 Route::get('products', [ProductsController::class, 'index']);
