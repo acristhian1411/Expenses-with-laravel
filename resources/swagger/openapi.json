@@ -11,8 +11,15 @@
     }
   },
   "components":{
-    
     "schemas": {
+      "PersonTypes": {
+        "type": "object",
+        "properties": {
+          "p_type_desc": {
+            "type": "string"
+          }
+        }
+      },
       "TillTypes": {
         "type": "object",
         "properties": {
@@ -123,6 +130,10 @@
   },
   "tags":[
     {
+      "name": "PersonTypes",
+      "description": "Manage PersonTypes"
+    },
+    {
       "name": "TillTypes",
       "description": "Manage TillTypes"
     },
@@ -162,6 +173,188 @@
     }
   ],
   "paths": {
+    "/api/persontypes": {
+      "get": {
+        "summary": "Lists all the PersonTypes",
+        "tags": ["PersonTypes"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page"
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The quantity of results per page"
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The field by sort"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The direction of the sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the PersonTypes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PersonTypes"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new persontype",
+        "tags": ["PersonTypes"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonTypes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created persontype.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonTypes"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server error"
+          }
+        }
+      }
+    },
+    "/api/persontypes/{id}": {
+      "get": {
+        "summary": "Get the persontype by id",
+        "tags": ["PersonTypes"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The persontype id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The persontype response by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonTypes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The persontype was not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update the persontype by the id",
+        "tags": ["PersonTypes"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The persontype id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonTypes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The persontype was updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonTypes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The persontype was not found"
+          },
+          "500": {
+            "description": "Some error happened"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove the persontype by id",
+        "tags": ["PersonTypes"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "required": true,
+            "description": "The persontype id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The persontype was deleted"
+          },
+          "404": {
+            "description": "The persontype was not found"
+          }
+        }
+      }
+    },
     "/api/tilltypes": {
       "get": {
         "summary": "Lists all the TillTypes",
