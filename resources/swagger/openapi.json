@@ -212,6 +212,10 @@
     {
       "url": "http://localhost:8000",
       "description": "Local server"
+    },
+    {
+      "url": "https://api.example.com",
+      "description": "Production server"
     }
   ],
   "paths": {
@@ -2021,19 +2025,75 @@
         ],
         "responses": {
           "200": {
-            "description": "The list of the Cities",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Cities"
+              "description": "The list of the Cities",
+              "content": {
+                  "application/json": {
+                      "schema": {
+                          "type": "object",
+                          "properties": {
+                            "current_page": {
+                                "type": "integer"
+                            },
+                              "data": {
+                                  "type": "array",
+                                  "items": {
+                                      "$ref": "#/components/schemas/Cities"
+                                  }
+                              },
+                              "first_page_url": {
+                                  "type": "string"
+                              },
+                              "from": {
+                                  "type": "integer"
+                              },
+                              "last_page": {
+                                  "type": "integer"
+                              },
+                              "last_page_url": {
+                                  "type": "string"
+                              },
+                              "links": {
+                                  "type": "array",
+                                  "items": {
+                                      "type": "object",
+                                      "properties": {
+                                          "url": {
+                                              "type": "string"
+                                          },
+                                          "label": {
+                                              "type": "string"
+                                          },
+                                          "active": {
+                                              "type": "boolean"
+                                          }
+                                      }
+                                  }
+                              },
+                              "next_page_url": {
+                                  "type": "string",
+                                  "example":"null"
+                              },
+                              "path": {
+                                  "type": "string"
+                              },
+                              "per_page": {
+                                  "type": "integer"
+                              },
+                              "prev_page_url": {
+                                  "type": "string"
+                              },
+                              "to": {
+                                  "type": "integer"
+                              },
+                              "total": {
+                                  "type": "integer"
+                              }
+                          }
+                      }
                   }
-                }
               }
-            }
           }
-        }
+      }
       },
       "post": {
         "summary": "Create a new city",
