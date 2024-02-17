@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+//en vez de la vista welcome que redireccione a la ruta docs
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/docs');
 });

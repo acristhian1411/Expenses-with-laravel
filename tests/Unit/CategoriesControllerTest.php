@@ -18,9 +18,37 @@ class CategoriesControllerTest extends TestCase
         // Verificar que la respuesta sea exitosa
         $response->assertStatus(200);
         // Verificar que los datos de los países se devuelvan en la respuesta
-        $response->assertJson([
-            'data' => $categories->toArray(),
-        ]);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                'city_name',
+                'city_code',
+                'state_id',
+                'created_at',
+                'updated_at',
+                'deleted_at',
+            ],
+        ],
+        'first_page_url',
+        'from',
+        'last_page',
+        'last_page_url',
+        'current_page',
+        'links' => [
+            '*' => [
+                'url',
+                'label',
+                'active',
+            ],
+        ],
+        'next_page_url',
+        'path',
+        'per_page',
+        'prev_page_url',
+        'to',
+        'total',
+    ]);
     }
     public function testStore()
     {

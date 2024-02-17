@@ -21,9 +21,37 @@ class CountriesControllerTest extends TestCase
         $response->assertStatus(200);
 
         // Verificar que los datos de los países se devuelvan en la respuesta
-        $response->assertJson([
-            'data' => $countries->toArray(),
-        ]);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                'city_name',
+                'city_code',
+                'state_id',
+                'created_at',
+                'updated_at',
+                'deleted_at',
+            ],
+        ],
+        'first_page_url',
+        'from',
+        'last_page',
+        'last_page_url',
+        'current_page',
+        'links' => [
+            '*' => [
+                'url',
+                'label',
+                'active',
+            ],
+        ],
+        'next_page_url',
+        'path',
+        'per_page',
+        'prev_page_url',
+        'to',
+        'total',
+    ]);
     }
     public function testStore()
     {
@@ -38,6 +66,18 @@ class CountriesControllerTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('countries', $requestData);
+    }
+
+     /** @test */
+    public function it_fails_to_store_a_country_with_invalid_data(){
+        $data = [
+            'country_name' => '',
+            'country_code' => '',
+        ];
+
+        $response = $this->post('/api/countries', $data);
+
+        $response->assertStatus(302);
     }
     public function testShow()
     {
