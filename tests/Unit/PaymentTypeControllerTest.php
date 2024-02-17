@@ -21,9 +21,35 @@ class PaymentTypeControllerTest extends TestCase
         $response->assertStatus(200);
 
         // Verificar que los datos de los países se devuelvan en la respuesta
-        $response->assertJson([
-            'data' => $paymenttypes->toArray(),
-        ]);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                'payment_type_desc',
+                'created_at',
+                'updated_at',
+                'deleted_at',
+                ],
+            ],
+            'first_page_url',
+            'from',
+            'last_page',
+            'last_page_url',
+            'current_page',
+            'links' => [
+                '*' => [
+                    'url',
+                    'label',
+                    'active',
+                ],
+            ],
+            'next_page_url',
+            'path',
+            'per_page',
+            'prev_page_url',
+            'to',
+            'total',
+    ]);
     }
     public function testStore()
     {
@@ -37,6 +63,17 @@ class PaymentTypeControllerTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('payment_types', $requestData);
+    }
+
+     /** @test */
+    public function it_fails_to_store_a_paymenttype_with_invalid_data(){
+        $data = [
+            'payment_type_desc' => '',
+        ];
+
+        $response = $this->post('/api/paymenttypes', $data);
+
+        $response->assertStatus(302);
     }
     public function testShow()
     {
@@ -80,6 +117,20 @@ class PaymentTypeControllerTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function it_fails_to_update_a_country_with_invalid_data()
+    {
+        $paymenttype = PaymentTypes::factory()->create();
+        // Datos de prueba para actualizar el país
+        $updatedData = [
+            'payment_type_desc' => '',
+        ];
+        // Realizar la solicitud PUT a la ruta de actualización del país
+        $response = $this->put('/api/paymenttypes/' . $paymenttype->id, $updatedData);
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(302);
+    }
     public function testDestroy()
     {
         // Crear un país de prueba

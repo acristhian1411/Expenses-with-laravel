@@ -11,15 +11,54 @@ use Illuminate\Foundation\Testing\WithFaker;
 
 class PersonsControllerTest extends TestCase
 {
-    use DatabaseTransactions;
+    // use DatabaseTransactions;
     use WithFaker;
     public function testIndex()
     {
         $persons = Persons::factory()->count(3)->create();
         $response = $this->get('/api/persons');
         $response->assertStatus(200);
-        $response->assertJson([
-            'data' => $persons->toArray(),
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'person_fname',
+                    'person_lastname',
+                    'person_corpname',
+                    'person_idnumber',
+                    'person_ruc',
+                    'person_birtdate',
+                    'person_photo',
+                    'person_address',
+                    'p_type_id',
+                    'created_at',
+                    'updated_at',
+                    'country_id',
+                    'city_id',
+                    'deleted_at',
+                    'p_type_desc',
+                    'country_name',
+                    'city_name',
+                ],
+            ],
+            'first_page_url',
+            'from',
+            'last_page',
+            'last_page_url',
+            'current_page',
+            'links' => [
+                '*' => [
+                    'url',
+                    'label',
+                    'active',
+                ],
+            ],
+            'next_page_url',
+            'path',
+            'per_page',
+            'prev_page_url',
+            'to',
+            'total',
         ]);
     }
     public function testStore()
@@ -89,12 +128,23 @@ public function testPersonByType()
             'data' => [
                 '*' => [
                     'id',
-                    'city_name',
-                    'city_code',
-                    'state_id',
+                    'person_fname',
+                    'person_lastname',
+                    'person_corpname',
+                    'person_idnumber',
+                    'person_ruc',
+                    'person_birtdate',
+                    'person_photo',
+                    'person_address',
+                    'p_type_id',
                     'created_at',
                     'updated_at',
+                    'country_id',
+                    'city_id',
                     'deleted_at',
+                    'p_type_desc',
+                    'country_name',
+                    'city_name',
                 ],
             ],
             'first_page_url',

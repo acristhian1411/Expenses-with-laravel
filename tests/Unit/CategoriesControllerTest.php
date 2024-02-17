@@ -22,9 +22,7 @@ class CategoriesControllerTest extends TestCase
             'data' => [
                 '*' => [
                     'id',
-                'city_name',
-                'city_code',
-                'state_id',
+                'cat_desc',
                 'created_at',
                 'updated_at',
                 'deleted_at',

@@ -19,7 +19,12 @@ class PersonsController extends ApiController
         $t = Persons::query()->first();
         $query = Persons::query();
         $query = $this->filterData($query, $t);
-        $datos = $query->get();
+        $datos = $query
+        ->join('person_types','person_types.id','=','persons.p_type_id')
+        ->join('countries','countries.id','=','persons.country_id')
+        ->join('cities','cities.id','=','persons.city_id')
+        ->select('persons.*','person_types.p_type_desc','countries.country_name','cities.city_name')
+        ->get();
         return $this->showAll($datos, 200);
     }
 
@@ -31,7 +36,6 @@ class PersonsController extends ApiController
      */
     public function store(Request $request)
     {
-
 
         $reglas = [
             'person_fname' => 'required|string|max:255',

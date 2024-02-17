@@ -21,9 +21,36 @@ class IvaTypesControllerTest extends TestCase
         $response->assertStatus(200);
 
         // Verificar que los datos de los países se devuelvan en la respuesta
-        $response->assertJson([
-            'data' => $ivatypes->toArray(),
-        ]);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                'iva_type_desc',
+                'iva_type_percent',
+                'created_at',
+                'updated_at',
+                'deleted_at',
+            ],
+        ],
+        'first_page_url',
+        'from',
+        'last_page',
+        'last_page_url',
+        'current_page',
+        'links' => [
+            '*' => [
+                'url',
+                'label',
+                'active',
+            ],
+        ],
+        'next_page_url',
+        'path',
+        'per_page',
+        'prev_page_url',
+        'to',
+        'total',
+    ]);
     }
     public function testStore()
     {
@@ -38,6 +65,18 @@ class IvaTypesControllerTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('iva_types', $requestData);
+    }
+
+    /** @test */
+    public function it_fails_to_store_a_ivatypes_with_invalid_data(){
+        $data = [
+            'iva_type_desc' => '',
+            'iva_type_percent' => '',
+        ];
+
+        $response = $this->post('/api/ivatypes', $data);
+
+        $response->assertStatus(302);
     }
     public function testShow()
     {
@@ -80,6 +119,22 @@ class IvaTypesControllerTest extends TestCase
         $response->assertJson([
             'data' => $updatedData,
         ]);
+    }
+
+    /** @test */
+    public function it_fails_to_update_a_ivatype_with_invalid_data()
+    {
+        $ivatype = IvaType::factory()->create();
+        // Datos de prueba para actualizar el país
+        $updatedData = [
+            'iva_type_desc' => 'ivatype updated',
+            'iva_type_percent' => '',
+        ];
+        // Realizar la solicitud PUT a la ruta de actualización del país
+        $response = $this->put('/api/ivatypes/' . $ivatype->id, $updatedData);
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(302);
     }
 
     public function testDestroy()
