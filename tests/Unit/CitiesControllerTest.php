@@ -76,6 +76,19 @@ class CitiesControllerTest extends TestCase
 
         $this->assertDatabaseHas('cities', $requestData);
     }
+
+    /** @test */
+    public function it_fails_to_store_a_city_with_invalid_data(){
+        $data = [
+            'city_name' => '',
+            'city_code' => '',
+            'state_id' => '',
+        ];
+
+        $response = $this->post('/api/cities', $data);
+
+        $response->assertStatus(302);
+    }
     public function testShow()
     {
         // Crear un país de prueba
@@ -213,7 +226,7 @@ class CitiesControllerTest extends TestCase
         $response = $this->put('/api/cities/' . $city->id, $updatedData);
 
         // Verificar que la respuesta sea exitosa
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         // Verificar que los datos del país se hayan actualizado correctamente
         $this->assertDatabaseHas('cities', $updatedData);
@@ -224,6 +237,27 @@ class CitiesControllerTest extends TestCase
         ]);
     }
 
+       /** @test */
+    public function it_fails_to_update_a_city_with_invalid_data()
+    {
+        $city = Cities::factory()->create();
+
+        // Datos de prueba para actualizar el país
+        // update state_id with existing country
+
+        $updatedData = [
+            'city_name' => '',
+            'city_code' => '',
+            'state_id' => '',
+        ];
+
+        // Realizar la solicitud PUT a la ruta de actualización del país
+        $response = $this->put('/api/cities/' . $city->id, $updatedData);
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(302);
+    }
+    
     public function testDestroy()
     {
         // Crear un país de prueba

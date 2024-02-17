@@ -121,6 +121,21 @@ class CountriesControllerTest extends TestCase
             'data' => $updatedData,
         ]);
     }
+    /** @test */
+    public function it_fails_to_update_a_country_with_invalid_data()
+    {
+        $country = Countries::factory()->create();
+        // Datos de prueba para actualizar el país
+        $updatedData = [
+            'country_name' => 'Updated Country',
+            'country_code' => '',
+        ];
+        // Realizar la solicitud PUT a la ruta de actualización del país
+        $response = $this->put('/api/countries/' . $country->id, $updatedData);
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(302);
+    }
 
     public function testDestroy()
     {

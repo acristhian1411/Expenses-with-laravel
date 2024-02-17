@@ -74,7 +74,7 @@ class CitiesController extends ApiController
         $cities = Cities::find($id);
         $cities->fill($request->all());
         $cities->save();
-        return $this->showOne($cities, 201);
+        return $this->showOne($cities, 200);
     }
 
     //

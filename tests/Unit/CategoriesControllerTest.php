@@ -62,6 +62,18 @@ class CategoriesControllerTest extends TestCase
             ]);
         $this->assertDatabaseHas('categories', $requestData);
     }
+
+    /** @test */
+    public function it_fails_to_store_a_category_with_invalid_data(){
+        $data = [
+            'cat_desc' => '',
+        ];
+
+        $response = $this->post('/api/categories', $data);
+
+        $response->assertStatus(302);
+    }
+
     public function testShow()
     {
         // Crear un país de prueba
@@ -94,6 +106,21 @@ class CategoriesControllerTest extends TestCase
         $response->assertJson([
             'data' => $updatedData,
         ]);
+    }
+
+    /** @test */
+    public function it_fails_to_update_a_country_with_invalid_data()
+    {
+        $category = Categories::factory()->create();
+        // Datos de prueba para actualizar el país
+        $updatedData = [
+            'cat_desc' => '',
+        ];
+        // Realizar la solicitud PUT a la ruta de actualización de la categoria
+        $response = $this->put('/api/categories/' . $category->id, $updatedData);
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(302);
     }
 
     public function testDestroy()

@@ -54,6 +54,7 @@ class AccountPlanControllerTest extends TestCase
         'total',
     ]);
     }
+
     public function testStore()
     {
         $requestData = [
@@ -68,6 +69,19 @@ class AccountPlanControllerTest extends TestCase
 
         $this->assertDatabaseHas('account_plans', $requestData);
     }
+
+     /** @test */
+     public function it_fails_to_store_a_account_plan_with_invalid_data(){
+        $data = [
+            'account_desc' => '',
+            'account_code' => '',
+        ];
+
+        $response = $this->post('/api/accountplans', $data);
+
+        $response->assertStatus(302);
+    }
+
     public function testShow()
     {
         // Crear un país de prueba
@@ -109,6 +123,26 @@ class AccountPlanControllerTest extends TestCase
         $response->assertJson([
             'data' => $updatedData,
         ]);
+    }
+
+    /** @test */
+    public function it_fails_to_update_a_account_plan_with_invalid_data()
+    {
+        // Crear un país de prueba
+        $accountplan = AccountPlan::factory()->create();
+
+        // Datos de prueba para actualizar el país
+        $updatedData = [
+            'account_desc' => '',
+            'account_code' => '',
+        ];
+
+        // Realizar la solicitud PUT a la ruta de actualización del país
+        $response = $this->put('/api/accountplans/' . $accountplan->id, $updatedData);
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(302);
+
     }
 
     public function testDestroy()
