@@ -109,15 +109,11 @@ class PersonsControllerTest extends TestCase
  */
 public function testPersonByType()
 {
-    // Arrange
-    
+    // 
     $person = Persons::factory()->create();
     $personTypes = PersonTypes::inRandomOrder()->first();
     
-    // Act
     $response = $this->get('/api/personsbytype/' . $personTypes->id);
-
-    // Assert
     $response->assertStatus(200);
     if($response['data'] == []){
         $response->assertJsonStructure([
