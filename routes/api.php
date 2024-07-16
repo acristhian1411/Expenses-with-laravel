@@ -21,6 +21,7 @@ use App\Http\Controllers\Sales\SalesController;
 use App\Http\Controllers\SalesDetails\SalesDetailsController;
 use App\Http\Controllers\Purchases\PurchasesController;
 use App\Http\Controllers\PurchasesDetails\PurchasesDetailsController;
+use App\Http\Controllers\Auth\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,16 @@ use App\Http\Controllers\PurchasesDetails\PurchasesDetailsController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return response()->json($request->user());
+    });
+
+    // Route::get('tilltypes', [TillTypeController::class, 'index']);
+    Route::get('persontypes', [PersonTypesController::class, 'index']);
+});
+Route::post('/login', [AuthController::class, 'login']);
+
 //routes for tilltyoes
 Route::get('tilltypes', [TillTypeController::class, 'index']);
 Route::post('tilltypes', [TillTypeController::class, 'store']);
@@ -39,7 +50,6 @@ Route::put('tilltypes/{id}', [TillTypeController::class, 'update']);
 Route::get('tilltypes/{id}', [TillTypeController::class, 'show']);
 Route::delete('tilltypes/{id}', [TillTypeController::class, 'destroy']);
 //routes for personTypes
-Route::get('persontypes', [PersonTypesController::class, 'index']);
 Route::post('persontypes', [PersonTypesController::class, 'store']);
 Route::put('persontypes/{id}', [PersonTypesController::class, 'update']);
 Route::get('persontypes/{id}', [PersonTypesController::class, 'show']);
