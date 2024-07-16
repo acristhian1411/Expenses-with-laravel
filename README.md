@@ -1,6 +1,6 @@
-# API de Registro de Ingresos y Gastos Personales con Laravel
+# API de Registro de Ingresos y Gastos orientado a pymes desarrollado con Laravel
 
-Este es un proyecto de API desarrollado con Laravel para el registro de ingresos y gastos personales.
+Este es un proyecto de API desarrollado con Laravel para el registro de ingresos y gastos.
 Proporciona endpoints para la creación, consulta, actualización y eliminación de registros de gastos, ademas de todo lo relacionado
 como registro de clientes, proveedores, productos. etc.
 
