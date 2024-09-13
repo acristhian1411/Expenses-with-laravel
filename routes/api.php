@@ -21,35 +21,20 @@ use App\Http\Controllers\Sales\SalesController;
 use App\Http\Controllers\SalesDetails\SalesDetailsController;
 use App\Http\Controllers\Purchases\PurchasesController;
 use App\Http\Controllers\PurchasesDetails\PurchasesDetailsController;
-use App\Http\Controllers\Auth\AuthController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return response()->json($request->user());
-    });
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
-    // Route::get('tilltypes', [TillTypeController::class, 'index']);
-    Route::get('persontypes', [PersonTypesController::class, 'index']);
-});
-Route::post('/login', [AuthController::class, 'login']);
 
 //routes for tilltyoes
-Route::get('tilltypes', [TillTypeController::class, 'index']);
-Route::post('tilltypes', [TillTypeController::class, 'store']);
-Route::put('tilltypes/{id}', [TillTypeController::class, 'update']);
-Route::get('tilltypes/{id}', [TillTypeController::class, 'show']);
-Route::delete('tilltypes/{id}', [TillTypeController::class, 'destroy']);
+Route::get('tilltypes', [TillTypeController::class, 'index'])->description('Get list of till types with pagination.');
+Route::post('tilltypes', [TillTypeController::class, 'store'])->description('Store a new till type.');
+Route::put('tilltypes/{id}', [TillTypeController::class, 'update'])->description('Update a till type.');
+Route::get('tilltypes/{id}', [TillTypeController::class, 'show'])->description('Show a till type.');
+Route::delete('tilltypes/{id}', [TillTypeController::class, 'destroy'])->description('Delete a till type.');
 //routes for personTypes
+Route::get('persontypes', [PersonTypesController::class, 'index'])->description('Get list of person types with pagination.');
 Route::post('persontypes', [PersonTypesController::class, 'store']);
 Route::put('persontypes/{id}', [PersonTypesController::class, 'update']);
 Route::get('persontypes/{id}', [PersonTypesController::class, 'show']);
@@ -164,6 +149,3 @@ Route::put('purchasesdetails/{id}', [PurchasesDetailsController::class, 'update'
 Route::get('purchasesdetails/{id}', [PurchasesDetailsController::class, 'show']);
 Route::delete('purchasesdetails/{id}', [PurchasesDetailsController::class, 'destroy']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});

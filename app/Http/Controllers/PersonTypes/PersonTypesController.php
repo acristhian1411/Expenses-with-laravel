@@ -15,12 +15,15 @@ class PersonTypesController extends ApiController
      */
     public function index()
     {
-        //
-        $t = PersonTypes::query()->first();
-        $query = PersonTypes::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
+        try{
+            $t = PersonTypes::query()->first();
+            $query = PersonTypes::query();
+            $query = $this->filterData($query, $t);
+            $datos = $query->get();
+            return $this->showAll($datos, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+        }
     }
 
     /**
@@ -31,13 +34,16 @@ class PersonTypesController extends ApiController
      */
     public function store(Request $request)
     {
-        //
-        $rules=[
-            'p_type_desc' => 'required|string|max:255',
-        ];
-        $this->validate($request, $rules);
-        $personType = PersonTypes::create($request->all());
-        return $this->showOne($personType, 201);
+        try{
+            $rules=[
+                'p_type_desc' => 'required|string|max:255',
+            ];
+            $request->validate($rules);
+            $personType = PersonTypes::create($request->all());
+            return $this->showOne($personType, 201);
+        }catch(\Exception $e){
+            return response()->json(['error'=> $e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+        }
     }
 
     /**
@@ -48,9 +54,12 @@ class PersonTypesController extends ApiController
      */
     public function show($id)
     {
-        //
-        $personType = PersonTypes::find($id);
-        return $this->showOne($personType,200);
+        try{
+            $personType = PersonTypes::find($id);
+            return $this->showOne($personType,200);
+        } catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+        }
     }
 
     /**
@@ -61,17 +70,19 @@ class PersonTypesController extends ApiController
      */
     public function update(Request $request,$id)
     {
-        //
-        $validatedData = $request->validate([
-            'p_type_desc' => 'required|string|max:255',
-        ]);
+        try{
+            $validatedData = $request->validate([
+                'p_type_desc' => 'required|string|max:255',
+            ]);
 
-        // Update the till type
-        $personTypes = PersonTypes::findOrFail($id);
-        $personTypes->update($validatedData);
-        // Return a success response
-        return $this->showOne($personTypes, 200);
-        
+            // Update the till type
+            $personTypes = PersonTypes::findOrFail($id);
+            $personTypes->update($validatedData);
+            // Return a success response
+            return $this->showOne($personTypes, 200);
+        } catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo actualizar los datos']);
+        }
     }
 
     /**
@@ -82,9 +93,12 @@ class PersonTypesController extends ApiController
      */
     public function destroy($id)
     {
-                //add code to delete a till type using findOrFail function that provide the model
-        $personTypes = PersonTypes::findOrFail($id);
-        $personTypes->delete();
-        return response()->json('Eliminado con exito');
+        try{
+            $personTypes = PersonTypes::findOrFail($id);
+            $personTypes->delete();
+            return response()->json('Eliminado con exito');
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo eliminar los datos']);
+        }
     }
 }

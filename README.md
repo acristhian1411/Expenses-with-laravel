@@ -6,9 +6,9 @@ como registro de clientes, proveedores, productos. etc.
 
 ## Requisitos
 
--   PHP 7.4 o superior
+-   PHP 8.3 o superior
 -   Composer
--   Laravel 8
+-   Laravel 11
 -   Postgresql
 
 ## Instalación
@@ -21,7 +21,7 @@ como registro de clientes, proveedores, productos. etc.
 6. Genera la clave de la aplicación: `php artisan key:generate`
 7. Ejecuta las migraciones: `php artisan migrate`
 8. Lanza la aplicación: `php artisan serve`
-9. Ve a la documentación de la api en: [http://localhost:8000/docs]
+9. Ve a la documentación de la api en: [http://localhost:8000/swagger/documentation]
 
 ## Imagenes relacionadas
 

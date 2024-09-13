@@ -51,7 +51,7 @@ class TillTypeController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\TillType  $tillType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id){
@@ -64,7 +64,7 @@ class TillTypeController extends ApiController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\TillType  $tillType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request,$id)
@@ -86,7 +86,7 @@ class TillTypeController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\TillType  $tillType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

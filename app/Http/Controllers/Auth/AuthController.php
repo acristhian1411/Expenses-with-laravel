@@ -27,13 +27,22 @@ class AuthController extends Controller
         ]);
    
     
-        $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
-            return redirect()->intended('dashboard')
-                        ->withSuccess('Signed in');
+        // if (Auth::attempt($request->only('email', 'password'))) {
+        $existingUser = User::where('email', $request->email)->first();
+        if ($existingUser) {
+            if (Hash::check($request->password, $existingUser->password)) {
+                auth()->loginUsingId($existingUser->id);
+                return redirect()->intended('dashboard');
+            }
         }
-        $validator['emailPassword'] = 'Email address or password is incorrect.';
-        return redirect("login")->withErrors($validator);
+        // auth()->loginUsingId(auth()->user()->id);
+            // $request->session()->regenerate();
+            // return redirect()->intended('dashboard');
+        // }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
     }
 
 
