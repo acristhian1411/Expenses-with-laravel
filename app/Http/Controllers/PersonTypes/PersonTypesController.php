@@ -40,7 +40,7 @@ class PersonTypesController extends ApiController
             ];
             $request->validate($rules);
             $personType = PersonTypes::create($request->all());
-            return $this->showOne($personType, 201);
+            return response()->json(['message'=>'Registro creado con exito','data'=>$personType]);
         }catch(\Exception $e){
             return response()->json(['error'=> $e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
         }
@@ -79,7 +79,7 @@ class PersonTypesController extends ApiController
             $personTypes = PersonTypes::findOrFail($id);
             $personTypes->update($validatedData);
             // Return a success response
-            return $this->showOne($personTypes, 200);
+            return response()->json(['message'=>'Registro Actualizado con exito','data'=>$personTypes]);
         } catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo actualizar los datos']);
         }
@@ -96,7 +96,7 @@ class PersonTypesController extends ApiController
         try{
             $personTypes = PersonTypes::findOrFail($id);
             $personTypes->delete();
-            return response()->json('Eliminado con exito');
+            return response()->json(['message'=>'Eliminado con exito']);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo eliminar los datos']);
         }
