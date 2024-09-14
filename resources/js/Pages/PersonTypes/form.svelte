@@ -11,6 +11,7 @@
 	let p_type_desc = '';
 	export let edit;
 	export let item;
+	let errors = null;
 	let token = '';
 	let config = {
 		headers: {
@@ -49,6 +50,15 @@
 				};
 				OpenAlertMessage(detail);
 				close();
+			}).catch((err) => {
+				errors = err.response.data.details ? err.response.data.details : null;
+				let detail = {
+					detail: {
+						type: 'error',
+						message: err.response.data.message
+					}
+				};
+				OpenAlertMessage(detail);
 			});
 	}
 	function handleUpdateObject() {
@@ -65,6 +75,16 @@
 				};
 				OpenAlertMessage(detail);
 				close();
+			})
+			.catch((err) => {
+				errors = err.response.data.details ? err.response.data.details : null;
+				let detail = {
+					detail: {
+						type: 'delete',
+						message: err.response.data.message
+					}
+				};
+				OpenAlertMessage(detail);
 			});
 	}
 </script>
@@ -78,6 +98,9 @@
 	<div class="mb-4 flex items-center">
 		<span class="mr-2">Descripción</span>
 		<input type="text" bind:value={p_type_desc} class="input input-bordered w-full max-w-xs" />
+		{#if errors != null && errors.p_type_desc}
+			<span class="text-red-500 text-sm">{errors.p_type_desc[0]}</span>
+		{/if}
 	</div>
 
 	<button
