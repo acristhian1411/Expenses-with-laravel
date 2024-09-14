@@ -19,7 +19,7 @@
 					<span class="ml-3">Inicio</span>
 				</a>
 			</li>
-			<li>
+			<!-- <li>
 				<a
 					href="/tilltypes"
 					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
@@ -36,7 +36,7 @@
 					<BoxesIcon/>
 					<span class="ml-3 flex-1 whitespace-nowrap">Planes de cuentas</span>
 				</a>
-			</li>
+			</li> -->
 			<li>
 				<a
 					href="/persontypes"
@@ -46,7 +46,7 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Tipo de Personas</span>
 				</a>
 			</li>
-			<li>
+			<!-- <li>
 				<a
 					href="/persons"
 					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
@@ -67,13 +67,12 @@
 			<li>
 				<span class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
 					<BoxesIcon/>
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<!-- svelte-ignore a11y-no-static-element-interactions -->
+					
 					<span class="ml-3 flex-1 whitespace-nowrap" on:click={()=>{
 						alert('Esta funcionalidad no esta disponible');
 					}}>Salir</span>
 				</span>
-			</li>
+			</li> -->
 		</ul>
 	</div>
 </aside>

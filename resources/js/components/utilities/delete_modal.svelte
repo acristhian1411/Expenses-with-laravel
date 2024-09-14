@@ -9,7 +9,6 @@
 	function close() {
 		dispatch('close');
 	}
-	console.log('delete modal');
 
 	onMount(() => {
 		// //obtiene el elemento del DOM con el id "my_modal_5"

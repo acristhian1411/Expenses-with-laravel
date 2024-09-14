@@ -63,11 +63,11 @@
 					</svg>
 				</button>
 				<a href="/" class="ml-3 flex md:mr-24">
-					<img src="/favicon.jpeg" class="mr-2 h-10 w-10 rounded-full" alt="FlowBite Logo" />
+					<img src="/img/logo.webp" class="mr-2 h-10 w-10 rounded-full" alt="FlowBite Logo" />
 					<span
 						class="self-center whitespace-nowrap text-xl font-semibold dark:text-white sm:text-2xl"
-						>BudgetBlade</span
-					>
+						>Company Name</span
+				>
 				</a>
 			</div>
 			<div class="flex items-center">
