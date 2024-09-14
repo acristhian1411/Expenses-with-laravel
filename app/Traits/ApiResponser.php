@@ -149,9 +149,15 @@ trait ApiResponser
 		if (request()->has('sort_by')) {
 			$attribute = request()->sort_by;
 			if (request()->order == 'desc') {
-				$collection = $collection->sortByDesc->{$attribute};
+				$collection = $collection->sortByDesc(function ($item) use ($attribute) {
+					// Convierte el valor a minúsculas para ordenarlo independientemente de mayúsculas/minúsculas
+					return strtolower(data_get($item, $attribute));
+				});
 			} else {
-				$collection = $collection->sortBy->{$attribute};
+				$collection = $collection->sortBy(function ($item) use ($attribute) {
+					// Convierte el valor a minúsculas para ordenarlo independientemente de mayúsculas/minúsculas
+					return strtolower(data_get($item, $attribute));
+				});
 			}
 		}
 		return $collection;
