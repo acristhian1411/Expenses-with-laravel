@@ -41,8 +41,16 @@ class PersonTypesController extends ApiController
             $request->validate($rules);
             $personType = PersonTypes::create($request->all());
             return response()->json(['message'=>'Registro creado con exito','data'=>$personType]);
-        }catch(\Exception $e){
-            return response()->json(['error'=> $e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            // dd($e);
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=> $e->getMessage(),'message'=>'No se pudo crear registro'],400);
         }
     }
 
@@ -66,7 +74,7 @@ class PersonTypesController extends ApiController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request,$id)
     {
@@ -80,7 +88,14 @@ class PersonTypesController extends ApiController
             $personTypes->update($validatedData);
             // Return a success response
             return response()->json(['message'=>'Registro Actualizado con exito','data'=>$personTypes]);
-        } catch(\Exception $e){
+        }catch(\Illuminate\Validation\ValidationException $e){
+            // dd($e);
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo actualizar los datos']);
         }
     }
