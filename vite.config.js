@@ -11,4 +11,9 @@ export default defineConfig({
         }),
         svelte({}),
     ],
+    resolve: {
+        alias: {
+            '@components': `${__dirname}/resources/js/components`,
+        }
+    },
 });
