@@ -17,3 +17,11 @@ Route::get('/persontypes', function () {
 Route::get('/persontypes/{id}', function ($id) {
     return Inertia::render('PersonTypes/show', ['id' => $id]);
 });
+
+Route::get('/countries', function () {
+    return Inertia::render('Countries/index');
+});
+
+Route::get('/countries/{id}', function ($id) {
+    return Inertia::render('Countries/show', ['id' => $id]);
+});

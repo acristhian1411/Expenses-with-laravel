@@ -19,15 +19,16 @@
 					<span class="ml-3">Inicio</span>
 				</a>
 			</li>
-			<!-- <li>
+			 <li>
 				<a
-					href="/tilltypes"
+					href="/countries"
 					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 				>
 					<BoxesIcon/>
-					<span class="ml-3 flex-1 whitespace-nowrap">Tipos de Cajas</span>
+					<span class="ml-3 flex-1 whitespace-nowrap">Paises</span>
 				</a>
 			</li>
+			<!--
 			<li>
 				<a
 					href="/accountplans"
