@@ -1,6 +1,8 @@
+
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
+	import { inertia } from '@inertiajs/inertia-svelte';
 	// import { isLoggedIn, getToken} from '../../services/authservice'
 	// import {goto} from '$app/navigation';
 	import axios from 'axios';
@@ -47,7 +49,7 @@
 		}
 		axios
 			// .get('/api/persontypes')
-			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&perPage=${rows}`,config)
+			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
 			.then((response) => {
 				data = response.data.data;
 				current_page = response.data.currentPage;
@@ -74,7 +76,7 @@
 	}
 
 	function deleteRecord() {
-		let token = getToken();
+		let token = '';
 		let config = {
 			headers: {
 				authorization: `token: ${token}`,
@@ -135,7 +137,7 @@
 		if (search_param == '') {
 			url = `${appUrl}/api/persontypes?`;
 		} else {
-			url = `${appUrl}/api/searchpersontypes?p_type_desc=${search_param}&`;
+			url = `${appUrl}/api/persontypes?p_type_desc=${search_param}&`;
 		}
 		fetchData(1, items_per_page);
 	}
@@ -181,6 +183,12 @@
 			<thead>
 				<tr>
 					<th class="text-center text-lg">
+						<div class="flex items-center justify-center">
+							#
+						</div>
+					</th>
+					<th class="text-center text-lg">
+						
 						<div class="flex items-center">
 							id
 							<button on:click={() => sortData('id')}
@@ -202,10 +210,11 @@
 			<tbody>
 				{#each data as person, i (person.id)}
 					<tr class="hover">
+						<td>{i+1}</td>
 						<td>{person.id}</td>
 						<td class="text-center">{person.p_type_desc}</td>
 						<td>
-							<a href="/persontypes/{person.id}" class="btn btn-info">Mostrar</a>
+							<button class="btn btn-info" use:inertia={{ href: `/persontypes/${person.id}` }}>Mostrar</button>
 						</td>
 						<td>
 							<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>

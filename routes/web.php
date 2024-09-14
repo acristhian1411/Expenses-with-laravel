@@ -13,3 +13,7 @@ Route::get('/', function () {
 Route::get('/persontypes', function () {
     return Inertia::render('PersonTypes/index');
 });
+
+Route::get('/persontypes/{id}', function ($id) {
+    return Inertia::render('PersonTypes/show', ['id' => $id]);
+});

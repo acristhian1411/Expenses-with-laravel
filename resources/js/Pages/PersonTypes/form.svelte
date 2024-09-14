@@ -26,6 +26,8 @@
 	}
 
 	onMount(() => {
+
+		console.log('url desde env',appUrl)
 		if (edit == true) {
 			id = item.id;
 			p_type_desc = item.p_type_desc;
@@ -35,7 +37,7 @@
 	function handleCreateObject() {
 		
 		axios
-			.post(`${appUrl}/api/persontypes`, {
+			.post(`/api/persontypes`, {
 				p_type_desc
 			},config)
 			.then((res) => {
@@ -51,7 +53,7 @@
 	}
 	function handleUpdateObject() {
 		axios
-			.put(`${appUrl}/api/persontypes/${id}`, {
+			.put(`/api/persontypes/${id}`, {
 				p_type_desc
 			},config)
 			.then((res) => {
@@ -72,7 +74,7 @@
 {:else}
 	<h3 class="mb-4 text-center text-2xl">Crear Tipo de Persona</h3>
 {/if}
-<form>
+<!-- <form> -->
 	<div class="mb-4 flex items-center">
 		<span class="mr-2">Descripción</span>
 		<input type="text" bind:value={p_type_desc} class="input input-bordered w-full max-w-xs" />
@@ -83,4 +85,4 @@
 		on:click={edit == true ? handleUpdateObject() : handleCreateObject()}>Guardar</button
 	>
 	<button class="btn btn-secondary" on:click={close}>Cancelar</button>
-</form>
+<!-- </form> -->
