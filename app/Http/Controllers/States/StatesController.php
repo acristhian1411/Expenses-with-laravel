@@ -15,12 +15,16 @@ class StatesController extends ApiController
      */
     public function index()
     {
-        //
-        $t = States::query()->first();
-        $query = States::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
+        try{
+            $t = States::query()->first();
+            $query = States::query();
+            $query = $this->filterData($query, $t)
+            ->join('countries','states.country_id','=','countries.id');
+            $datos = $query->get();
+            return $this->showAll($datos, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+        }
     }
 
     /**
@@ -31,15 +35,25 @@ class StatesController extends ApiController
      */
     public function store(Request $request)
     {
-        //
-        $rules = [
-            'state_name' => 'required',
-            'country_id' => 'required',
-        ];
-        $this->validate($request, $rules);
-
-        $states = States::create($request->all());
-        return $this->showOne($states, 201);
+        try{
+            $rules = [
+                'state_name' => 'required',
+                'country_id' => 'required',
+            ];
+            $request->validate($rules);
+    
+            $states = States::create($request->all());
+            return response()->json(['message'=>'Registro creado con exito','data'=>$states],201);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=> $e->getMessage(),'message'=>'No se pudo crear registro'],400);
+        }
     }
 
     /**
@@ -50,16 +64,33 @@ class StatesController extends ApiController
      */
     public function show($id)
     {
-        //
-        $states = States::findOrFail($id);
-        return $this->showOne($states, 200);
+        try{
+            $states = States::where('states.id', $id)
+            ->join('countries', 'states.country_id', '=', 'countries.id')
+            ->first();
+            return $this->showOne($states, 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'mesage'=>'No se pudo obtener los datos'
+            ]);
+        }
     }
 
     //
     public function getStatesByCountry($id)
     {
-        $states = States::where('country_id', $id)->get();
-        return $this->showAll($states, 200);
+        try{
+            $states = States::where('country_id', $id)->get();
+            return $this->showAll($states, 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'mesage'=>'No se pudo obtener los datos'
+            ]);
+        }
     }
 
     /**
@@ -71,16 +102,26 @@ class StatesController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
-        $rules = [
-            'state_name' => 'required',
-            'country_id' => 'required',
-        ];
-        $this->validate($request, $rules);
-        $states = States::findOrFail($id);
-        $states->update($request->all());
-        return $this->showOne($states, 200);
-
+        try{
+            $rules = [
+                'state_name' => 'required',
+                'country_id' => 'required',
+            ];
+            $request->validate($rules);
+            $states = States::findOrFail($id);
+            $states->update($request->all());
+            return response()->json(['message'=>'Registro actualizado con exito','data'=>$states],200);
+        }
+        catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo actualizar los datos']);
+        }
     }
 
     /**
@@ -91,9 +132,13 @@ class StatesController extends ApiController
      */
     public function destroy($id)
     {
-        //
-        $states = States::findOrFail($id);
-        $states->delete();
-        return response()->json('Eliminado con exito');
+        try{
+            $states = States::findOrFail($id);
+            $states->delete();
+            return response()->json(['message'=>'Eliminado con exito']);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo eliminar los datos']);
+        }
     }
 }

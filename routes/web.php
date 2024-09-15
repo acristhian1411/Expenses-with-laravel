@@ -25,3 +25,11 @@ Route::get('/countries', function () {
 Route::get('/countries/{id}', function ($id) {
     return Inertia::render('Countries/show', ['id' => $id]);
 });
+
+Route::get('/states', function () {
+    return Inertia::render('States/index');
+});
+
+Route::get('/states/{id}', function ($id) {
+    return Inertia::render('States/show', ['id' => $id]);
+});

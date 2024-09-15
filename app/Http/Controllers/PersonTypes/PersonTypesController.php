@@ -89,7 +89,6 @@ class PersonTypesController extends ApiController
             // Return a success response
             return response()->json(['message'=>'Registro Actualizado con exito','data'=>$personTypes]);
         }catch(\Illuminate\Validation\ValidationException $e){
-            // dd($e);
             return response()->json([
                 'error'=>$e->getMessage(),
                 'message'=>'Los datos no son correctos',
