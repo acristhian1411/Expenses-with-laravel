@@ -17,7 +17,9 @@ class CitiesController extends ApiController
         try{
             $t = Cities::query()->first();
             $query = Cities::query();
-            $query = $this->filterData($query, $t);
+            $query = $this->filterData($query, $t)
+            ->join('states','states.id','=','cities.state_id')
+            ->join('countries','states.country_id','=','countries.id');
             $datos = $query->get();
             return $this->showAll($datos, 200);
         }
@@ -73,7 +75,10 @@ class CitiesController extends ApiController
     public function show($id)
     {
         try{
-            $cities = Cities::find($id);
+            $cities = Cities::where('id', $id)
+            ->join('states','states.id','=','cities.state_id')
+            ->join('countries','states.country_id','=','countries.id')
+            ->first();
             return $this->showOne($cities,200);
         }
         catch(\Exception $e){
@@ -117,7 +122,10 @@ class CitiesController extends ApiController
     
     public function cityByStateId($id){
         try{
-            $cities = Cities::where('state_id', $id)->get();
+            $cities = Cities::where('state_id', $id)
+            ->join('states','states.id','=','cities.state_id')
+            ->join('countries','states.country_id','=','countries.id')
+            ->get();
             return $this->showAll($cities, 200);
         }
         catch(\Exception $e){
@@ -129,7 +137,9 @@ class CitiesController extends ApiController
     public function cityByCountryId($id){
         try{
             $cities = Cities::join('states','states.id','=','cities.state_id')
-            ->where('states.country_id', $id)->get();
+            ->join('countries','states.country_id','=','countries.id')
+            ->where('states.country_id', $id)
+            ->get();
             return $this->showAll($cities, 200);
         }
         catch(\Exception $e){
