@@ -33,3 +33,11 @@ Route::get('/states', function () {
 Route::get('/states/{id}', function ($id) {
     return Inertia::render('States/show', ['id' => $id]);
 });
+
+Route::get('/cities', function () {
+    return Inertia::render('Cities/index');
+});
+
+Route::get('/cities/{id}', function ($id) {
+    return Inertia::render('Cities/show', ['id' => $id]);
+});
