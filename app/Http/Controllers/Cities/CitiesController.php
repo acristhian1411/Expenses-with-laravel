@@ -14,93 +14,144 @@ class CitiesController extends ApiController
      */
     public function index()
     {
-        //
-        $t = Cities::query()->first();
-        $query = Cities::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
-        
+        try{
+            $t = Cities::query()->first();
+            $query = Cities::query();
+            $query = $this->filterData($query, $t);
+            $datos = $query->get();
+            return $this->showAll($datos, 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+        }
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Almacena una nueva ciudad en la base de datos.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request Objeto de solicitud que contiene los siguientes datos:
+     * 
+     * - **city_name**: (string) Nombre de la ciudad. Requerido. Máximo 255 caracteres.
+     * - **city_code**: (string) Código de la ciudad. Requerido. Máximo 255 caracteres.
+     * - **state_id**: (int) ID del estado al que pertenece la ciudad. Requerido.
+     * 
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos de la ciudad creada o con mensajes de error.
+     * 
+     * @throws \Illuminate\Validation\ValidationException Si los datos no cumplen con las reglas de validación.
+     * @throws \Exception Si ocurre algún error durante la creación del registro.
      */
     public function store(Request $request)
     {
-        //
-        $rules=[
-            'city_name' => 'required|string|max:255',
-            'city_code' => 'required|string|max:255',
-            'state_id' => 'required|int',
-        ];
-        $this->validate($request, $rules);
-        $cities = Cities::create($request->all());
-        return $this->showOne($cities, 201);
+        try{
+            $rules=[
+                'city_name' => 'required|string|max:255',
+                'city_code' => 'required|string|max:255',
+                'state_id' => 'required|int',
+            ];
+            $request->validate($rules);
+            $cities = Cities::create($request->all());
+            return $this->showOne($cities, 201);
+        }
+        catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=> $e->getMessage(),'message'=>'No se pudo crear registro'],400);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Cities  $cities
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
-        $cities = Cities::find($id);
-        return $this->showOne($cities,200);
+        try{
+            $cities = Cities::find($id);
+            return $this->showOne($cities,200);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Cities  $cities
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
-        $rules=[
-            'city_name' => 'required|string|max:255',
-            'city_code' => 'required|string|max:255',
-            'state_id' => 'required|int',
-        ];
-        $this->validate($request, $rules);
-        $cities = Cities::find($id);
-        $cities->fill($request->all());
-        $cities->save();
-        return $this->showOne($cities, 200);
+        try{
+            $rules=[
+                'city_name' => 'required|string|max:255',
+                'city_code' => 'required|string|max:255',
+                'state_id' => 'required|int',
+            ];
+            $request->validate($rules);
+            $cities = Cities::find($id);
+            $cities->fill($request->all());
+            $cities->save();
+            return $this->showOne($cities, 200);
+        }
+        catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=> $e->getMessage(),'message'=>'No se pudo actualizar los datos'],400);
+        }
     }
 
-    //
+    
     public function cityByStateId($id){
-        $cities = Cities::where('state_id', $id)->get();
-        return $this->showAll($cities, 200);
+        try{
+            $cities = Cities::where('state_id', $id)->get();
+            return $this->showAll($cities, 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+        }
     }
 
-    //
+    
     public function cityByCountryId($id){
-        $cities = Cities::join('states','states.id','=','cities.state_id')
-        ->where('states.country_id', $id)->get();
-        return $this->showAll($cities, 200);
+        try{
+            $cities = Cities::join('states','states.id','=','cities.state_id')
+            ->where('states.country_id', $id)->get();
+            return $this->showAll($cities, 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Cities  $cities
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
-        $cities = Cities::find($id);
-        $cities->delete();
-        return response()->json('Eliminado con exito');
+        try{
+            $cities = Cities::find($id);
+            $cities->delete();
+            return response()->json(['message'=>'Eliminado con exito']);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo eliminar los datos']);
+        }
     }
 }
