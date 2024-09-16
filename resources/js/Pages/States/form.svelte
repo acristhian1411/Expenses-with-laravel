@@ -85,7 +85,7 @@
 		axios
 			.put(`/api/states/${id}`, {
 				state_name,
-				country_id
+				country_id: country_selected.id
 			},config)
 			.then((res) => {
 				let detail = {
