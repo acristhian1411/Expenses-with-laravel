@@ -19,7 +19,8 @@ class StatesController extends ApiController
             $t = States::query()->first();
             $query = States::query();
             $query = $this->filterData($query, $t)
-            ->join('countries','states.country_id','=','countries.id');
+            ->join('countries','states.country_id','=','countries.id')
+            ->select('states.*','countries.country_name');
             $datos = $query->get();
             return $this->showAll($datos, 200);
         }catch(\Exception $e){
@@ -43,7 +44,7 @@ class StatesController extends ApiController
             $request->validate($rules);
     
             $states = States::create($request->all());
-            return response()->json(['message'=>'Registro creado con exito','data'=>$states],201);
+            return $this->showAfterAction($states,'create',201);
         }catch(\Illuminate\Validation\ValidationException $e){
             return response()->json([
                 'error'=>$e->getMessage(),
@@ -110,7 +111,7 @@ class StatesController extends ApiController
             $request->validate($rules);
             $states = States::findOrFail($id);
             $states->update($request->all());
-            return response()->json(['message'=>'Registro actualizado con exito','data'=>$states],200);
+            return $this->showAfterAction($states,'update',200);
         }
         catch(\Illuminate\Validation\ValidationException $e){
             return response()->json([

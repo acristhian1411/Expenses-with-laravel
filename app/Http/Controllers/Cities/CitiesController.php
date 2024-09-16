@@ -19,7 +19,8 @@ class CitiesController extends ApiController
             $query = Cities::query();
             $query = $this->filterData($query, $t)
             ->join('states','states.id','=','cities.state_id')
-            ->join('countries','states.country_id','=','countries.id');
+            ->join('countries','states.country_id','=','countries.id')
+            ->select('cities.*','states.state_name', 'countries.country_name');
             $datos = $query->get();
             return $this->showAll($datos, 200);
         }
@@ -52,7 +53,7 @@ class CitiesController extends ApiController
             ];
             $request->validate($rules);
             $cities = Cities::create($request->all());
-            return $this->showOne($cities, 201);
+            return $this->showAfterAction($cities,'create',201);
         }
         catch(\Illuminate\Validation\ValidationException $e){
             return response()->json([
@@ -75,9 +76,10 @@ class CitiesController extends ApiController
     public function show($id)
     {
         try{
-            $cities = Cities::where('id', $id)
+            $cities = Cities::where('cities.id', $id)
             ->join('states','states.id','=','cities.state_id')
             ->join('countries','states.country_id','=','countries.id')
+            ->select('cities.*','states.state_name', 'countries.country_name')
             ->first();
             return $this->showOne($cities,200);
         }
@@ -102,10 +104,10 @@ class CitiesController extends ApiController
                 'state_id' => 'required|int',
             ];
             $request->validate($rules);
-            $cities = Cities::find($id);
-            $cities->fill($request->all());
+            $cities = Cities::findOrFail($id);
+            $cities->update($request->all());
             $cities->save();
-            return $this->showOne($cities, 200);
+            return $this->showAfterAction($cities,'update',200);
         }
         catch(\Illuminate\Validation\ValidationException $e){
             return response()->json([
