@@ -55,6 +55,12 @@ trait ApiResponser
 		return $this->successResponse($collection, $code);
 	}
 
+	protected function showAfterAction(Model $instance, $action, $code = 200){
+		// $
+		$act = $action == 'update' ? 'actualizado' : 'creado';
+		$message = "Registro {$act} con exito"; 
+		return response()->json(['message'=>$message, 'data'=>$instance], $code);
+	}
 
 	protected function showOne(Model $instance, $code = 200)
 	{
