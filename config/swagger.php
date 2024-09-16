@@ -19,7 +19,7 @@ return [
     | The description of your API.
     |
     */
-    "description" => env("SWAGGER_DESCRIPTION", "Laravel autogenerate swagger"),
+    "description" => env("SWAGGER_DESCRIPTION", "Something"),
 
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ return [
     | The email associated with your API documentation.
     |
     */
-    "email" => env("SWAGGER_EMAIL", "hussein4alaa@gmail.com"),
+    "email" => env("SWAGGER_EMAIL", "agustin.esdev@gmail.com"),
 
     /*
     |--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ return [
     */
     "enable_response_schema" => true,
 
-    "suggestions_select_input" => false,
+    "suggestions_select_input" => true,
 
     "load_from_json" => false,
 
@@ -147,7 +147,11 @@ return [
         [
             "url" => env("APP_URL"),
             "description" => "localhost"
-        ]
+        ],
+        [
+            "url" => env("APP_URL"),
+            "description" => "development"
+        ],
     ],
 
 
