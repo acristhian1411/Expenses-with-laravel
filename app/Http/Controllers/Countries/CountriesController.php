@@ -19,7 +19,8 @@ class CountriesController extends ApiController
             $t = Countries::query()->first();
             $query = Countries::query();
             $query = $this->filterData($query, $t);
-            $datos = $query->get();
+            $datos = $query
+            ->get();
             return $this->showAll($datos, 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
@@ -65,7 +66,10 @@ class CountriesController extends ApiController
     {
         try{
             $dato = Countries::findOrFail($id);
-            return $this->showOne($dato, 200);
+            $audits = $dato->audits;
+            // dd($audits);
+
+            return $this->showOne($dato,$audits, 200);
         }
         catch(\Exception $e){
             return response()->json([

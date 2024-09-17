@@ -62,13 +62,14 @@ trait ApiResponser
 		return response()->json(['message'=>$message, 'data'=>$instance], $code);
 	}
 
-	protected function showOne(Model $instance, $code = 200)
+	// add audit parameter
+	protected function showOne(Model $instance,Collection $audit = null, $code = 200)
 	{
 		//$transformer = $instance->transformer;
 		$transformer = "";
 		$instance = $this->transformData($instance, $transformer);
 
-		return $this->successResponse(['data' => $instance], $code);
+		return $this->successResponse(['data' => $instance, 'audits' => $audit], $code);
 	}
 	protected function showMessage($message, $code = 200)
 	{
