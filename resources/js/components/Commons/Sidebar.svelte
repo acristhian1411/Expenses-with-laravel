@@ -49,6 +49,15 @@
 			</li>
 			<li>
 				<a
+					href="/tilltypes"
+					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+				>
+					<BoxesIcon/>
+					<span class="ml-3 flex-1 whitespace-nowrap">Tipos de cajas</span>
+				</a>
+			</li>
+			<li>
+				<a
 					href="/persontypes"
 					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 				>
