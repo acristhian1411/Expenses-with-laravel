@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import { svelte } from "@sveltejs/vite-plugin-svelte";
+import path from 'path';
 
 
 export default defineConfig({
@@ -14,6 +15,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@components': `${__dirname}/resources/js/components`,
+            'axios': path.resolve(__dirname, 'node_modules', 'axios/dist/esm/axios.js'), 
         }
     },
 });
