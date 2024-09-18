@@ -16,12 +16,18 @@ class TillTypeController extends ApiController
    
     public function index()
     {
-        //
-        $t = TillType::query()->first();
-        $query = TillType::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
+        try{
+            $t = TillType::query()->first();
+            $query = TillType::query();
+            $query = $this->filterData($query, $t);
+            $datos = $query->get();
+            return $this->showAll($datos, 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=> 'No se pudo obtener los Datos'
+            ]);
+        }
     }
 
     /**
@@ -32,20 +38,26 @@ class TillTypeController extends ApiController
      */
     public function store(Request $request)
     {
-        //add validation and store for the model
-        $rules = [
-            'till_type_desc' => 'required|string|max:255',
-        ];
-
-        // Validate the request
-        $validatedData = $request->validate($rules);
-
-        // Store the model
-        $tillType = TillType::create($validatedData);
-
-        // Return a success response
-        return $this->showOne($tillType, 201);
-        
+        try{
+            $rules = [
+                'till_type_desc' => 'required|string|max:255',
+            ];
+            $validatedData = $request->validate($rules);
+            $tillType = TillType::create($validatedData);
+            return response()->json([
+                'message'=>'Registro creado con exito',
+                'data'=>$tillType
+            ]);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=> $e->getMessage(),'message'=>'No se pudo crear registro'],400);
+        }
     }
 
     /**
@@ -55,9 +67,13 @@ class TillTypeController extends ApiController
      * @return \Illuminate\Http\Response
      */
     public function show($id){
-        //add code to show a till type
-        $tillType = TillType::find($id);
-        return $this->showOne($tillType,200);
+        try{
+            $tillType = TillType::find($id);
+            $audits = $tillType->audits;
+            return $this->showOne($tillType, $audits,200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+        }
     }
 
     /**
@@ -69,18 +85,25 @@ class TillTypeController extends ApiController
      */
     public function update(Request $request,$id)
     {
-        //add code to update a till type
-        $validatedData = $request->validate([
-            'till_type_desc' => 'required|string|max:255',
-        ]);
-
-        // Update the till type
-        $tillType = TillType::findOrFail($id);
-        $tillType->update($validatedData);
-
-        // Return a success response
-        return $this->showOne($tillType, 200);
-        
+        try{
+            $validatedData = $request->validate([
+                'till_type_desc' => 'required|string|max:255',
+            ]);
+            $tillType = TillType::findOrFail($id);
+            $tillType->update($validatedData);
+            return response()->json([
+                'message'=>'Registro actualizado con exito',
+                'data'=>$tillType
+            ]);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo actualizar los datos']);
+        }
     }
 
     /**
@@ -91,13 +114,12 @@ class TillTypeController extends ApiController
      */
     public function destroy($id)
     {
-        //add code to delete a till type using findOrFail function that provide the model
-        $tillType = TillType::findOrFail($id);
-
-        // Delete the till type
-        $tillType->delete();
-
-        // Return a success response
-        return response()->json('Eliminado con exito');
+        try{
+            $tillType = TillType::findOrFail($id);
+            $tillType->delete();
+            return response()->json(['message'=>'Eliminado con exito']);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo eliminar los datos']);
+        }
     }
 }
