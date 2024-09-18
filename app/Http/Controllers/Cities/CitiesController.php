@@ -81,7 +81,8 @@ class CitiesController extends ApiController
             ->join('countries','states.country_id','=','countries.id')
             ->select('cities.*','states.state_name', 'countries.country_name')
             ->first();
-            return $this->showOne($cities,200);
+            $audits = $cities->audits;
+            return $this->showOne($cities, $audits,200);
         }
         catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
