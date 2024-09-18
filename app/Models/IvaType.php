@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 // add softdeletes
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-class IvaType extends Model
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use OwenIt\Auditing\Auditable;
+class IvaType extends Model implements AuditableContract
 {
     use HasFactory;
-
+    use Auditable;
     use SoftDeletes;
 
     protected $guarded = ['id'];
