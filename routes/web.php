@@ -41,3 +41,11 @@ Route::get('/cities', function () {
 Route::get('/cities/{id}', function ($id) {
     return Inertia::render('Cities/show', ['id' => $id]);
 });
+
+Route::get('/tilltypes', function () {
+    return Inertia::render('TillTypes/index');
+});
+
+Route::get('/tilltypes/{id}', function ($id) {
+    return Inertia::render('TillTypes/show', ['id' => $id]);
+});

@@ -69,7 +69,8 @@ class StatesController extends ApiController
             $states = States::where('states.id', $id)
             ->join('countries', 'states.country_id', '=', 'countries.id')
             ->first();
-            return $this->showOne($states, 200);
+            $audits = $states->audits;
+            return $this->showOne($states, $audits, 200);
         }
         catch(\Exception $e){
             return response()->json([

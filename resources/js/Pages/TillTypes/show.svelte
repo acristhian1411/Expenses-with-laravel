@@ -7,7 +7,7 @@
     let tilltype = {};
     let audits = [];
     let error = null;
-    let url = `${appUrl}/api/cities/`;
+    let url = `${appUrl}/api/tilltypes/`;
 
     async function fetchData() {
         axios.get(`${url}${id}`).then((response) => {
@@ -28,19 +28,13 @@
 <div class="breadcrumbs text-md mb-4">
 	<ul>
 		<li><a href="/">Inicio</a></li>
-		<li><a href="/cities">Ciudades</a></li>
+		<li><a href="/tilltypes">Tipos de cajas</a></li>
 	</ul>
 </div>
 {#if tilltype}
     <div transition:blur>
         <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{tilltype.city_name}</p>
-        <h1 class="text-xl font-bold">Código:</h1>
-        <p class="text-1xl">{tilltype.city_code}</p>
-        <h1 class="text-xl font-bold">Departamento:</h1>
-        <p class="text-1xl">{tilltype.state_name}</p>
-        <h1 class="text-xl font-bold">Pais:</h1>
-        <p class="text-1xl">{tilltype.country_name}</p>
+        <p class="text-1xl">{tilltype.till_type_desc}</p>
     </div>
 {/if}
 {#if audits}

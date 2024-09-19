@@ -64,7 +64,8 @@ class PersonTypesController extends ApiController
     {
         try{
             $personType = PersonTypes::find($id);
-            return $this->showOne($personType,200);
+            $audits = $personType->audits;
+            return $this->showOne($personType,$audits,200);
         } catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
         }
