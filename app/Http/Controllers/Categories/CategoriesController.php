@@ -15,13 +15,15 @@ class CategoriesController extends ApiController
      */
     public function index()
     {
-        //
-        $t = Categories::query()->first();
-        $query = Categories::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
-        
+        try{
+            $t = Categories::query()->first();
+            $query = Categories::query();
+            $query = $this->filterData($query, $t);
+            $datos = $query->get();
+            return $this->showAll($datos, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
+        }
     }
 
     /**
@@ -32,13 +34,24 @@ class CategoriesController extends ApiController
      */
     public function store(Request $request)
     {
-        //
-        $rules = [
-            'cat_desc' => 'required|string|max:255',
-        ];
-        $this->validate($request, $rules);
-        $categories = Categories::create($request->all());
-        return $this->showOne($categories, 201);
+        try{
+            $rules = [
+                'cat_desc' => 'required|string|max:255',
+            ];
+            $request->validate($rules);
+            $categories = Categories::create($request->all());
+            return response()->json(['message'=>'Registro creado con exito','data'=>$categories],201);
+        }
+        catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e,
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ], 422);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo crear el registro']);
+        }
     }
 
     /**
@@ -49,9 +62,13 @@ class CategoriesController extends ApiController
      */
     public function show($id)
     {
-        //
-        $categories = Categories::findOrFail($id);
-        return $this->showOne($categories,200);
+        try{
+            $categories = Categories::findOrFail($id);
+            $audits = $categories->audits;
+            return $this->showOne($categories,$audits,200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
+        }
     }
 
     /**
@@ -63,14 +80,24 @@ class CategoriesController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
-        $rules = [
-            'cat_desc' => 'required|string|max:255',
-        ];
-        $this->validate($request, $rules);
-        $categories = Categories::findOrFail($id);
-        $categories->update($request->all());
-        return $this->showOne($categories, 200);
+        try{
+            $rules = [
+                'cat_desc' => 'required|string|max:255',
+            ];
+            $request->validate($rules);
+            $categories = Categories::findOrFail($id);
+            $categories->update($request->all());
+            return response()->json(['message'=>'Registro Actualizado con exito','data'=>$categories],200);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo actualizar el registro']);
+        }
     }
 
     /**
@@ -81,9 +108,13 @@ class CategoriesController extends ApiController
      */
     public function destroy($id)
     {
-        //
-        $categories = Categories::findOrFail($id);
-        $categories->delete();
-        return response()->json('Eliminado con exito');
+        try{
+            $categories = Categories::findOrFail($id);
+            $categories->delete();
+            return response()->json(['message'=>'Eliminado con exito']);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo eliminar el registro']);
+        }
     }
 }
