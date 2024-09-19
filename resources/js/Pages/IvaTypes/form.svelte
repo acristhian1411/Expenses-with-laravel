@@ -1,0 +1,118 @@
+<script>
+	// @ts-nocheck
+	import axios from 'axios';
+	// import {getToken} from '../../services/authservice'
+	import { onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
+	let id = 0;
+	let iva_type_desc = '';
+	let iva_type_percent = '';
+	export let edit;
+	export let item;
+	let errors = null;
+	let token = '';
+	let config = {
+		headers: {
+			authorization: `token: ${token}`,
+		},
+	}
+	function close() {
+		dispatch('close');
+	}
+
+	function OpenAlertMessage(event) {
+		dispatch('message', event.detail);
+	}
+
+	onMount(() => {
+
+		if (edit == true) {
+			id = item.id;
+			iva_type_desc = item.iva_type_desc;
+			iva_type_percent = item.iva_type_percent;
+		}
+	});
+	// http://127.0.0.1:5173/tilltypes
+	function handleCreateObject() {
+		
+		axios
+			.post(`/api/ivatypes`, {
+				iva_type_desc,
+				iva_type_percent
+			},config)
+			.then((res) => {
+				let detail = {
+					detail: {
+						type: 'success',
+						message: res.data.message
+					}
+				};
+				OpenAlertMessage(detail);
+				close();
+			}).catch((err) => {
+				errors = err.response.data.details ? err.response.data.details : null;
+				let detail = {
+					detail: {
+						type: 'delete',
+						message: err.response.data.message
+					}
+				};
+				OpenAlertMessage(detail);
+			});
+	}
+	function handleUpdateObject() {
+		axios
+			.put(`/api/ivatypes/${id}`, {
+				iva_type_desc,
+				iva_type_percent
+			},config)
+			.then((res) => {
+				let detail = {
+					detail: {
+						type: 'success',
+						message: res.data.message
+					}
+				};
+				OpenAlertMessage(detail);
+				close();
+			}).catch((err) => {
+				errors = err.response.data.details ? err.response.data.details : null;
+				let detail = {
+					detail: {
+						type: 'delete',
+						message: err.response.data.message
+					}
+				};
+				OpenAlertMessage(detail);
+			});
+	}
+</script>
+
+{#if edit == true}
+	<h3 class="mb-4 text-center text-2xl">Actualizar Tipos de IVA</h3>
+{:else}
+	<h3 class="mb-4 text-center text-2xl">Crear Tipos de IVA</h3>
+{/if}
+<!-- <form> -->
+	<div class="mb-4 flex items-center">
+		<span class="mr-2">Descripción</span>
+		<input type="text" bind:value={iva_type_desc} class="input input-bordered w-full max-w-xs " />
+		{#if errors != null && errors.iva_type_desc}
+			<span class="text-red-500 text-sm">{errors.iva_type_desc[0]}</span>
+		{/if}
+	</div>
+	<div class="mb-4 flex items-center">
+		<span class="mr-2">Porcentaje</span>
+		<input type="text" bind:value={iva_type_percent} class="input input-bordered w-full max-w-xs" />
+		{#if errors != null && errors.iva_type_percent}
+			<span class="text-red-500 text-sm">{errors.iva_type_percent[0]}</span>
+		{/if}
+	</div>
+	<button
+		class="btn btn-primary"
+		on:click={edit == true ? handleUpdateObject() : handleCreateObject()}>Guardar</button
+	>
+	<button class="btn btn-secondary" on:click={close}>Cancelar</button>
+<!-- </form> -->

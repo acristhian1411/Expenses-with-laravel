@@ -15,12 +15,15 @@ class IvaTypeController extends ApiController
      */
     public function index()
     {
-        //
-        $t = IvaType::query()->first();
-        $query = IvaType::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
+        try{
+            $t = IvaType::query()->first();
+            $query = IvaType::query();
+            $query = $this->filterData($query, $t);
+            $datos = $query->get();
+            return $this->showAll($datos, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
+        }
     }
 
     /**
@@ -31,14 +34,25 @@ class IvaTypeController extends ApiController
      */
     public function store(Request $request)
     {
-        //
-        $reglas = [
-            'iva_type_desc' => 'required|string|max:255',
-            'iva_type_percent' => 'required|numeric',
-        ];
-        $this->validate($request, $reglas);
-        $dato = IvaType::create($request->all());
-        return $this->showOne($dato, 201);
+        try{
+            $reglas = [
+                'iva_type_desc' => 'required|string|max:255',
+                'iva_type_percent' => 'required|numeric',
+            ];
+            $request->validate($reglas);
+            $dato = IvaType::create($request->all());
+            $audits = $dato->audits;
+            return response()->json(['message'=>'Registro creado con exito','data'=>$dato],201);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e,
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo crear el registro']);
+        }
     }
 
     /**
@@ -49,9 +63,13 @@ class IvaTypeController extends ApiController
      */
     public function show($id)
     {
-        //
-        $ivaType = IvaType::find($id);
-        return $this->showOne($ivaType, 200);
+        try{
+            $ivaType = IvaType::find($id);
+            $audits = $ivaType->audits;
+            return $this->showOne($ivaType,$audits, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
+        }
     }
 
 
@@ -64,15 +82,25 @@ class IvaTypeController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
-        $reglas = [
-            'iva_type_desc' => 'required|string|max:255',
-            'iva_type_percent' => 'required|numeric',
-        ];
-        $this->validate($request, $reglas);
-        $dato = IvaType::findOrFail($id);
-        $dato->update($request->all());
-        return $this->showOne($dato, 200);
+        try{
+            $reglas = [
+                'iva_type_desc' => 'required|string|max:255',
+                'iva_type_percent' => 'required|numeric',
+            ];
+            $request->validate( $reglas);
+            $dato = IvaType::findOrFail($id);
+            $dato->update($request->all());
+            return response()->json(['message'=>'Registro Actualizado con exito','data'=>$dato],200);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo actualizar el registro']);
+        }
     }
 
     /**
@@ -83,9 +111,12 @@ class IvaTypeController extends ApiController
      */
     public function destroy($id)
     {
-        //
-        $dato = IvaType::findOrFail($id);
-        $dato->delete();
-        return response()->json('Eliminado con exito!');
+        try{
+            $dato = IvaType::findOrFail($id);
+            $dato->delete();
+            return response()->json(['message'=>'Eliminado con exito!']);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo eliminar el registro']);
+        }
     }
 }

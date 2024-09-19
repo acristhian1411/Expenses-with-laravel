@@ -49,3 +49,11 @@ Route::get('/tilltypes', function () {
 Route::get('/tilltypes/{id}', function ($id) {
     return Inertia::render('TillTypes/show', ['id' => $id]);
 });
+
+Route::get('/ivatypes', function () {
+    return Inertia::render('IvaTypes/index');
+});
+
+Route::get('/ivatypes/{id}', function ($id) {
+    return Inertia::render('IvaTypes/show', ['id' => $id]);
+});
