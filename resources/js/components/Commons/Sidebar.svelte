@@ -2,6 +2,11 @@
     // import {logout} from '../../services/authservice.js'
     import BoxesIcon from '../Icons/BoxesIcon.svelte';
     import ChartIcon from '../Icons/ChartIcon.svelte';
+	import {Inertia} from '@inertiajs/inertia';
+
+	function goTo(route){
+		Inertia.visit(route);
+	}
 </script>
 <aside
 	id="logo-sidebar"
@@ -11,68 +16,85 @@
 	<div class="h-full overflow-y-auto bg-white px-3 pb-4 dark:bg-gray-800">
 		<ul class="space-y-2 font-medium">
 			<li>
-				<a
-					href="/"
-					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span
+					on:click={()=>goTo("/")}
+					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 				>
 					<ChartIcon/>
 					<span class="ml-3">Inicio</span>
-				</a>
+				</span>
 			</li>
 			 <li>
-				<a
-					href="/countries"
-					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span
+					on:click={()=>goTo("/countries")}
+					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 				>
 					<BoxesIcon/>
 					<span class="ml-3 flex-1 whitespace-nowrap">Paises</span>
-				</a>
+				</span>
 			</li>
 			
 			<li>
-				<a
-					href="/states"
-					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span
+					on:click={()=>goTo("/states")}
+					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 				>
 					<BoxesIcon/>
 					<span class="ml-3 flex-1 whitespace-nowrap">Departamentos</span>
-				</a>
+				</span>
 			</li> 
 			<li>
-				<a
-					href="/cities"
-					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span
+					on:click={()=>goTo("/cities")}
+					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 				>
 					<BoxesIcon/>
 					<span class="ml-3 flex-1 whitespace-nowrap">Ciudades</span>
-				</a>
+				</span>
 			</li>
 			<li>
-				<a
-					href="/tilltypes"
-					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span
+					on:click={()=>goTo("/tilltypes")}
+					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 				>
 					<BoxesIcon/>
 					<span class="ml-3 flex-1 whitespace-nowrap">Tipos de cajas</span>
-				</a>
+				</span>
 			</li>
 			<li>
-				<a
-					href="/ivatypes"
-					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span
+					on:click={()=>goTo("/ivatypes")}
+					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 				>
 					<BoxesIcon/>
 					<span class="ml-3 flex-1 whitespace-nowrap">Tipos de IVA</span>
-				</a>
+				</span>
+			</li>
+			 <li>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span
+					on:click={()=>goTo("/categories")}
+					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+				>
+					<BoxesIcon/>
+					<span class="ml-3 flex-1 whitespace-nowrap">Categorias</span>
+				</span>
 			</li>
 			<li>
-				<a
-					href="/persontypes"
-					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span
+					on:click={()=>goTo("/persontypes")}
+					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 				>
 					<BoxesIcon/>
 					<span class="ml-3 flex-1 whitespace-nowrap">Tipo de Personas</span>
-				</a>
+				</span>
 			</li>
 			<!-- <li>
 				<a
