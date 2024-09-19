@@ -57,3 +57,11 @@ Route::get('/ivatypes', function () {
 Route::get('/ivatypes/{id}', function ($id) {
     return Inertia::render('IvaTypes/show', ['id' => $id]);
 });
+
+Route::get('/categories', function () {
+    return Inertia::render('Categories/index');
+});
+
+Route::get('/categories/{id}', function ($id) {
+    return Inertia::render('Categories/show', ['id' => $id]);
+});
