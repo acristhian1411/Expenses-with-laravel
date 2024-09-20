@@ -4,17 +4,11 @@
 	import { onMount } from 'svelte';
 	import { inertia } from '@inertiajs/inertia-svelte';
 	// import { isLoggedIn, getToken} from '../../services/authservice'
-	// import {goto} from '$app/navigation';
 	import axios from 'axios';
-	import Pagination from '../../components/utilities/pagination.svelte';
-	import DeleteModal from '../../components/utilities/delete_modal.svelte';
-	import Alert from '../../components/Alerts/alert.svelte';
-	import Modal from '../../components/utilities/modal.svelte';
-	import SearchIcon from '../../components/Icons/SearchIcon.svelte';
-	import SortIcon from '../../components/Icons/SortIcon.svelte';
-	import ErrorAlert from '../../components/Alerts/ErrorAlert.svelte';
+	import {Pagination, DeleteModal, Modal} from '@components/utilities/';
+	import {Alert, ErrorAlert} from '@components/Alerts/';
+	import {SearchIcon, SortIcon} from '@components/Icons/';
 	import Form from './form.svelte';
-	// import { appUrl } from '$env/static/public';
     export let appUrl
 	let data = [];
 	let error = null;
