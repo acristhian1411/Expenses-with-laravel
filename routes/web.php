@@ -65,3 +65,11 @@ Route::get('/categories', function () {
 Route::get('/categories/{id}', function ($id) {
     return Inertia::render('Categories/show', ['id' => $id]);
 });
+
+Route::get('/paymenttypes', function () {
+    return Inertia::render('PaymentTypes/index');
+});
+
+Route::get('/paymenttypes/{id}', function ($id) {
+    return Inertia::render('PaymentTypes/show', ['id' => $id]);
+});
