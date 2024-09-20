@@ -16,12 +16,15 @@ class ProofPaymentsController extends ApiController
      */
     public function index()
     {
-        //
-        $t = ProofPayments::query()->first();
-        $query = ProofPayments::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
+        try{
+            $t = ProofPayments::query()->first();
+            $query = ProofPayments::query();
+            $query = $this->filterData($query, $t);
+            $datos = $query->get();
+            return $this->showAll($datos, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+        }
     }
 
     /**
@@ -32,32 +35,58 @@ class ProofPaymentsController extends ApiController
      */
     public function store(Request $request)
     {
-        //
-        $rules = [
-            'proof_payment_desc' => 'required|string|max:255',
-            'payment_type_id' => 'required|integer',
-        ];
-        $this->validate($request, $rules);
-        $dato = ProofPayments::create($request->all());
-        return $this->showOne($dato, 201);
+        try{
+            $rules = [
+                'proof_payment_desc' => 'required|string|max:255',
+                'payment_type_id' => 'required|integer',
+            ];
+            $request->validate($rules);
+            $dato = ProofPayments::create($request->all());
+            return response()->json([
+                'message'=>'Registro creado con exito',
+                'data'=>$dato
+            ],201);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo crear registro'],400);
+        }
     }
 
     //
     public function storeMultiple(Request $request)
     {
-        //
-        $proofPayments = ProofPayments::insert($request->all());
-        return response()->json(['data'=>$proofPayments]);
+        try{
+            $validated = $request->validate([
+                'payments' => 'required|array',  
+                'payments.*.proof_payment_desc' => 'required|string', 
+                'payments.*.payment_type_id' => 'required|int'
+            ]);
+            $proofPayments = ProofPayments::insert($validated['payments']);
+            return response()->json(['data'=>$proofPayments]);
+        }catch(\Illuminate\Database\QueryException $e) {
+            return response()->json(['error' => 'Database Error', 'message' => $e->getMessage()], 500);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo crear registro'],400);
+        }
     }
 
     //
     public function showByType($payment_type_id){
-        $proofPayments = ProofPayments::join('payment_types','payment_types.id','=','proof_payments.payment_type_id')
-        ->where('payment_type_id', $payment_type_id)
-        ->select('proof_payments.*','payment_types.payment_type_desc')
-        ->get();
-        
-        return $this->showAll($proofPayments, 200);
+        try{
+            $proofPayments = ProofPayments::join('payment_types','payment_types.id','=','proof_payments.payment_type_id')
+            ->where('payment_type_id', $payment_type_id)
+            ->select('proof_payments.*','payment_types.payment_type_desc')
+            ->get();
+            
+            return $this->showAll($proofPayments, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos'], 400);
+        }
     }
 
 
@@ -69,9 +98,13 @@ class ProofPaymentsController extends ApiController
      */
     public function show($id)
     {
-        //
-        $proofPayments = ProofPayments::findOrFail($id);
-        return $this->showOne($proofPayments);
+        try{
+            $proofPayments = ProofPayments::findOrFail($id);
+            $audits = $proofPayments->audits;
+            return $this->showOne($proofPayments, $audits,200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos'], 400);
+        }
     }
 
     /**
@@ -83,15 +116,25 @@ class ProofPaymentsController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
-        $rules = [
-            'proof_payment_desc' => 'required|string|max:255',
-            'payment_type_id' => 'required|integer',
-        ];
-        $this->validate($request, $rules);
-        $proofPayments = ProofPayments::findOrFail($id);
-        $proofPayments->update($request->all());
-        return $this->showOne($proofPayments, 200);
+        try{
+            $rules = [
+                'proof_payment_desc' => 'required|string|max:255',
+                'payment_type_id' => 'required|integer',
+            ];
+            $request->validate($rules);
+            $proofPayments = ProofPayments::findOrFail($id);
+            $proofPayments->update($request->all());
+            return response()->json(['message'=>'Registro actualizado con exito']);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
+        catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo actualizar los datos']);
+        }
     }
 
     /**
@@ -102,9 +145,12 @@ class ProofPaymentsController extends ApiController
      */
     public function destroy($id)
     {
-        //
-        $proofPayments = ProofPayments::findOrFail($id);
-        $proofPayments->delete();
-        return response()->json('Eliminado con exito');
+        try{
+            $proofPayments = ProofPayments::findOrFail($id);
+            $proofPayments->delete();
+            return response()->json('Eliminado con exito');
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo eliminar los datos']);
+        }
     }
 }
