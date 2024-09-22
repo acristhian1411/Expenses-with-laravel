@@ -4,6 +4,7 @@
 	// import {getToken} from '../../services/authservice'
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
+	import {Textfield} from '@components/FormComponents';
 
 	const dispatch = createEventDispatcher();
 	let id = 0;
@@ -28,9 +29,9 @@
 	function getCountries() {
 		axios.get(`/api/states`).then((response) => {
 			states = response.data.data;
-			if (edit == true) {
-				state_selected = states.find(state => state.id === item.state_id);
-			}
+			// if (edit == true) {
+			// 	state_selected = states.find(state => state.id === item.state_id);
+			// }
 		}).catch((err) => {
 			// errors = err.response.data.details ? err.response.data.details : null;
 			let detail = {
@@ -62,7 +63,7 @@
 			.post(`/api/cities`, {
 				city_name,
 				city_code,
-				state_id: state_selected.id
+				state_id: state_selected?.id? state_selected.id : null
 			},config)
 			.then((res) => {
 				let detail = {
@@ -89,7 +90,7 @@
 			.put(`/api/cities/${id}`, {
 				city_name,
 				city_code,
-				state_id: state_selected.id
+				state_id: state_selected?.id? state_selected.id : null
 			},config)
 			.then((res) => {
 				let detail = {
@@ -119,20 +120,16 @@
 	<h3 class="mb-4 text-center text-2xl">Crear Ciudad</h3>
 {/if}
 <!-- <form> -->
-	<div class="mb-4 flex items-center">
-		<span class="mr-2">Descripción</span>
-		<input type="text" bind:value={city_name} class="input input-bordered w-full max-w-xs " />
-		{#if errors != null && errors.city_name}
-			<span class="text-red-500 text-sm">{errors.city_name[0]}</span>
-		{/if}
-	</div>
-	<div class="mb-4 flex items-center">
-		<span class="mr-2">Código</span>
-		<input type="text" bind:value={city_code} class="input input-bordered w-full max-w-xs " />
-		{#if errors != null && errors.city_code}
-			<span class="text-red-500 text-sm">{errors.city_code[0]}</span>
-		{/if}
-	</div>
+    <Textfield 
+		label="Descripción" 
+		bind:value={city_name} 
+		errors={errors?.city_name ? {message:errors.city_name[0]} : null} 
+	/>
+	<Textfield 
+		label="Código" 
+		bind:value={city_code} 
+		errors={errors?.city_code ? {message:errors.city_code[0]} : null} 
+	/>
 	<div class="mb-4 flex items-center">
 		<span class="mr-2">Departamento</span>
 		<select
@@ -146,8 +143,8 @@
 					</option>
 			{/each}
 		</select>
-		{#if errors != null && errors.country_id}
-			<span class="text-red-500 text-sm">{errors.country_id[0]}</span>
+		{#if errors != null && errors.state_id}
+			<span class="text-red-500 text-sm">{errors.state_id[0]}</span>
 		{/if}
 	</div>
 	<button

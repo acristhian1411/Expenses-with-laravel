@@ -4,6 +4,7 @@
 	// import {getToken} from '../../services/authservice'
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
+	import {Textfield} from '@components/FormComponents';
 
 	const dispatch = createEventDispatcher();
 	let id = 0;
@@ -96,20 +97,16 @@
 	<h3 class="mb-4 text-center text-2xl">Crear Pais</h3>
 {/if}
 <!-- <form> -->
-	<div class="mb-4 flex items-center">
-		<span class="mr-2">Descripción</span>
-		<input type="text" bind:value={country_name} class="input input-bordered w-full max-w-xs " />
-		{#if errors != null && errors.country_name}
-			<span class="text-red-500 text-sm">{errors.country_name[0]}</span>
-		{/if}
-	</div>
-	<div class="mb-4 flex items-center">
-		<span class="mr-2">Código</span>
-		<input type="text" bind:value={country_code} class="input input-bordered w-full max-w-xs" />
-		{#if errors != null && errors.country_code}
-			<span class="text-red-500 text-sm">{errors.country_code[0]}</span>
-		{/if}
-	</div>
+	<Textfield 
+		label="Descripción" 
+		bind:value={country_name} 
+		errors={errors?.country_name ? {message:errors.country_name[0]} : null} 
+	/>
+	<Textfield 
+		label="Código" 
+		bind:value={country_code} 
+		errors={errors?.country_code ? {message:errors.country_code[0]} : null} 
+	/>
 	<button
 		class="btn btn-primary"
 		on:click={edit == true ? handleUpdateObject() : handleCreateObject()}>Guardar</button

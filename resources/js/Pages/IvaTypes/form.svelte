@@ -4,6 +4,7 @@
 	// import {getToken} from '../../services/authservice'
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
+	import {Textfield} from '@components/FormComponents';
 
 	const dispatch = createEventDispatcher();
 	let id = 0;
@@ -96,20 +97,17 @@
 	<h3 class="mb-4 text-center text-2xl">Crear Tipos de IVA</h3>
 {/if}
 <!-- <form> -->
-	<div class="mb-4 flex items-center">
-		<span class="mr-2">Descripción</span>
-		<input type="text" bind:value={iva_type_desc} class="input input-bordered w-full max-w-xs " />
-		{#if errors != null && errors.iva_type_desc}
-			<span class="text-red-500 text-sm">{errors.iva_type_desc[0]}</span>
-		{/if}
-	</div>
-	<div class="mb-4 flex items-center">
-		<span class="mr-2">Porcentaje</span>
-		<input type="text" bind:value={iva_type_percent} class="input input-bordered w-full max-w-xs" />
-		{#if errors != null && errors.iva_type_percent}
-			<span class="text-red-500 text-sm">{errors.iva_type_percent[0]}</span>
-		{/if}
-	</div>
+	<Textfield 
+		label="Descripción" 
+		bind:value={iva_type_desc} 
+		errors={errors?.iva_type_desc ? {message:errors.iva_type_desc[0]} : null} 
+	/>
+	<Textfield 
+		label="Porcentaje" 
+		bind:value={iva_type_percent} 
+		errors={errors?.iva_type_percent ? {message:errors.iva_type_percent[0]} : null} 
+	/>
+	
 	<button
 		class="btn btn-primary"
 		on:click={edit == true ? handleUpdateObject() : handleCreateObject()}>Guardar</button

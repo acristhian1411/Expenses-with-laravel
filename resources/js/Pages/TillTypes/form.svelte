@@ -4,6 +4,7 @@
 	// import {getToken} from '../../services/authservice'
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
+	import {Textfield} from '@components/FormComponents';
 
 	const dispatch = createEventDispatcher();
 	let id = 0;
@@ -112,13 +113,12 @@
 	<h3 class="mb-4 text-center text-2xl">Crear Tipo de Caja</h3>
 {/if}
 <!-- <form> -->
-	<div class="mb-4 flex items-center">
-		<span class="mr-2">Descripción</span>
-		<input type="text" bind:value={till_type_desc} class="input input-bordered w-full max-w-xs " />
-		{#if errors != null && errors.till_type_desc}
-			<span class="text-red-500 text-sm">{errors.till_type_desc[0]}</span>
-		{/if}
-	</div>
+ 	<Textfield
+		errors={errors?.till_type_desc ? {message:errors.till_type_desc[0]} : null}
+		bind:value={till_type_desc} 
+		label="Descripción"
+	/>
+	
 	<button
 		class="btn btn-primary"
 		on:click={edit == true ? handleUpdateObject() : handleCreateObject()}>Guardar</button

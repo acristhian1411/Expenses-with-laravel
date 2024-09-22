@@ -4,6 +4,8 @@
 	// import {getToken} from '../../services/authservice'
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
+	import {Textfield} from '@components/FormComponents';
+    import { bind } from 'svelte/internal';
 
 	const dispatch = createEventDispatcher();
 	let id = 0;
@@ -87,18 +89,16 @@
 </script>
 
 {#if edit == true}
-	<h3 class="mb-4 text-center text-2xl">Actualizar Pais</h3>
+	<h3 class="mb-4 text-center text-2xl">Actualizar Tipos de pago</h3>
 {:else}
-	<h3 class="mb-4 text-center text-2xl">Crear Pais</h3>
+	<h3 class="mb-4 text-center text-2xl">Crear Tipos de pago</h3>
 {/if}
 <!-- <form> -->
-	<div class="mb-4 flex items-center">
-		<span class="mr-2">Descripción</span>
-		<input type="text" bind:value={payment_type_desc} class="input input-bordered w-full max-w-xs " />
-		{#if errors != null && errors.payment_type_desc}
-			<span class="text-red-500 text-sm">{errors.payment_type_desc[0]}</span>
-		{/if}
-	</div>
+ 	<Textfield
+		errors={errors?.payment_type_desc ? {message:errors.payment_type_desc[0]} : null}
+		bind:value={payment_type_desc} 
+		label="Descripción"
+	/>
 
 	<button
 		class="btn btn-primary"
