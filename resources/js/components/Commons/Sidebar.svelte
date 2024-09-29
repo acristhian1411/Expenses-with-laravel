@@ -7,6 +7,12 @@
 	function goTo(route){
 		Inertia.visit(route);
 	}
+
+	function logout() {
+		Inertia.post('/logout');
+		Inertia.visit('/');
+	}
+
 </script>
 <aside
 	id="logo-sidebar"
@@ -106,15 +112,17 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Tipo de pago</span>
 				</span>
 			</li>
-			<!-- <li>
-				<a
-					href="/persons"
-					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+			 <li>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span
+					on:click={()=>logout()}
+					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 				>
 					<BoxesIcon/>
-					<span class="ml-3 flex-1 whitespace-nowrap">Personas</span>
-				</a>
+					<span class="ml-3 flex-1 whitespace-nowrap">Cerrar sesión</span>
+			 </span>
 			</li>
+			<!--
 			<li>
 				<a
 					href="/tills"

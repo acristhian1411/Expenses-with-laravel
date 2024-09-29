@@ -19,6 +19,27 @@ class AuthController extends Controller
     }  
       
 
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['error' => 'Invalid credentials'], 401);
+    }
+
+    public function logout(Request $request)
+    {
+        Session::flush();
+        Auth::logout();
+        // Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return response()->json(['success' => true]); // Devuelve una respuesta JSON
+    }
     public function customLogin(Request $request)
     {
        $validator =  $request->validate([
@@ -68,12 +89,12 @@ class AuthController extends Controller
     }
 
 
-    public function create(array $data)
+    public function create(Request $request)
     {
       return User::create([
-        'name' => $data['name'],
-        'email' => $data['email'],
-        'password' => Hash::make($data['password'])
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password)
       ]);
     }    
     

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -25,7 +26,14 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Inertia::share([
-            'appUrl' => env('APP_URL')
+            'user' => function () {
+                return Auth::user() ? [
+                    'id' => Auth::user()->id,
+                    'roles' => Auth::user()->getRoleNames(),
+                    'permissions' => Auth::user()->getAllPermissions()->pluck('name'),
+                ] : null;
+            },
+            'appUrl'=> env('APP_URL')
         ]);
     }
 }

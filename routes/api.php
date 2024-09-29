@@ -21,12 +21,16 @@ use App\Http\Controllers\Sales\SalesController;
 use App\Http\Controllers\SalesDetails\SalesDetailsController;
 use App\Http\Controllers\Purchases\PurchasesController;
 use App\Http\Controllers\PurchasesDetails\PurchasesDetailsController;
+use App\Http\Controllers\Auth\AuthController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
 
+// Route::post('/login', [AuthController::class, 'login'])->name('login');
+// Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/register', [AuthController::class, 'create'])->name('register');
 //routes for tilltyoes
 Route::get('tilltypes', [TillTypeController::class, 'index'])->description('Get list of till types with pagination.');
 Route::post('tilltypes', [TillTypeController::class, 'store'])->description('Store a new till type.');

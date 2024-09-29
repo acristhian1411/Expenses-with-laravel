@@ -14,13 +14,9 @@ class PersonTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        PersonTypes::factory(10)->create();
-        $types = [
-            ['p_type_desc'=>'Proveedor', 'created_at'=> now(), 'updated_at'=> now()],
-            ['p_type_desc'=>'Cliente', 'created_at'=> now(), 'updated_at'=> now()],
-            ['p_type_desc'=>'Funcionario', 'created_at'=> now(), 'updated_at'=> now()],
-        ];
-        DB::table('person_types')->insert($types);
-        // $person = PersonTypes::factory()->count(10)->create();
+        PersonTypes::first(['p_type_desc'=>'Proveedor','created_at'=> now(), 'updated_at'=> now()]);
+        PersonTypes::first(['p_type_desc'=>'Cliente','created_at'=> now(), 'updated_at'=> now()]);
+        PersonTypes::first(['p_type_desc'=>'Funcionario','created_at'=> now(), 'updated_at'=> now()]);
+        
     }
 }
