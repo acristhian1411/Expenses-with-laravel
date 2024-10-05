@@ -9,7 +9,9 @@ Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
-
+Route::get('/register', function () {
+    return Inertia::render('Register/index');
+});
 Route::group(['middleware' => ['auth']],function(){
 
     Route::get('/persontypes', function () {
@@ -19,9 +21,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/persontypes/{id}', function ($id) {
         return Inertia::render('PersonTypes/show', ['id' => $id]);
     });
-    Route::get('/register', function () {
-        return Inertia::render('Register/index');
-    });
+    
     
     Route::get('/countries', function () {
         return Inertia::render('Countries/index');
