@@ -14,14 +14,29 @@ Route::get('/register', function () {
 });
 Route::group(['middleware' => ['auth']],function(){
 
+    Route::get('/roles', function () {
+        return Inertia::render('Roles/index');
+    });
+
+    Route::get('/roles/{id}', function ($id) {
+        return Inertia::render('Roles/show', ['id' => $id]);
+    });
+
+    Route::get('/users', function () {
+        return Inertia::render('Users/index');
+    });
+
+    Route::get('/users/{id}', function ($id) {
+        return Inertia::render('Users/show', ['id' => $id]);
+    });
+
     Route::get('/persontypes', function () {
         return Inertia::render('PersonTypes/index');
-    });
+    })->middleware('permission:persontypes.index');
     
     Route::get('/persontypes/{id}', function ($id) {
         return Inertia::render('PersonTypes/show', ['id' => $id]);
     });
-    
     
     Route::get('/countries', function () {
         return Inertia::render('Countries/index');
