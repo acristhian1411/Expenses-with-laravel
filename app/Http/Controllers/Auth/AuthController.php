@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -38,7 +39,8 @@ class AuthController extends Controller
         // Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return response()->json(['success' => true]); // Devuelve una respuesta JSON
+        return Inertia::render('Login/index');
+        // return response()->json(['success' => true]); // Devuelve una respuesta JSON
     }
     public function customLogin(Request $request)
     {

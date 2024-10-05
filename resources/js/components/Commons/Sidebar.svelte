@@ -10,7 +10,7 @@
 
 	function logout() {
 		Inertia.post('/logout');
-		Inertia.visit('/');
+		// Inertia.visit('/');
 	}
 
 </script>
