@@ -14,9 +14,9 @@ class PersonTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        PersonTypes::first(['p_type_desc'=>'Proveedor','created_at'=> now(), 'updated_at'=> now()]);
-        PersonTypes::first(['p_type_desc'=>'Cliente','created_at'=> now(), 'updated_at'=> now()]);
-        PersonTypes::first(['p_type_desc'=>'Funcionario','created_at'=> now(), 'updated_at'=> now()]);
+        PersonTypes::firstOrCreate(['p_type_desc'=>'Proveedor','created_at'=> now(), 'updated_at'=> now()]);
+        PersonTypes::firstOrCreate(['p_type_desc'=>'Cliente','created_at'=> now(), 'updated_at'=> now()]);
+        PersonTypes::firstOrCreate(['p_type_desc'=>'Funcionario','created_at'=> now(), 'updated_at'=> now()]);
         
     }
 }
