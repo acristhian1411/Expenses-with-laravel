@@ -22,10 +22,35 @@ use App\Http\Controllers\SalesDetails\SalesDetailsController;
 use App\Http\Controllers\Purchases\PurchasesController;
 use App\Http\Controllers\PurchasesDetails\PurchasesDetailsController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Roles\RolesController;
+use App\Http\Controllers\Permissions\PermissionsController;
+use App\Http\Controllers\Users\UsersController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+Route::middleware(['swagger'])->group(function () {
+    // Rutas protegidas por el middleware de Swagger
+    Route::get('/roles', [RolesController::class, 'index'])->description('Get list of roles with pagination.');
+    Route::get('/roles/{id}', [RolesController::class, 'show'])->description('Show a role.');
+    Route::post('/roles', [RolesController::class, 'store'])->description('Store a new role.');
+    Route::put('/roles/{id}', [RolesController::class, 'update'])->description('Update a role.');
+    Route::delete('/roles/{id}', [RolesController::class, 'destroy'])->description('Delete a role.');
+    Route::post('/roles/{roleId}/permissions', [RolesController::class, 'assignPermissionsToRole']);
+    Route::delete('/roles/{roleId}/permissions', [RolesController::class, 'removePermissionsFromRole']);
+});
+
+Route::get('/users', [UsersController::class, 'index'])->description('Get list of users with pagination.');
+Route::get('/users/{id}', [UsersController::class, 'show'])->description('Show a user.');
+Route::get('/users/{id}/roles', [UsersController::class, 'showPermissionsByRole'])->description('Show permissions for a role');
+Route::get('/users/{id}/rolesnotcontain', [UsersController::class, 'showPermissionsNotContainRole'])->description('Show permissions for a role');
+Route::post('/users/{id}/assign-role', [UsersController::class, 'assignRole']);
+
+Route::get('/permissions', [PermissionsController::class, 'index'])->description('Get list of permissions with pagination.');
+Route::get('/permissions/{id}', [PermissionsController::class, 'show'])->description('Show a permission.');
+Route::get('/permissions/{id}/roles', [PermissionsController::class, 'showPermissionsByRole'])->description('Show permissions for a role');
+Route::get('/permissions/{id}/rolesnotcontain', [PermissionsController::class, 'showPermissionsNotContainRole'])->description('Show permissions for a role');
 
 
 // Route::post('/login', [AuthController::class, 'login'])->name('login');
