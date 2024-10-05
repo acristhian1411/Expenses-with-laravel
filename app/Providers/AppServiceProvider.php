@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -25,14 +26,32 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
-        Inertia::share([
-            'user' => function () {
-                return Auth::user() ? [
-                    'id' => Auth::user()->id,
-                    'roles' => Auth::user()->getRoleNames(),
-                    'permissions' => Auth::user()->getAllPermissions()->pluck('name'),
-                ] : null;
-            },
+        
+            Inertia::share([
+                'user' => function () {
+                    if (Auth::user()) {
+                        // Obtener los roles del usuario
+                        $roles = Auth::user()->getRoleNames()->map(function($role) {
+                            return $role->name; // Extraer solo el nombre del rol
+                        })->toArray();
+                        // Obtener los permisos asociados a esos roles
+                        // dd($roles);
+                        $permissions = Role::whereIn('name', $roles)
+                                           ->with('permissions') // Asegúrate de tener la relación definida en el modelo Role
+                                           ->get()
+                                           ->pluck('permissions.*.name') // Extraer los nombres de los permisos
+                                           ->unique()
+                                           ->values()
+                                           ->toArray(); // Eliminar duplicados
+                        
+                        return [
+                            'id' => Auth::user()->id,
+                            'roles' => $roles,
+                            'permissions' => $permissions[0],
+                        ];
+                    }
+                    return null;
+                },
             'appUrl'=> env('APP_URL')
         ]);
     }
