@@ -22,7 +22,7 @@ class PersonTypesController extends ApiController
             $datos = $query->get();
             return $this->showAll($datos, 200);
         }catch(\Exception $e){
-            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }
     }
 
@@ -67,7 +67,7 @@ class PersonTypesController extends ApiController
             $audits = $personType->audits;
             return $this->showOne($personType,$audits,200);
         } catch(\Exception $e){
-            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }
     }
 
@@ -96,7 +96,7 @@ class PersonTypesController extends ApiController
                 'details' => method_exists($e, 'errors') ? $e->errors() : null 
             ],422);
         }catch(\Exception $e){
-            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo actualizar los datos']);
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo actualizar los datos'],500);
         }
     }
 
@@ -113,7 +113,7 @@ class PersonTypesController extends ApiController
             $personTypes->delete();
             return response()->json(['message'=>'Eliminado con exito']);
         }catch(\Exception $e){
-            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo eliminar los datos']);
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo eliminar los datos'],500);
         }
     }
 }
