@@ -7,11 +7,13 @@
     let unassignedPermissions = [];
     let selectedUnassigned = [];
     let selectedAssigned = [];
+    let assigned;
+    let unassigned;
     let roleId = 1; // ID del rol a manejar
   
     onMount(async () => {
-      const { assigned } = await fetchPermissionsForRole(roleId);
-      const { unassigned } = await fetchPermissionsNotContainRole(roleId);
+      assigned  = (await fetchPermissionsForRole(roleId)).assigned;
+      unassigned = (await fetchPermissionsNotContainRole(roleId)).unassigned;
       assignedPermissions = assigned;
       unassignedPermissions = unassigned;
     });
@@ -22,8 +24,8 @@
         assignedPermissions = [...assignedPermissions, ...selectedUnassigned];
         unassignedPermissions = unassignedPermissions.filter(p => !selectedUnassigned.includes(p));
         selectedUnassigned = [];
-        const { assigned } = await fetchPermissionsForRole(roleId);
-        const { unassigned } = await fetchPermissionsNotContainRole(roleId);
+          assigned  = (await fetchPermissionsForRole(roleId)).assigned;
+          unassigned  = (await fetchPermissionsNotContainRole(roleId)).unassigned;
       }
     };
   
@@ -33,10 +35,15 @@
             unassignedPermissions = [...unassignedPermissions, ...selectedAssigned];
             assignedPermissions = assignedPermissions.filter(p => !selectedAssigned.includes(p));
             selectedAssigned = [];
-        //     const { assigned } = await fetchPermissionsForRole(roleId);
-        //     const { unassigned } = await fetchPermissionsNotContainRole(roleId);
+        
         }
     };
+    const searchUnassigned = async (event) => {
+      unassignedPermissions = unassigned.filter(p => p.name.toLowerCase().includes(event.target.value.toLowerCase()));
+    }
+    const searchAssigned = async (event) => {
+      assignedPermissions = assigned.filter(p => p.name.toLowerCase().includes(event.target.value.toLowerCase()));
+    }
 </script>
 
   <div class="container mx-auto p-4">
@@ -46,7 +53,7 @@
       <!-- Permisos no asignados -->
       <div class="w-1/2">
         <h3 class="text-lg font-medium mb-2">Permisos no asignados</h3>
-        <input type="text" class="border p-2 w-full mb-4" placeholder="Buscar" />
+        <input type="text" class="border p-2 w-full mb-4" placeholder="Buscar"  on:input={searchUnassigned} />
   
         <div class="border rounded-md h-96 overflow-y-auto">
           {#each unassignedPermissions as permission}
@@ -70,7 +77,7 @@
       <!-- Permisos asignados -->
       <div class="w-1/2">
         <h3 class="text-lg font-medium mb-2">Permisos asignados</h3>
-        <input type="text" class="border p-2 w-full mb-4" placeholder="Buscar" />
+        <input type="text" class="border p-2 w-full mb-4" placeholder="Buscar " on:input={searchAssigned} />
   
         <div class="border rounded-md h-96 overflow-y-auto">
           {#each assignedPermissions as permission}

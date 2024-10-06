@@ -4,10 +4,10 @@
 	import { onMount } from 'svelte';
 
 	export let appUrl
+	export let user;
 	let token;
 	let config;
 	let person
-	let user;
 	let person_photo = '';
 
 	function getPerson() {

@@ -1,8 +1,11 @@
 <script>
+
     // import {logout} from '../../services/authservice.js'
     import BoxesIcon from '../Icons/BoxesIcon.svelte';
     import ChartIcon from '../Icons/ChartIcon.svelte';
 	import {Inertia} from '@inertiajs/inertia';
+
+	export let user;
 
 	function goTo(route){
 		Inertia.visit(route);
@@ -31,6 +34,7 @@
 					<span class="ml-3">Inicio</span>
 				</span>
 			</li>
+			{#if user.permissions != undefined && user.permissions.includes('countries.index')}
 			 <li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -41,7 +45,8 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Paises</span>
 				</span>
 			</li>
-			
+			{/if}
+			{#if user.permissions != undefined && user.permissions.includes('states.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -52,6 +57,8 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Departamentos</span>
 				</span>
 			</li> 
+			{/if}
+			{#if user.permissions != undefined && user.permissions.includes('cities.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -62,6 +69,8 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Ciudades</span>
 				</span>
 			</li>
+			{/if}
+			{#if user.permissions != undefined && user.permissions.includes('tilltypes.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -72,6 +81,8 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Tipos de cajas</span>
 				</span>
 			</li>
+			{/if}
+			{#if user.permissions != undefined && user.permissions.includes('ivatypes.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -82,7 +93,9 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Tipos de IVA</span>
 				</span>
 			</li>
-			 <li>
+			{/if}
+			{#if user.permissions != undefined && user.permissions.includes('categories.index')}
+			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
 					on:click={()=>goTo("/categories")}
@@ -92,6 +105,8 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Categorias</span>
 				</span>
 			</li>
+			{/if}
+			{#if user.permissions != undefined && user.permissions.includes('persontypes.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -102,6 +117,8 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Tipo de Personas</span>
 				</span>
 			</li>
+			{/if}
+			{#if user.permissions != undefined && user.permissions.includes('paymenttypes.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -112,6 +129,20 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Tipo de pago</span>
 				</span>
 			</li>
+			{/if}
+			
+			{#if user.permissions != undefined && user.permissions.includes('roles.index')}
+			<li>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span
+					on:click={()=>goTo("/roles")}
+					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+				>
+					<BoxesIcon/>
+					<span class="ml-3 flex-1 whitespace-nowrap">Roles</span>
+				</span>
+			</li>
+			{/if}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -121,16 +152,6 @@
 					<BoxesIcon/>
 					<span class="ml-3 flex-1 whitespace-nowrap">Cerrar sesión</span>
 				</span>
-			</li>
-			<li>
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<span
-					on:click={()=>goTo("/roles")}
-					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-				>
-					<BoxesIcon/>
-					<span class="ml-3 flex-1 whitespace-nowrap">Roles</span>
-			 	</span>
 			</li>
 			<!--
 			<li>
