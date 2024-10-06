@@ -34,7 +34,7 @@
 					<span class="ml-3">Inicio</span>
 				</span>
 			</li>
-			{#if user.permissions != undefined && user.permissions.includes('countries.index')}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('countries.index')}
 			 <li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -46,7 +46,7 @@
 				</span>
 			</li>
 			{/if}
-			{#if user.permissions != undefined && user.permissions.includes('states.index')}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('states.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -58,7 +58,7 @@
 				</span>
 			</li> 
 			{/if}
-			{#if user.permissions != undefined && user.permissions.includes('cities.index')}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('cities.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -70,7 +70,7 @@
 				</span>
 			</li>
 			{/if}
-			{#if user.permissions != undefined && user.permissions.includes('tilltypes.index')}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('tilltypes.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -82,7 +82,7 @@
 				</span>
 			</li>
 			{/if}
-			{#if user.permissions != undefined && user.permissions.includes('ivatypes.index')}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('ivatypes.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -94,7 +94,7 @@
 				</span>
 			</li>
 			{/if}
-			{#if user.permissions != undefined && user.permissions.includes('categories.index')}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('categories.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -106,7 +106,7 @@
 				</span>
 			</li>
 			{/if}
-			{#if user.permissions != undefined && user.permissions.includes('persontypes.index')}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('persontypes.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -118,7 +118,7 @@
 				</span>
 			</li>
 			{/if}
-			{#if user.permissions != undefined && user.permissions.includes('paymenttypes.index')}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('paymenttypes.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -131,7 +131,7 @@
 			</li>
 			{/if}
 			
-			{#if user.permissions != undefined && user.permissions.includes('roles.index')}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('roles.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
