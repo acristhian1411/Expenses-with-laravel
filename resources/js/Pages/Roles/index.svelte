@@ -196,14 +196,7 @@
 							>
 						</div>
 					</th>
-					<th class="text-center text-lg">
-						<div class="flex items-center justify-center">
-							Codigo
-							<button on:click={() => sortData('guard_name')}
-								><SortIcon/></button
-							>
-						</div>
-					</th>
+					
 					<th><button class="btn btn-primary" on:click={() => (_new = true)}>Agregar</button></th>
 				</tr>
 			</thead>
@@ -212,7 +205,6 @@
 					<tr class="hover">
 						<td>{person.id}</td>
 						<td class="text-center">{person.name}</td>
-						<td class="text-center">{person.guard_name}</td>
 						<td>
 							<button class="btn btn-info" use:inertia={{ href: `/roles/${person.id}` }}>Mostrar</button>
 						</td>
