@@ -1,8 +1,7 @@
 <script>
 
     // import {logout} from '../../services/authservice.js'
-    import BoxesIcon from '../Icons/BoxesIcon.svelte';
-    import ChartIcon from '../Icons/ChartIcon.svelte';
+	import {Home,BoxesIcon } from '@components/Icons/';
 	import {Inertia} from '@inertiajs/inertia';
 
 	export let user;
@@ -30,10 +29,16 @@
 					on:click={()=>goTo("/")}
 					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 				>
-					<ChartIcon/>
+					<Home/>
 					<span class="ml-3">Inicio</span>
 				</span>
 			</li>
+			<details class="group">
+				<summary class="cursor-pointer p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 rounded-lg flex items-center">
+					<BoxesIcon />
+					<span class="ml-3">Ubicaciones</span>
+				  </summary>
+				  <ul class="pl-5 space-y-2">
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('countries.index')}
 			 <li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -70,6 +75,14 @@
 				</span>
 			</li>
 			{/if}
+			</ul>
+		</details>
+		<details class="group">
+			<summary class="cursor-pointer p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 rounded-lg flex items-center">
+				<BoxesIcon />
+				<span class="ml-3">Configuraciones generales</span>
+			  </summary>
+			  <ul class="pl-5 space-y-2">
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('tilltypes.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -118,6 +131,14 @@
 				</span>
 			</li>
 			{/if}
+			</ul>
+		</details>
+		<details class="group">
+			<summary class="cursor-pointer p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 rounded-lg flex items-center">
+				<BoxesIcon />
+				<span class="ml-3">Administración</span>
+			  </summary>
+			  <ul class="pl-5 space-y-2">
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('paymenttypes.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -131,6 +152,15 @@
 			</li>
 			{/if}
 			
+			</ul>
+		</details>
+		<details class="group">
+			<summary class="cursor-pointer p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 rounded-lg flex items-center">
+				<BoxesIcon />
+				<span class="ml-3">Usuarios</span>
+			  </summary>
+			  <ul class="pl-5 space-y-2">
+
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('roles.index')}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -143,6 +173,20 @@
 				</span>
 			</li>
 			{/if}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('users.index')}
+			<li>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span
+					on:click={()=>goTo("/users")}
+					class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+				>
+					<BoxesIcon/>
+					<span class="ml-3 flex-1 whitespace-nowrap">Usuarios</span>
+				</span>
+			</li>
+			{/if}
+			</ul>
+			</details>
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<span
@@ -153,25 +197,7 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Cerrar sesión</span>
 				</span>
 			</li>
-			<!--
-			<li>
-				<a
-					href="/tills"
-					class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-				>
-					<BoxesIcon/>
-					<span class="ml-3 flex-1 whitespace-nowrap">Cajas</span>
-				</a>
-			</li>
-			<li>
-				<span class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-					<BoxesIcon/>
-					
-					<span class="ml-3 flex-1 whitespace-nowrap" on:click={()=>{
-						alert('Esta funcionalidad no esta disponible');
-					}}>Salir</span>
-				</span>
-			</li> -->
+			
 		</ul>
 	</div>
 </aside>
