@@ -39,7 +39,7 @@ class AuthController extends Controller
         // Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return Inertia::render('Login/index');
+        return redirect('/');
         // return response()->json(['success' => true]); // Devuelve una respuesta JSON
     }
     public function customLogin(Request $request)
