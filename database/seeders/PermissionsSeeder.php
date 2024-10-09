@@ -14,6 +14,12 @@ class PermissionsSeeder extends Seeder
      */
     public function run(): void
     {
+        // permissions for locations
+        Permission::firstOrCreate(['name'=>'locations.index','guard_name'=> 'web']);
+        // permissions for configuration
+        Permission::firstOrCreate(['name'=>'configuration.index','guard_name'=> 'web']);
+        // permissions for administration
+        Permission::firstOrCreate(['name'=>'administration.index','guard_name'=> 'web']);
         // permissions for persontypes
         Permission::firstOrCreate(['name'=>'persontypes.index','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'persontypes.show','guard_name'=> 'web']);
