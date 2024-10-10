@@ -1,0 +1,76 @@
+import { BoxesIcon } from '@components/Icons/';
+
+export const locationItems =(user)=> [
+    {
+        label: 'Paises',
+        route: '/countries',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('countries.index')
+    },
+    {
+        label: 'Departamentos',
+        route: '/states',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('states.index')
+    },
+    {
+        label: 'Ciudades',
+        route: '/cities',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('cities.index')
+    }
+];
+export const configItems =(user)=> [
+    {
+        label: 'Tipos de cajas',
+        route: '/tilltypes',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('tilltypes.index')
+    },
+    {
+        label: 'Tipos de IVA',
+        route: '/ivatypes',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('ivatypes.index')
+    },
+    {
+        label: 'Categorias',
+        route: '/categories',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('categories.index')
+    },
+    {
+        label: 'Tipo de Personas',
+        route: '/persontypes',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('persontypes.index')
+    }
+];
+export const adminItems =(user)=> [
+    {
+        label: 'Tipos de pago',
+        route: '/paymenttypes',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('paymenttypes.index')
+    },
+    {
+        label: 'Compras',
+        route: '/purchases',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('purchases.index')
+    }
+];
+export const userItems =(user)=> [
+    {
+        label: 'Roles',
+        route: '/roles',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('roles.index')
+    },
+    {
+        label: 'Usuarios',
+        route: '/users',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('users.index')
+    }
+];
