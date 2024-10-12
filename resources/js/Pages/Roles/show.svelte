@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import {blur} from 'svelte/transition';
     import Permissions from './permissions.svelte';
+    import { Inertia } from '@inertiajs/inertia';
     import axios from 'axios';
     export let appUrl
     export let id = 0;
@@ -22,14 +23,19 @@
     onMount(async () => {
         fetchData();
     });
+    function goTo(route){
+        Inertia.visit(route);
+    }
 </script>
 {#if error}
 	<p>{error}</p>
 {/if}
 <div class="breadcrumbs text-md mb-4">
 	<ul>
-		<li><a href="/">Inicio</a></li>
-		<li><a href="/roles">Roles</a></li>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <li><span class="cursor-pointer" on:click={()=>goTo("/")}>Inicio</span></li>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <li><span class="cursor-pointer" on:click={()=>goTo("/roles")}>Roles</span></li>
 	</ul>
 </div>
 {#if tilltype}
@@ -69,4 +75,6 @@
         </table>
     </div>
 {/if}
-<Permissions roleName={tilltype.name} />
+<div transition:blur>
+    <Permissions roleName={tilltype.name} />
+</div>

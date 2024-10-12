@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import {blur} from 'svelte/transition';
     import axios from 'axios';
+    import {Inertia} from '@inertiajs/inertia';
     export let appUrl
     export let id = 0;
     let tilltype = {};
@@ -27,8 +28,10 @@
 {/if}
 <div class="breadcrumbs text-md mb-4">
 	<ul>
-		<li><a href="/">Inicio</a></li>
-		<li><a href="/countries">Paises</a></li>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <li><span class="cursor-pointer" on:click={()=>Inertia.visit("/")}>Inicio</span></li>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <li><span class="cursor-pointer" on:click={()=>Inertia.visit("/countries")}>Paises</span></li>
 	</ul>
 </div>
 {#if tilltype}

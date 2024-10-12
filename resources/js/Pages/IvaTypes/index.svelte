@@ -11,6 +11,7 @@
 	import {SearchIcon, SortIcon} from '@components/Icons/';
 	import Form from './form.svelte';
 	// import { appUrl } from '$env/static/public';
+	export let user
     export let appUrl
 	let data = [];
 	let error = null;
@@ -204,7 +205,11 @@
 							>
 						</div>
 					</th>
-					<th><button class="btn btn-primary" on:click={() => (_new = true)}>Agregar</button></th>
+					{#if user.permissions != undefined && user.permissions.includes('ivatypes.create')}
+						<th>
+							<button class="btn btn-primary" on:click={() => (_new = true)}>Agregar</button>
+						</th>
+					{/if}
 				</tr>
 			</thead>
 			<tbody>
@@ -213,17 +218,23 @@
 						<td>{person.id}</td>
 						<td class="text-center">{person.iva_type_desc}</td>
 						<td class="text-center">{person.iva_type_percent}</td>
-						<td>
-							<button class="btn btn-info" use:inertia={{ href: `/ivatypes/${person.id}` }}>Mostrar</button>
-						</td>
-						<td>
-							<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>
-						</td>
-						<td>
-							<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}
-								>Eliminar</button
-							></td
-						>
+						{#if user.permissions != undefined && user.permissions.includes('ivatypes.show')}
+							<td>
+								<button class="btn btn-info" use:inertia={{ href: `/ivatypes/${person.id}` }}>Mostrar</button>
+							</td>
+						{/if}
+						{#if user.permissions != undefined && user.permissions.includes('ivatypes.update')}
+							<td>
+								<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>
+							</td>
+						{/if}
+						{#if user.permissions != undefined && user.permissions.includes('ivatypes.destroy')}
+							<td>
+								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}
+									>Eliminar</button
+								>
+							</td>
+						{/if}
 					</tr>
 				{/each}
 			</tbody>

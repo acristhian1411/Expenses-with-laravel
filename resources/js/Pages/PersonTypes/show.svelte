@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import axios from 'axios';
     import {blur} from 'svelte/transition';
+    import { Inertia } from '@inertiajs/inertia';
     export let appUrl
     export let id = 0;
     let tilltype = {};
@@ -21,14 +22,19 @@
     onMount(async () => {
         fetchData();
     });
+    function goTo(route){
+        Inertia.visit(route);
+    }
 </script>
 {#if error}
 	<p>{error}</p>
 {/if}
 <div class="breadcrumbs text-md mb-4">
 	<ul>
-		<li><a href="/">Inicio</a></li>
-		<li><a href="/persontypes">Tipos de personas</a></li>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+		<li><span class="cursor-pointer" on:click={()=>goTo("/")}>Inicio</span></li>
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<li><span class="cursor-pointer" on:click={()=>goTo("/persontypes")}>Tipos de personas</span></li>
 	</ul>
 </div>
 {#if tilltype}

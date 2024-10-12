@@ -9,6 +9,7 @@
 	import {Alert, ErrorAlert} from '@components/Alerts/';
 	import {SearchIcon, SortIcon} from '@components/Icons/';
 	import Form from './form.svelte';
+	export let user
     export let appUrl
 	let data = [];
 	let error = null;
@@ -42,7 +43,6 @@
 			},
 		}
 		axios
-			// .get('/api/paymenttypes')
 			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
 			.then((response) => {
 				data = response.data.data;
@@ -194,7 +194,11 @@
 							>
 						</div>
 					</th>
-					<th><button class="btn btn-primary" on:click={() => (_new = true)}>Agregar</button></th>
+					{#if user.permissions != undefined && user.permissions.includes('paymenttypes.create')}
+						<th>
+							<button class="btn btn-primary" on:click={() => (_new = true)}>Agregar</button>
+						</th>
+					{/if}
 				</tr>
 			</thead>
 			<tbody>
@@ -202,17 +206,23 @@
 					<tr class="hover">
 						<td>{person.id}</td>
 						<td class="text-center">{person.payment_type_desc}</td>
-						<td>
-							<button class="btn btn-info" use:inertia={{ href: `/paymenttypes/${person.id}` }}>Mostrar</button>
-						</td>
-						<td>
-							<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>
-						</td>
-						<td>
-							<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}
-								>Eliminar</button
-							></td
-						>
+						{#if user.permissions != undefined && user.permissions.includes('paymenttypes.show')}
+							<td>
+								<button class="btn btn-info" use:inertia={{ href: `/paymenttypes/${person.id}` }}>Mostrar</button>
+							</td>
+						{/if}
+						{#if user.permissions != undefined && user.permissions.includes('paymenttypes.update')}
+							<td>
+								<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>
+							</td>
+						{/if}
+						{#if user.permissions != undefined && user.permissions.includes('paymenttypes.destroy')}
+							<td>
+								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}
+									>Eliminar</button
+								>
+							</td>
+						{/if}
 					</tr>
 				{/each}
 			</tbody>
