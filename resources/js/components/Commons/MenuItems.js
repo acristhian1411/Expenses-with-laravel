@@ -62,6 +62,12 @@ export const productsItems =(user)=> [
 ];
 export const adminItems =(user)=> [
     {
+        label:'Cajas',
+        route: '/tills',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('tills.index')
+    },
+    {
         label: 'Compras',
         route: '/purchases',
         icon: BoxesIcon,

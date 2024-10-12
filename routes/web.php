@@ -62,6 +62,14 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('Cities/show', ['id' => $id]);
     });
     
+    Route::get('/tills',function(){
+        return Inertia::render('Tills/index');
+    });
+
+    Route::get('/tills/{id}', function ($id) {
+        return Inertia::render('Tills/show', ['id' => $id]);
+    });
+
     Route::get('/tilltypes', function () {
         return Inertia::render('TillTypes/index');
     });
