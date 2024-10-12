@@ -48,7 +48,7 @@
 			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
 			.then((response) => {
 				data = response.data.data;
-				current_page = response.data.currentPage;
+				current_page = response.data.current_page;
 				total_items = response.data.per_page;
 				total_pages = response.data.last_page;
 			})
