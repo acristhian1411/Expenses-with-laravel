@@ -15,11 +15,24 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         // Role::factory(10)->create();
-        $types = [
-            ['name'=>'Admin', 'guard_name'=>'web','created_at'=> now(), 'updated_at'=> now()],
-            ['name'=>'User', 'guard_name'=>'web','created_at'=> now(), 'updated_at'=> now()],
-        ];
-        DB::table('roles')->insert($types);
-        // $person = PersonTypes::factory()->count(10)->create();
+        Role::firstOrCreate([
+            'name'=>'Root',
+            'guard_name'=>'web',
+            'created_at'=> now(), 
+            'updated_at'=> now()
+        ]);
+        Role::firstOrCreate([
+            'name'=>'Admin',
+            'guard_name'=>'web',
+            'created_at'=> now(), 
+            'updated_at'=> now()
+        ]);
+        Role::firstOrCreate([
+            'name'=>'User',
+            'guard_name'=>'web',
+            'created_at'=> now(), 
+            'updated_at'=> now()
+        ]);
+        
     }
 }
