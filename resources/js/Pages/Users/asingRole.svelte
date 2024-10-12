@@ -5,13 +5,14 @@
 
     // Estado para manejar el usuario y roles
     export let userId ; // Cambia esto por el ID del usuario que deseas modificar
+    export let role; // Cambia esto por el ID del rol que deseas asignar
     let roles = [];
     let selectedRole = '';
     let message = '';
 
     // Cargar los roles disponibles
     onMount(async () => {
-
+        selectedRole = role[0] ? role[0] : '';
         try {
             const response = await axios.get('/api/roles'); // Asegúrate de tener esta ruta en tu API
             roles = response.data.data;
@@ -41,7 +42,6 @@
 
 <div class="p-4 max-w-md mx-auto">
     <h2 class="text-lg font-semibold mb-4">Asignar Rol al Usuario</h2>
-    {console.log(userId)}
     <label for="role" class="block mb-2">Seleccionar Rol:</label>
     <select id="role" bind:value={selectedRole} class="border border-gray-300 rounded p-2 w-full mb-4">
         <option value="">-- Selecciona un rol --</option>

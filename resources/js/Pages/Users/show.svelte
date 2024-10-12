@@ -2,17 +2,19 @@
     import { onMount } from 'svelte';
     import {blur} from 'svelte/transition';
     import axios from 'axios';
+    import { Inertia } from '@inertiajs/inertia';
     import AsingRole from './asingRole.svelte';
+    export let user;
     export let appUrl
     export let id = 0;
-    let user = {};
+    let data = [];
     let audits = [];
     let error = null;
     let url = `${appUrl}/api/users/`;
 
     async function fetchData() {
         axios.get(`${url}${id}`).then((response) => {
-            user = response.data.data;
+            data = response.data.data;
             audits = response.data.audits;
         }).catch((err) => {
             error = err.request.response;
@@ -20,24 +22,30 @@
     }
 
     onMount(async () => {
+        console.log(user);
         fetchData();
     });
+    function goTo(route){
+        Inertia.visit(route);
+    }
 </script>
 {#if error}
 	<p>{error}</p>
 {/if}
 <div class="breadcrumbs text-md mb-4">
 	<ul>
-		<li><a href="/">Inicio</a></li>
-		<li><a href="/users">Usuarios</a></li>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <li><span class="cursor-pointer" on:click={()=>goTo("/")}>Inicio</span></li>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <li><span class="cursor-pointer" on:click={()=>goTo("/users")}>Usuarios</span></li>
 	</ul>
 </div>
-{#if user}
+{#if data}
     <div transition:blur>
         <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{user.name}</p>
-        <p class="text-1xl">{user.email}</p>
-        <AsingRole userId={user.id} />
+        <p class="text-1xl">{data.name}</p>
+        <p class="text-1xl">{data.email}</p>
+        <AsingRole userId={data.id} role={user.roles} />
     </div>
 {/if}
 {#if audits}
