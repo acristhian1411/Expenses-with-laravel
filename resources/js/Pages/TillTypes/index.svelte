@@ -207,19 +207,23 @@
 						<td class="text-center">{person.till_type_desc}</td>
 						{#if user.permissions != undefined && user.permissions.includes('tilltypes.show')}
 							<td>
-								<button class="btn btn-info" use:inertia={{ href: `/tilltypes/${person.id}` }}>Mostrar</button>
+								<button class="btn btn-info" use:inertia={{ href: `/tilltypes/${person.id}` }}>
+									Mostrar
+								</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('tilltypes.update')}
 							<td>
-								<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>
+								<button class="btn btn-warning" on:click={() => openEditModal(person)}>
+									Editar
+								</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('tilltypes.destroy')}
 							<td>
-								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}
-									>Eliminar</button
-								>
+								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}>
+									Eliminar
+								</button>
 							</td>	
 						{/if}
 					</tr>
