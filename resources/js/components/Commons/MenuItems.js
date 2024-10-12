@@ -34,30 +34,46 @@ export const configItems =(user)=> [
         permission: user != undefined && user.permissions != undefined && user.permissions.includes('ivatypes.index')
     },
     {
-        label: 'Categorias',
-        route: '/categories',
-        icon: BoxesIcon,
-        permission: user != undefined && user.permissions != undefined && user.permissions.includes('categories.index')
-    },
-    {
         label: 'Tipo de Personas',
         route: '/persontypes',
         icon: BoxesIcon,
         permission: user != undefined && user.permissions != undefined && user.permissions.includes('persontypes.index')
-    }
-];
-export const adminItems =(user)=> [
+    },
     {
         label: 'Tipos de pago',
         route: '/paymenttypes',
         icon: BoxesIcon,
         permission: user != undefined && user.permissions != undefined && user.permissions.includes('paymenttypes.index')
     },
+];
+export const productsItems =(user)=> [
+    {
+        label: 'Categorias',
+        route: '/categories',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('categories.index')
+    },
+    {
+        label: 'Productos',
+        route: '/products',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('products.index')
+    }
+];
+export const adminItems =(user)=> [
     {
         label: 'Compras',
         route: '/purchases',
         icon: BoxesIcon,
         permission: user != undefined && user.permissions != undefined && user.permissions.includes('purchases.index')
+    }
+];
+export const reportsItems =(user)=> [
+    {
+        label: 'Reportes',
+        route: '/reports',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('reports.index')
     }
 ];
 export const userItems =(user)=> [

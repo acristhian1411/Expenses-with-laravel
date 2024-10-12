@@ -20,6 +20,10 @@ class PermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name'=>'configuration.index','guard_name'=> 'web']);
         // permissions for administration
         Permission::firstOrCreate(['name'=>'administration.index','guard_name'=> 'web']);
+        // permissions for reports
+        Permission::firstOrCreate(['name'=>'reports.index','guard_name'=> 'web']);
+        // permissions for productSidebar
+        Permission::firstOrCreate(['name'=>'products.sidebar','guard_name'=> 'web']);
         // permissions for persontypes
         Permission::firstOrCreate(['name'=>'persontypes.index','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'persontypes.show','guard_name'=> 'web']);

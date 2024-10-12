@@ -1,10 +1,10 @@
 <script>
 
     // import {logout} from '../../services/authservice.js'
-	import {Home,BoxesIcon, ExitIcon, ConfigIcon, FinanceIcon, LocationIcon, UserIcon} from '@components/Icons/';
+	import {Home,BoxesIcon, ExitIcon, ConfigIcon, FinanceIcon, LocationIcon, UserIcon, ReportIcon, ProductIcon} from '@components/Icons/';
 	import {Inertia} from '@inertiajs/inertia';
     import DropdownMenu from './DropdownMenu.svelte';
-	import {locationItems,configItems,adminItems,userItems} from './MenuItems.js';
+	import {locationItems,configItems,adminItems,userItems,reportsItems, productsItems} from './MenuItems.js';
 
 	export let user;
 
@@ -41,8 +41,14 @@
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('configuration.index')}
 				<DropdownMenu title="Configuraciones generales" icon={ConfigIcon} items={configItems(user)}/>
 			{/if}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('products.sidebar')}
+				<DropdownMenu title="Productos" icon={ProductIcon} items={productsItems(user)}/>
+			{/if}
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('administration.index')}
 				<DropdownMenu title="Administración" icon={FinanceIcon} items={adminItems(user)}/>
+			{/if}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('reports.index')}
+				<DropdownMenu title="Reportes" icon={ReportIcon} items={reportsItems(user)}/>
 			{/if}
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('users.index')}
 				<DropdownMenu title="Usuarios" icon={UserIcon} items={userItems(user)}/>
