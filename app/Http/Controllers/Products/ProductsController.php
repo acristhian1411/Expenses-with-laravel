@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Products;
 use App\Models\Products;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Illuminate\Http\JsonResponse;
 
 class ProductsController extends ApiController
 {
@@ -13,14 +14,17 @@ class ProductsController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():JsonResponse
     {
-        //
-        $t = Products::query()->first();
-        $query = Products::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
+        try{
+            $t = Products::query()->first();
+            $query = Products::query();
+            $query = $this->filterData($query, $t);
+            $datos = $query->get();
+            return $this->showAll($datos, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
+        }
     }
 
     /**
@@ -29,22 +33,30 @@ class ProductsController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        //
-        $rules = [
-            'product_name' => 'required|string|max:255',
-            'product_desc' => 'nullable|string',
-            'product_cost_price' => 'required|numeric|min:0',
-            'product_quantity' => 'required|integer|min:0',
-            'product_selling_price' => 'required|numeric|min:0',
-            'category_id' => 'required|integer',
-            'iva_type_id' => 'required|integer',
-        ];
-        $this->validate($request, $rules);
-        $products = Products::create($request->all());
-        return $this->showOne($products, 201);
-        
+        try{
+            $rules = [
+                'product_name' => 'required|string|max:255',
+                'product_desc' => 'nullable|string',
+                'product_cost_price' => 'required|numeric|min:0',
+                'product_quantity' => 'required|integer|min:0',
+                'product_selling_price' => 'required|numeric|min:0',
+                'category_id' => 'required|integer',
+                'iva_type_id' => 'required|integer',
+            ];
+            $request->validate($rules);
+            $products = Products::create($request->all());
+            return response()->json(['message'=>'Registro creado con exito','data'=>$products]);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null
+            ],422);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo crear registro'],400);
+        }
     }
 
     /**
@@ -55,34 +67,47 @@ class ProductsController extends ApiController
      */
     public function show($id)
     {
-        //
-        $products = Products::findOrFail($id);
-        return $this->showOne($products, 200);
+        try{
+            $product = Products::findOrFail($id);
+            $audits = $product->audits;
+            return $this->showOne($product,$audits, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Products  $products
+     * @param  \Illuminate\Http\Request  $request the fields that will be updated
+     * @param  int $id the id of the product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,int $id): JsonResponse
     {
-        //
-        $reglas = [
-            'product_name' => 'required|string|max:255',
-            'product_desc' => 'nullable|string',
-            'product_cost_price' => 'required|numeric|min:0',
-            'product_quantity' => 'required|integer|min:0',
-            'product_selling_price' => 'required|numeric|min:0',
-            'category_id' => 'required|integer',
-            'iva_type_id' => 'required|integer',
-        ];
-        $this->validate($request, $reglas);
-        $products = Products::findOrFail($id);
-        $products->update($request->all());
-        return $this->showOne($products, 200);
+        try{
+            $reglas = [
+                'product_name' => 'required|string|max:255',
+                'product_desc' => 'nullable|string',
+                'product_cost_price' => 'required|numeric|min:0',
+                'product_quantity' => 'required|integer|min:0',
+                'product_selling_price' => 'required|numeric|min:0',
+                'category_id' => 'required|integer',
+                'iva_type_id' => 'required|integer',
+            ];
+            $request->validate($reglas);
+            $products = Products::findOrFail($id);
+            $products->update($request->all());
+            return response()->json(['message'=>'Registro Actualizado con exito','data'=>$products]);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo actualizar los datos'],500);
+        }
     }
 
     /**
@@ -93,9 +118,12 @@ class ProductsController extends ApiController
      */
     public function destroy($id)
     {
-        //
-        $products = Products::findOrFail($id);
-        $products->delete();
-        return response()->json('Eliminado con exito');
+        try{
+            $products = Products::findOrFail($id);
+            $products->delete();
+            return response()->json(['message'=>'Eliminado con exito']);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo eliminar los datos'],500);
+        }
     }
 }

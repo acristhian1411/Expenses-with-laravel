@@ -56,8 +56,9 @@
 				<button
 					on:click={() => goPrevious()}
 					class="join-item btn btn-outline"
-					disabled={current_page == 1}>Previous</button
-				>
+					disabled={current_page == 1 || current_page == null || current_page == undefined}>
+						Anterior
+				</button>
 			</li>
 
 			{#each Array.from({ length: total_pages }, (_, index) => index + 1) as page}
@@ -76,7 +77,7 @@
 				<button
 					on:click={() => goNext()}
 					class="join-item btn btn-outline"
-					disabled={current_page == total_pages}>Next</button
+					disabled={current_page == total_pages}>Siguiente</button
 				>
 			</li>
 		</ul>
