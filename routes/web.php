@@ -101,6 +101,14 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/paymenttypes/{id}', function ($id) {
         return Inertia::render('PaymentTypes/show', ['id' => $id]);
     });
+
+    Route::get('/products', function () {
+        return Inertia::render('Products/index');
+    });
+
+    Route::get('/products/{id}', function ($id) {
+        return Inertia::render('Products/show', ['id' => $id]);
+    });
 });
 
 
