@@ -8,6 +8,7 @@
     export let loading;
     export let filterdItem;
     export let items
+    export let label
 
     $: searchTerm, filterCountries();
 
@@ -51,11 +52,11 @@ It will show up on hover.
   -->
 <main>
     <div class="mb-4  items-start relative">
-        <span class="mr-2">País</span>
+        <span class="mr-2">{label}</span>
         <input
             type="text"
             class="input input-bordered w-full max-w-xs"
-            placeholder="Buscar país..."
+            placeholder="Buscar..."
             bind:value={searchTerm}
             on:input={handleInput}
             on:focus={() => showDropdown = true}
