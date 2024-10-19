@@ -54,6 +54,12 @@ export const productsItems =(user)=> [
         permission: user != undefined && user.permissions != undefined && user.permissions.includes('categories.index')
     },
     {
+        label: 'Marcas',
+        route: '/brands',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('brands.index')
+    },
+    {
         label: 'Productos',
         route: '/products',
         icon: BoxesIcon,
