@@ -3,8 +3,7 @@
     export let value;
     export let errors;
     export let type;
-    export let min
-    export let max
+    export let required;
 
     // $: value = formatNumber(value);
 
@@ -27,14 +26,18 @@
     <div class="flex flex-col w-full">
         {#if type == 'number'}
             <input
-                min={min}
-                max={max}
+                required={required}
                 inputmode="numeric"
                 value={formatNumber(value)}
                 on:input={handleInput}
                 class="input input-bordered w-full max-w-xs block" />
         {:else}
-            <input type="text" bind:value={value} class="input input-bordered w-full max-w-xs block" />
+            <input 
+                type="text" 
+                bind:value={value} 
+                required={required}
+                class="input input-bordered w-full max-w-xs block" 
+            />
         {/if}
         <!-- <input type={type != null ? type : 'text'} bind:value={value} class="input input-bordered w-full max-w-xs block" /> -->
         {#if errors != null && errors.message}
