@@ -90,6 +90,12 @@ class PermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name'=>'permissions.create','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'permissions.update','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'permissions.destroy','guard_name'=> 'web']);
+        // permissions for brands
+        Permission::firstOrCreate(['name'=>'brands.index','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'brands.show','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'brands.create','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'brands.update','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'brands.destroy','guard_name'=> 'web']);
         // permissions for products
         Permission::firstOrCreate(['name'=>'products.index','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'products.show','guard_name'=> 'web']);

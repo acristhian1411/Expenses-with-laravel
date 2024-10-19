@@ -25,6 +25,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Roles\RolesController;
 use App\Http\Controllers\Permissions\PermissionsController;
 use App\Http\Controllers\Users\UsersController;
+use App\Http\Controllers\Brands\BrandController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -49,9 +50,9 @@ Route::get('/permissions/{id}', [PermissionsController::class, 'show'])->descrip
 Route::get('/permissions/{id}/roles', [PermissionsController::class, 'showPermissionsByRole'])->description('Show permissions for a role');
 Route::get('/permissions/{id}/rolesnotcontain', [PermissionsController::class, 'showPermissionsNotContainRole'])->description('Show permissions for a role');
 
-
 // Route::post('/login', [AuthController::class, 'login'])->name('login');
 // Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
 Route::post('/register', [AuthController::class, 'create'])->name('register');
 //routes for tilltyoes
 Route::get('tilltypes', [TillTypeController::class, 'index'])->description('Get list of till types with pagination.');
@@ -110,6 +111,12 @@ Route::put('persons/{id}', [PersonsController::class, 'update']);
 Route::get('persons/{id}', [PersonsController::class, 'show']);
 Route::get('personsbytype/{id}', [PersonsController::class, 'personByType']);
 Route::delete('persons/{id}', [PersonsController::class, 'destroy']);
+// routes for brands
+Route::get('brands', [BrandController::class, 'index']);
+Route::get('brands/{id}', [BrandController::class, 'show']);
+Route::post('brands', [BrandController::class, 'store']);
+Route::put('brands/{id}', [BrandController::class, 'update']);
+Route::delete('brands/{id}', [BrandController::class, 'destroy']);
 //routes for products
 Route::get('products', [ProductsController::class, 'index']);
 Route::post('products', [ProductsController::class, 'store']);
