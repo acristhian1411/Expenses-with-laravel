@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Expenses with laravel",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

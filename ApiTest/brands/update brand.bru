@@ -1,0 +1,16 @@
+meta {
+  name: update brand
+  type: http
+  seq: 2
+}
+
+put {
+  url: http://localhost:8000/api/brands/1?brand_desc=bebida sin azucar&brand_name=cocacola
+  body: none
+  auth: none
+}
+
+params:query {
+  brand_desc: bebida sin azucar
+  brand_name: cocacola
+}
