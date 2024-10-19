@@ -20,7 +20,10 @@ class ProductsController extends ApiController
             $t = Products::query()->first();
             $query = Products::query();
             $query = $this->filterData($query, $t);
-            $datos = $query->get();
+            $datos = $query->join('categories','products.category_id','=','categories.id')
+            ->join('iva_types','products.iva_type_id','=','iva_types.id')
+            ->select('products.*','iva_types.iva_type_desc','categories.cat_desc')
+            ->get();
             return $this->showAll($datos, 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
@@ -88,7 +91,7 @@ class ProductsController extends ApiController
         try{
             $reglas = [
                 'product_name' => 'required|string|max:255',
-                'product_desc' => 'nullable|string',
+                'product_desc' => 'required|string',
                 'product_cost_price' => 'required|numeric|min:0',
                 'product_quantity' => 'required|integer|min:0',
                 'product_selling_price' => 'required|numeric|min:0',
