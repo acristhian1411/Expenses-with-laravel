@@ -1,24 +1,35 @@
 <script>
+    import {formatNumber, unformatNumber} from '@components/utilities/NumberFormat.js';
+	import { createEventDispatcher, onMount } from 'svelte';
     export let label;
     export let value;
     export let errors;
     export let type;
     export let required;
+    export let customFN;
+    const dispatch = createEventDispatcher();
+    function handChange(event) {
+        dispatch('custom', event);
+    }
+    
+    onMount(() => {
+        console.log(customFN);
+    })
 
     // $: value = formatNumber(value);
-
-    function formatNumber(value) {
-        if (!value) return '';
-        return value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    }
-
-    function unformatNumber(value) {
-        return value.replace(/\./g, '');
-    }
     function handleInput(event) {
         const unformattedValue = unformatNumber(event.target.value);
         value = unformattedValue; // Asigna el valor sin puntos
         event.target.value = formatNumber(unformattedValue); // Muestra el valor con puntos
+    }
+    function handleCustomInput(event) {
+        if (customFN) {
+            const unformattedValue = unformatNumber(event.target.value);
+            let value = unformattedValue;
+            customFN(value); // Llama la función que se pasó como prop
+        } else {
+            handleInput(event); // Si no hay función personalizada, usa la predeterminada
+        }
     }
 </script>
 <div class="mb-4 flex items-center ">
@@ -29,7 +40,7 @@
                 required={required}
                 inputmode="numeric"
                 value={formatNumber(value)}
-                on:input={handleInput}
+                on:input={handleCustomInput}
                 class="input input-bordered w-full max-w-xs block" />
         {:else}
             <input 
