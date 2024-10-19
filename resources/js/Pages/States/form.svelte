@@ -142,6 +142,7 @@
 	/>
 	<Autocomplete
 		errors={errors}
+		label='Pais'
 		bind:item_selected={country_selected}
 		items={countries.map(x => ({label: x.country_name, value: x.id}))}
 		searchTerm={searchTerm}

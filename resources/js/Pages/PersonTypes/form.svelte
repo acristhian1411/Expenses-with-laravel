@@ -28,8 +28,6 @@
 	}
 
 	onMount(() => {
-
-		console.log('url desde env',appUrl)
 		if (edit == true) {
 			id = item.id;
 			p_type_desc = item.p_type_desc;
@@ -95,16 +93,18 @@
 {:else}
 	<h3 class="mb-4 text-center text-2xl">Crear Tipo de Persona</h3>
 {/if}
-<!-- <form> -->
+<form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>
 	<Textfield 
 		label="Descripción" 
+		required={true}
 		bind:value={p_type_desc} 
 		errors={errors?.p_type_desc ? {message:errors.p_type_desc[0]} : null} 
 	/>
 
 	<button
 		class="btn btn-primary"
-		on:click={edit == true ? handleUpdateObject() : handleCreateObject()}>Guardar</button
+		type="submit"
+		>Guardar</button
 	>
 	<button class="btn btn-secondary" on:click={close}>Cancelar</button>
-<!-- </form> -->
+</form>
