@@ -102,6 +102,14 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('PaymentTypes/show', ['id' => $id]);
     })->middleware('permission:paymenttypes.show');
 
+    Route::get('/brands', function () {
+        return Inertia::render('Brands/index');
+    })->middleware('permission:brands.index');
+
+    Route::get('/brands/{id}', function ($id) {
+        return Inertia::render('Brands/show', ['id' => $id]);
+    })->middleware('permission:brands.show');
+
     Route::get('/products', function () {
         return Inertia::render('Products/index');
     })->middleware('permission:products.index');

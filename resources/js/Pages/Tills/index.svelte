@@ -223,7 +223,7 @@
 			</tbody>
 		</table>
 		<Pagination
-			{current_page}
+			current_page={current_page?current_page:1}
 			{total_pages}
 			{items_per_page}
 			on:page={handlePage}
