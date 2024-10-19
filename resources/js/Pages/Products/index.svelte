@@ -188,24 +188,24 @@
 							>
 						</div>
 					</th>
-					<th class="text-center text-lg" on:click={() => sortData('city_name')}>
+					<th class="text-center text-lg" on:click={() => sortData('product_name')}>
 						<div class="flex items-center justify-center">
-							Ciudad
+							Nombre
 							<button><SortIcon/></button>
 						</div>
 					</th>
 					<th class="text-center text-lg">
 						<div class="flex items-center justify-center">
-							Departamento
-							<button on:click={() => sortData('country_name')}
+							Descripcion
+							<button on:click={() => sortData('product_desc')}
 								><SortIcon/></button
 							>
 						</div>
 					</th>
 					<th class="text-center text-lg">
 						<div class="flex items-center justify-center">
-							Pais
-							<button on:click={() => sortData('country_code')}
+							Categoría
+							<button on:click={() => sortData('category_id')}
 								><SortIcon/></button
 							>
 						</div>
@@ -221,9 +221,9 @@
 				{#each data as person, i (person.id)}
 					<tr class="hover">
 						<td>{person.id}</td>
-						<td class="text-center">{person.city_name}</td>
-						<td class="text-center">{person.state_name}</td>
-						<td class="text-center">{person.country_name}</td>
+						<td class="text-center">{person.product_name}</td>
+						<td class="text-center">{person.product_desc}</td>
+						<td class="text-center">{person.cat_desc}</td>
 						{#if user.permissions != undefined && user.permissions.includes('products.show')}
 							<td>
 								<button class="btn btn-info" use:inertia={{ href: `/products/${person.id}` }}>Mostrar</button>
