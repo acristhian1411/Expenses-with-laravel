@@ -17,17 +17,21 @@
 	let product_selling_price = '';
 	let category_id = '';
 	let iva_type_id = '';
+	let brand_id = '';
 	export let edit;
 	export let item;
 	let errors = null;
 	let iva_types = [];
+	let brands = [];
 	let categories = [];
 	let iva_type_selected ;
+	let brand_selected ;
 	let category_selected ;
 	let searchTerm = '';
 	let showDropdown = false;
 	let loading = false;
 	let filteredIvaTypes = [];
+	let filteredBrands = [];
 	let filteredCategories = [];
 	let token = '';
 	let config = {
@@ -42,6 +46,19 @@
 	function getCategories() {
 		axios.get(`/api/categories`).then((response) => {
 			categories = response.data.data;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
+	}
+
+	function getBrands() {
+		axios.get(`/api/brands`).then((response) => {
+			brands = response.data.data;
 		}).catch((err) => {
 			let detail = {
 				detail: {
@@ -71,11 +88,17 @@
 
 	onMount(() => {
 		getCategories();
+		getBrands();
 		getIvaTypes();
 		if (edit == true) {
 			id = item.id;
 			product_name = item.product_name;
 			product_desc = item.product_desc;
+			product_cost_price = item.product_cost_price;
+			product_quantity = item.product_quantity;
+			product_selling_price = item.product_selling_price;
+			brand_id = item.brand_id;
+			iva_type_id = item.iva_type_id;
 			category_id = item.category_id;
 		}
 	});
@@ -89,7 +112,8 @@
 				product_quantity,
 				product_selling_price,
 				category_id: category_selected?.value? category_selected.value : null,
-				iva_type_id: iva_type_selected?.value? iva_type_selected.value : null
+				iva_type_id: iva_type_selected?.value? iva_type_selected.value : null,
+				brand_id: brand_selected?.value? brand_selected.value : null
 			})
 			.then((res) => {
 				let detail = {
@@ -117,7 +141,12 @@
 			.put(`/api/products/${id}`, {
 				product_name,
 				product_desc,
-				state_id: state_selected?.id? state_selected.id : null
+				product_cost_price,
+				product_quantity,
+				product_selling_price,
+				category_id: category_selected?.value? category_selected.value : null,
+				iva_type_id: iva_type_selected?.value? iva_type_selected.value : null,
+				brand_id: brand_selected?.value? brand_selected.value : null
 			},config)
 			.then((res) => {
 				let detail = {
@@ -144,6 +173,14 @@
 			category => ({
 				label: category.category_name,
 				value: category.id
+			})
+		)
+	}
+	function Brands(){
+		return brands.map(
+			brand => ({
+				label: brand.brand_name,
+				value: brand.id
 			})
 		)
 	}
@@ -222,6 +259,16 @@
 		showDropdown={showDropdown}
 		loading={loading}
 		filterdItem={Categories()}
+	/>
+	<Autocomplete
+		errors={errors}
+		label="Marca"
+		bind:item_selected={brand_selected}
+		items={brands.map(x => ({label: x.brand_name, value: x.id}))}
+		searchTerm={searchTerm}
+		showDropdown={showDropdown}
+		loading={loading}
+		filterdItem={Brands()}
 	/>
 	<Autocomplete
 		errors={errors}

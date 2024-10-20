@@ -210,6 +210,14 @@
 							>
 						</div>
 					</th>
+					<th class="text-center text-lg">
+						<div class="flex items-center justify-center">
+							Marca
+							<button on:click={() => sortData('brand_id')}
+								><SortIcon/></button
+							>
+						</div>
+					</th>
 					{#if user.permissions != undefined && user.permissions.includes('products.create')}
 						<th>
 							<button class="btn btn-primary" on:click={() => (_new = true)}>Agregar</button>
@@ -218,25 +226,26 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as person, i (person.id)}
+				{#each data as product, i (product.id)}
 					<tr class="hover">
-						<td>{person.id}</td>
-						<td class="text-center">{person.product_name}</td>
-						<td class="text-center">{person.product_desc}</td>
-						<td class="text-center">{person.cat_desc}</td>
+						<td>{product.id}</td>
+						<td class="text-center">{product.product_name}</td>
+						<td class="text-center">{product.product_desc}</td>
+						<td class="text-center">{product.cat_desc}</td>
+						<td class="text-center">{product.brand_name}</td>
 						{#if user.permissions != undefined && user.permissions.includes('products.show')}
 							<td>
-								<button class="btn btn-info" use:inertia={{ href: `/products/${person.id}` }}>Mostrar</button>
+								<button class="btn btn-info" use:inertia={{ href: `/products/${product.id}` }}>Mostrar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('products.update')}
 							<td>
-								<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>
+								<button class="btn btn-warning" on:click={() => openEditModal(product)}>Editar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('products.destroy')}
 							<td>
-								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}
+								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(product.id)}
 									>Eliminar</button
 								>
 							</td>

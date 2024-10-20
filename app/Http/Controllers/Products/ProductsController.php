@@ -22,7 +22,8 @@ class ProductsController extends ApiController
             $query = $this->filterData($query, $t);
             $datos = $query->join('categories','products.category_id','=','categories.id')
             ->join('iva_types','products.iva_type_id','=','iva_types.id')
-            ->select('products.*','iva_types.iva_type_desc','categories.cat_desc')
+            ->join('brands','products.brand_id','=','brands.id')
+            ->select('products.*','iva_types.iva_type_desc','categories.cat_desc', 'brands.brand_name')
             ->get();
             return $this->showAll($datos, 200);
         }catch(\Exception $e){
@@ -47,6 +48,7 @@ class ProductsController extends ApiController
                 'product_selling_price' => 'required|numeric|min:0',
                 'category_id' => 'required|integer',
                 'iva_type_id' => 'required|integer',
+                'brand_id' => 'required|integer',
             ];
             $request->validate($rules);
             $products = Products::create($request->all());
@@ -71,7 +73,11 @@ class ProductsController extends ApiController
     public function show($id)
     {
         try{
-            $product = Products::findOrFail($id);
+            $product = Products::where('id',$id)
+            ->join('categories','products.category_id','=','categories.id')
+            ->join('iva_types','products.iva_type_id','=','iva_types.id')
+            ->join('brands','products.brand_id','=','brands.id')
+            ->first();
             $audits = $product->audits;
             return $this->showOne($product,$audits, 200);
         }catch(\Exception $e){
@@ -97,6 +103,7 @@ class ProductsController extends ApiController
                 'product_selling_price' => 'required|numeric|min:0',
                 'category_id' => 'required|integer',
                 'iva_type_id' => 'required|integer',
+                'brand_id' => 'required|integer'
             ];
             $request->validate($reglas);
             $products = Products::findOrFail($id);
