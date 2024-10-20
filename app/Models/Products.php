@@ -20,7 +20,8 @@ class Products extends Model implements AuditableContract
         'product_quantity',
         'product_selling_price',
         'category_id',
-        'iva_type_id'
+        'iva_type_id',
+        'brand_id',
     ];
 
 
@@ -32,6 +33,11 @@ class Products extends Model implements AuditableContract
     public function ivaType()
     {
         return $this->belongsTo(IvaType::class);
+    }
+
+    public function ProductsProvider()
+    {
+        return $this->belongsTo(ProductsProvider::class);
     }
 
 }
