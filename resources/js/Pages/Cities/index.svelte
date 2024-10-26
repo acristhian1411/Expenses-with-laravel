@@ -134,14 +134,11 @@
 		if (search_param == '') {
 			url = `${appUrl}/api/cities?`;
 		} else {
-			url = `${appUrl}/api/cities?state_name=${search_param}&`;
+			url = `${appUrl}/api/cities?city_name=${search_param}&`;
 		}
 		fetchData(1, items_per_page);
 	}
 	onMount(async () => {
-		// if(!isLoggedIn()){
-		// 	goto('/login');
-		// }
 		fetchData();
 	});
 </script>
