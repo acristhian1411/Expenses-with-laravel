@@ -72,6 +72,18 @@ class PermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name'=>'ivatypes.create','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'ivatypes.update','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'ivatypes.destroy','guard_name'=> 'web']);
+        // permissions for persons
+        Permission::firstOrCreate(['name'=>'persons.index','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'persons.show','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'persons.create','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'persons.update','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'persons.destroy','guard_name'=> 'web']);
+        // permissions for providers
+        Permission::firstOrCreate(['name'=>'providers.index','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'providers.show','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'providers.create','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'providers.update','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'providers.destroy','guard_name'=> 'web']);
         // permissions for users
         Permission::firstOrCreate(['name'=>'users.index','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'users.show','guard_name'=> 'web']);
