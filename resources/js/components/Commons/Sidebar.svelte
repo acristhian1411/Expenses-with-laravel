@@ -4,7 +4,7 @@
 	import {Home,BoxesIcon, ExitIcon, ConfigIcon, FinanceIcon, LocationIcon, UserIcon, ReportIcon, ProductIcon} from '@components/Icons/';
 	import {Inertia} from '@inertiajs/inertia';
     import DropdownMenu from './DropdownMenu.svelte';
-	import {locationItems,configItems,adminItems,userItems,reportsItems, productsItems} from './MenuItems.js';
+	import {locationItems,configItems,adminItems,userItems,reportsItems, productsItems, personsItems} from './MenuItems.js';
 	import { sidebarOpen } from './sidebar.js';
 	import { onMount } from 'svelte';
 	export let user;
@@ -57,6 +57,9 @@
 			{/if}
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('administration.index')}
 				<DropdownMenu title="Administración" icon={FinanceIcon} items={adminItems(user)}/>
+			{/if}
+			{#if user != undefined && user.permissions != undefined && user.permissions.includes('persons.index')}
+				<DropdownMenu title="Personas" icon={FinanceIcon} items={personsItems(user)}/>
 			{/if}
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('reports.index')}
 				<DropdownMenu title="Reportes" icon={ReportIcon} items={reportsItems(user)}/>

@@ -117,6 +117,14 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/products/{id}', function ($id) {
         return Inertia::render('Products/show', ['id' => $id]);
     })->middleware('permission:products.show');
+
+    Route::get('/providers', function () {
+        return Inertia::render('Providers/index');
+    })->middleware('permission:providers.index');
+
+    Route::get('/providers/{id}', function ($id) {
+        return Inertia::render('Providers/show', ['id' => $id]);
+    })->middleware('permission:providers.show');
 });
 
 

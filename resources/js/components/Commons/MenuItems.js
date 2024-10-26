@@ -1,5 +1,14 @@
 import { BoxesIcon } from '@components/Icons/';
 
+export const personsItems =(user)=> [
+    {
+        label: 'Proveedores',
+        route: '/providers',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('persons.index')
+    }
+];
+
 export const locationItems =(user)=> [
     {
         label: 'Paises',
