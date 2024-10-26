@@ -1,0 +1,25 @@
+meta {
+  name: update provider
+  type: http
+  seq: 2
+}
+
+put {
+  url: http://localhost:8000/api/persons/3?person_fname=Cristhian&person_lastname=Acosta&person_birtdate=1990-01-01&person_photo=default.png&person_address=Calle falsa 123, 1&person_idnumber=123456789&person_ruc=123456789&person_corpname=Cristhian Acosta&p_type_id=1&country_id=0&city_id=211
+  body: none
+  auth: none
+}
+
+params:query {
+  p_type_id: 1
+  country_id: 0
+  city_id: 211
+  person_fname: Cristhian
+  person_lastname: Acosta
+  person_birtdate: 1990-01-01
+  person_photo: default.png
+  person_address: Calle falsa 123
+  person_idnumber: 123456789
+  person_ruc: 123456789 
+  person_corpname: Cristhian Acosta
+}

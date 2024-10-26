@@ -1,0 +1,25 @@
+meta {
+  name: create new provider
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8000/api/persons?p_type_id=1&country_id=0&city_id=211&person_fname=Cristhian&person_lastname=Acosta&person_birtdate=1990-01-01&person_photo=default.png&person_address=Calle de la República, 1&person_idnumber=123456789&person_ruc=123456789&person_corpname=Cristhian Acosta
+  body: none
+  auth: none
+}
+
+params:query {
+  p_type_id: 1
+  country_id: 0
+  city_id: 211
+  person_fname: Cristhian
+  person_lastname: Acosta
+  person_birtdate: 1990-01-01
+  person_photo: default.png
+  person_address: Calle de la República, 1
+  person_idnumber: 123456789
+  person_ruc: 123456789
+  person_corpname: Cristhian Acosta
+}
