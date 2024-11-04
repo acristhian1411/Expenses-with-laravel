@@ -10,7 +10,7 @@
     let data = [];
     let audits = [];
     let error = null;
-    let url = `${appUrl}/api/users/`;
+    let url = `${appUrl}/api/persons/`;
 
     async function fetchData() {
         axios.get(`${url}${id}`).then((response) => {
@@ -37,15 +37,27 @@
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <li><span class="cursor-pointer" on:click={()=>goTo("/")}>Inicio</span></li>
         <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <li><span class="cursor-pointer" on:click={()=>goTo("/users")}>Usuarios</span></li>
+        <li><span class="cursor-pointer" on:click={()=>goTo("/providers")}>Proveedores</span></li>
 	</ul>
 </div>
 {#if data}
     <div transition:blur>
-        <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{data.name}</p>
-        <p class="text-1xl">{data.email}</p>
-        <AsingRole userId={data.id} role={user.roles} />
+        <h1 class="text-xl font-bold">Nombre:</h1>
+        <p class="text-1xl">{data.person_fname}</p>
+        <h1 class="text-xl font-bold mt-4">Apellido:</h1>
+        <p class="text-1xl">{data.person_lastname}</p>
+        <h1 class="text-xl font-bold mt-4">Razón Social:</h1>
+        <p class="text-1xl">{data.person_corpname}</p>
+        <h1 class="text-xl font-bold mt-4">Código RUC:</h1>
+        <p class="text-1xl">{data.person_ruc}</p>
+        <h1 class="text-xl font-bold mt-4">Dirección:</h1>
+        <p class="text-1xl">{data.person_address}</p>
+        <h1 class="text-xl font-bold mt-4">País:</h1>
+        <p class="text-1xl">{data.country_name}</p>
+        <h1 class="text-xl font-bold mt-4">Ciudad:</h1>
+        <p class="text-1xl">{data.city_name}</p>
+        <h1 class="text-xl font-bold mt-4">Tipo:</h1>
+        <p class="text-1xl">{data.p_type_desc}</p>
     </div>
 {/if}
 {#if audits}

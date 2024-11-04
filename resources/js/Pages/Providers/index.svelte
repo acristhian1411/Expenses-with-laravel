@@ -80,7 +80,7 @@
 				authorization: `token: ${token}`,
 			},
 		}
-		axios.delete(`${appUrl}/api/users/${id}`, config).then((res) => {
+		axios.delete(`${appUrl}/api/persons/${id}`, config).then((res) => {
 			let detail = {
 				detail: {
 					type: 'delete',
@@ -213,14 +213,6 @@
 							>
 						</div>
 					</th>
-					<th class="text-center text-lg">
-						<div class="flex items-center justify-center">
-							Tipo de Persona
-							<button on:click={() => sortData('p_type_id')}
-								><SortIcon/></button
-							>
-						</div>
-					</th>
 					{#if user.permissions != undefined && user.permissions.includes('users.create')}
 						<th>
 							<button class="btn btn-primary" on:click={() => (_new = true)}>
@@ -237,10 +229,9 @@
 						<td class="text-center">{person.person_idnumber}</td>
 						<td class="text-center">{person.person_fname}</td>
 						<td class="text-center">{person.person_lastname}</td>
-						<td class="text-center">{person.p_type_desc}</td>
 						{#if user.permissions != undefined && user.permissions.includes('users.show')}
 							<td>
-								<button class="btn btn-info" use:inertia={{ href: `/users/${person.id}` }}>
+								<button class="btn btn-info" use:inertia={{ href: `/providers/${person.id}` }}>
 									Mostrar
 								</button>
 							</td>
