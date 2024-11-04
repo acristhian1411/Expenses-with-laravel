@@ -20,6 +20,7 @@ como registro de clientes, proveedores, productos. etc.
 5. Configura la base de datos en el archivo `.env`
 6. Genera la clave de la aplicación: `php artisan key:generate`
 7. Ejecuta las migraciones: `php artisan migrate`
+7. Inserta los datos iniciales: `php artisan db:seed`
 8. Lanza la aplicación: `php artisan serve`
 9. Ve a la documentación de la api en: [http://localhost:8000/swagger/documentation]
 
