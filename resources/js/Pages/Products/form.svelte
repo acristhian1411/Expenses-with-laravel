@@ -136,7 +136,8 @@
 			});
 	}
 
-	function handleUpdateObject() {
+	function handleUpdateObject(event) {
+		event.preventDefault();
 		axios
 			.put(`/api/products/${id}`, {
 				product_name,
