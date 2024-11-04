@@ -42,10 +42,10 @@ class PersonsController extends ApiController
     {
         try{
             $reglas = [
-                'person_fname' => 'required|string|max:255',
-                'person_lastname' => 'required|string|max:255',
+                'person_fname' => $request->p_type_id != 1 ? 'required|string|max:255':'',
+                'person_lastname' => $request->p_type_id != 1 ? 'required|string|max:255':'',
                 'person_corpname' => 'nullable|string|max:255',
-                'person_idnumber' => 'required|string|max:50',
+                'person_idnumber' => $request->p_type_id != 1 ? 'required|string|max:50':'',
                 'person_ruc' => 'nullable|string|max:50',
                 'person_birtdate' => 'required|date',
                 'person_address' => 'required|string|max:255',
@@ -77,7 +77,12 @@ class PersonsController extends ApiController
     public function show($id)
     {
         try{
-            $persons = Persons::find($id);
+            $persons = Persons::findOrFail($id)
+            ->join('person_types','person_types.id','=','persons.p_type_id')
+            ->join('countries','countries.id','=','persons.country_id')
+            ->join('cities','cities.id','=','persons.city_id')
+            ->select('persons.*','person_types.p_type_desc','countries.country_name','cities.city_name')
+            ->first();
             $audit = $persons->audits;
             return $this->showOne($persons, $audit, 200);
         }catch(\Exception $e){
@@ -105,10 +110,10 @@ class PersonsController extends ApiController
     {
         try{
             $reglas = [
-                'person_fname' => 'required|string|max:255',
-                'person_lastname' => 'required|string|max:255',
+                'person_fname' => $request->p_type_id != 1 ? 'required|string|max:255':'',
+                'person_lastname' => $request->p_type_id != 1 ? 'required|string|max:255':'',
                 'person_corpname' => 'nullable|string|max:255',
-                'person_idnumber' => 'required|string|max:50',
+                'person_idnumber' => $request->p_type_id != 1 ? 'required|string|max:50':'',
                 'person_ruc' => 'nullable|string|max:50',
                 'person_birtdate' => 'required|date',
                 'person_address' => 'required|string|max:255',
