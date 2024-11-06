@@ -125,6 +125,14 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/providers/{id}', function ($id) {
         return Inertia::render('Providers/show', ['id' => $id]);
     })->middleware('permission:providers.show');
+
+    Route::get('/employees',function(){
+        return Inertia::render('Employees/index');
+    })->middleware('permission:employees.index');
+
+    Route::get('/employees/{id}', function ($id) {
+        return Inertia::render('Employees/show', ['id' => $id]);
+    })->middleware('permission:employees.show');
 });
 
 

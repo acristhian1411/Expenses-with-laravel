@@ -84,6 +84,12 @@ class PermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name'=>'providers.create','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'providers.update','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'providers.destroy','guard_name'=> 'web']);
+        // permissions for employees
+        Permission::firstOrCreate(['name'=>'employees.index','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'employees.show','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'employees.create','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'employees.update','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'employees.destroy','guard_name'=> 'web']);
         // permissions for users
         Permission::firstOrCreate(['name'=>'users.index','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'users.show','guard_name'=> 'web']);
