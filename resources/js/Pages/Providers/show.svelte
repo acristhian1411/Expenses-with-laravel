@@ -3,7 +3,6 @@
     import {blur} from 'svelte/transition';
     import axios from 'axios';
     import { Inertia } from '@inertiajs/inertia';
-    import AsingRole from './asingRole.svelte';
     export let user;
     export let appUrl
     export let id = 0;
