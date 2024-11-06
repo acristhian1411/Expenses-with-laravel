@@ -147,9 +147,25 @@ class PersonsController extends ApiController
         try{
             $persons = Persons::find($id);
             $persons->delete();
-            return response()->json('Eliminado con exito');
+            return response()->json(['message'=>'Eliminado con exito']);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo eliminar los datos'],500);
+        }
+    }
+
+    public function searchPerType(Request $request, $type){
+        try{
+            // dd($request);
+            $person = Persons::where('p_type_id', $type)
+            ->where(function ($query) use ($request) {
+                $query->where('person_fname', 'ilike', '%'.$request->search.'%')
+                    ->orWhere('person_lastname','ilike', '%'.$request->search.'%');
+            })
+            ->get();
+            // dd($person);
+            return $this->showAll($person, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }
     }
 }

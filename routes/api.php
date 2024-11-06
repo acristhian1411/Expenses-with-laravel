@@ -111,6 +111,7 @@ Route::put('persons/{id}', [PersonsController::class, 'update']);
 Route::get('persons/{id}', [PersonsController::class, 'show']);
 Route::get('personsbytype/{id}', [PersonsController::class, 'personByType']);
 Route::delete('persons/{id}', [PersonsController::class, 'destroy']);
+Route::get('persons-search-by-type/{id}', [PersonsController::class, 'searchPerType']);
 // routes for brands
 Route::get('brands', [BrandController::class, 'index']);
 Route::get('brands/{id}', [BrandController::class, 'show']);

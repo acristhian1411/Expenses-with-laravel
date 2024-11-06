@@ -30,7 +30,7 @@
 	let total_items;
 	let current_page = 1;
 	let items_per_page = '10';
-	let url = `${appUrl}/api/persons?p_type_id=1&`;
+	let url = `/api/persons?p_type_id=1&`;
 
 	function updateData() {
 		fetchData();
@@ -133,16 +133,13 @@
 	function search(event) {
 		search_param = event.target.value;
 		if (search_param == '') {
-			url = `${appUrl}/api/users?`;
+			url = `/api/persons?p_type_id=1&`;
 		} else {
-			url = `${appUrl}/api/persons?p_type_id=1&person_fname=${search_param}&person_lastname=${search_param}&`;
+			url = `${appUrl}/api/persons-search-by-type/1?search=${search_param}&`;
 		}
 		fetchData(1, items_per_page);
 	}
 	onMount(async () => {
-		// if(!isLoggedIn()){
-		// 	goto('/login');
-		// }
 		fetchData();
 	});
 </script>
