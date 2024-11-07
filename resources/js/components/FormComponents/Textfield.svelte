@@ -42,9 +42,16 @@
                 value={formatNumber(value)}
                 on:input={handleCustomInput}
                 class="input input-bordered w-full max-w-xs block" />
+        {:else if type == 'date'}
+            <input 
+                type='date'
+                bind:value={value} 
+                required={required}
+                class="input input-bordered w-full max-w-xs block" 
+            />
         {:else}
             <input 
-                type="text" 
+                type='text'
                 bind:value={value} 
                 required={required}
                 class="input input-bordered w-full max-w-xs block" 
