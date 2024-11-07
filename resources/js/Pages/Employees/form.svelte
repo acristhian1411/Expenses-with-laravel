@@ -113,7 +113,7 @@
 			.post(`/api/persons`, {
 				person_fname,
 				person_corpname,
-				person_idnumber:person_ruc,
+				person_idnumber:person_idnumber,
 				person_ruc,
 				person_birtdate:'2022-01-01',
 				person_address,
@@ -180,9 +180,9 @@
 </script>
 
 {#if edit == true}
-	<h3 class="mb-4 text-center text-2xl">Actualizar Proveedor</h3>
+	<h3 class="mb-4 text-center text-2xl">Actualizar Empleados</h3>
 {:else}
-	<h3 class="mb-4 text-center text-2xl">Crear Proveedor</h3>
+	<h3 class="mb-4 text-center text-2xl">Crear Empleados</h3>
 {/if}
 <form on:submit={edit == true ? handleUpdateObject : handleCreateObject}> 
 	<Textfield 
@@ -202,17 +202,23 @@
 		errors={errors?.person_corpname ? {message:errors.person_corpname[0]} : null}
 	/>
 	<Textfield 
-		label="Código RUC"
-		bind:value={person_ruc} 
+		label="Cédula"
+		bind:value={person_idnumber} 
 		required={true}
-		errors={errors?.person_ruc ? {message:errors.person_ruc[0]} : null} 
+		errors={errors?.person_idnumber ? {message:errors.person_idnumber[0]} : null} 
+	/>
+	<Textfield
+		label='Fecha de nacimiento'
+		bind:value={person_birtdate}
+		required={true}
+		type="date"
+		errors={errors?.person_birtdate ? {message:errors.person_birtdate[0]} : null} 
 	/>
 	<Textfield
 		label="Dirección"
 		bind:value={person_address} 
 		errors={errors?.person_address ? {message:errors.person_address[0]} : null}
 	/>
-
 	<Autocomplete
 		errors={errors}
 		label="País"
@@ -223,7 +229,6 @@
 		loading={loading}
 		filterdItem={Countries()}
 	/>
-
 	<Autocomplete
 		errors={errors}
 		label="Ciudad"
@@ -242,4 +247,4 @@
 	</button
 	>
 	<button class="btn btn-secondary" on:click={close}>Cancelar</button>
-</form>
+</form> 

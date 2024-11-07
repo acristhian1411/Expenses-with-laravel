@@ -36,7 +36,7 @@
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <li><span class="cursor-pointer" on:click={()=>goTo("/")}>Inicio</span></li>
         <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <li><span class="cursor-pointer" on:click={()=>goTo("/providers")}>Proveedores</span></li>
+        <li><span class="cursor-pointer" on:click={()=>goTo("/employees")}>Empleados</span></li>
 	</ul>
 </div>
 {#if data}
@@ -65,7 +65,6 @@
         <table class="table w-full">
             <thead>
                 <tr>
-                    <!-- <th>Id</th> -->
                     <th class="text-center text-lg">Usuario</th>
                     <th class="text-center text-lg">Evento</th>
                     <th class="text-center text-lg">Fecha</th>

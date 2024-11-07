@@ -47,7 +47,7 @@ class PersonsController extends ApiController
                 'person_corpname' => 'nullable|string|max:255',
                 'person_idnumber' => $request->p_type_id != 1 ? 'required|string|max:50':'',
                 'person_ruc' => 'nullable|string|max:50',
-                'person_birtdate' => 'required|date',
+                'person_birtdate' => $request->p_type_id != 1 ? 'required|date':'',
                 'person_address' => 'required|string|max:255',
                 'p_type_id' => 'required|integer',
                 'country_id' => 'required|integer',

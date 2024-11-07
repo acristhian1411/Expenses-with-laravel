@@ -225,7 +225,7 @@
 						<td class="text-center">{person.person_lastname}</td>
 						{#if user.permissions != undefined && user.permissions.includes('users.show')}
 							<td>
-								<button class="btn btn-info" use:inertia={{ href: `/providers/${person.id}` }}>
+								<button class="btn btn-info" use:inertia={{ href: `/employees/${person.id}` }}>
 									Mostrar
 								</button>
 							</td>
