@@ -60,6 +60,12 @@ export const configItems =(user)=> [
         icon: BoxesIcon,
         permission: user != undefined && user.permissions != undefined && user.permissions.includes('paymenttypes.index')
     },
+    {
+        label: 'Tipos de contacto',
+        route: '/contacttypes',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('contacttypes.index')
+    }
 ];
 export const productsItems =(user)=> [
     {

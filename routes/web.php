@@ -133,6 +133,15 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/employees/{id}', function ($id) {
         return Inertia::render('Employees/show', ['id' => $id]);
     })->middleware('permission:employees.show');
+
+    Route::get('/contacttypes',function(){
+        return Inertia::render('ContactTypes/List');
+    })->middleware('permission:contacttypes.index');
+
+    Route::get('/contacttypes/{id}', function ($id) {
+        return Inertia::render('ContactTypes/Show', ['id' => $id]);
+    })->middleware('permission:contacttypes.show');
+
 });
 
 
