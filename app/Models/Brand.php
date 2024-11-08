@@ -15,7 +15,4 @@ class Brand extends Model implements AuditableContract
     use SoftDeletes;
     protected $fillable = ['brand_name','brand_desc'];
 
-    public function brandProducts(){
-        return $this->hasMany(BrandProduct::class);
-    }
 }
