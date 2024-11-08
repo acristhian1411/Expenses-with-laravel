@@ -4,7 +4,6 @@
     import { onMount } from 'svelte';
     import { createEventDispatcher } from 'svelte';
     import {Textfield} from '@components/FormComponents';
-    export let appUrl;
     export let edit;
     export let item;
     export let token = '';
@@ -86,11 +85,11 @@
     }
 </script>
 
-<h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar ContactType{:else}Crear ContactType{/if}</h3>
+<h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar Tipo de contacto{:else}Crear Tipo de contacto{/if}</h3>
 <form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>
 
     <Textfield
-        label="Cont_type_desc"
+        label="Descripción"
         required={true}
         bind:value={cont_type_desc}
         errors={errors?.cont_type_desc ? {message:errors.cont_type_desc[0]} : null}

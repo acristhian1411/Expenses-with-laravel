@@ -40,7 +40,7 @@
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <li><span class="cursor-pointer" on:click={() => goTo('/')}>Inicio</span></li>
         <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <li><span class="cursor-pointer" on:click={() => goTo('/contacttypes')}>Tipos de ContactType</span></li>
+        <li><span class="cursor-pointer" on:click={() => goTo('/contacttypes')}>Tipos de Contactos</span></li>
     </ul>
 </div>
 

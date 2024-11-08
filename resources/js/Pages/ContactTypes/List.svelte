@@ -144,7 +144,7 @@
 {#if error}
     <ErrorAlert message={error} on:clearError={ClearError} />
 {/if}
-<h3 class="mb-4 text-center text-2xl">Tipos de ContactType</h3>
+<h3 class="mb-4 text-center text-2xl">Tipo de Contactos</h3>
 <div class="flex justify-center">
     <label class="input input-bordered flex items-center gap-2">
         <input type="text" class="grow" placeholder="Buscar" on:change={search} />
@@ -177,7 +177,7 @@
                     <th class="text-center text-lg">#</th>
                     <th class="text-center text-lg">
                         <div class="flex items-center justify-center">
-                            cont_type_desc
+                            Descripción
                             <button on:click={() => sortData('cont_type_desc')}>
                                 <SortIcon />
                             </button>
