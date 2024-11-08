@@ -42,6 +42,12 @@ class PermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name'=>'tilltypes.create','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'tilltypes.update','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'tilltypes.destroy','guard_name'=> 'web']);
+        // permissions for contacttypes
+        Permission::firstOrCreate(['name'=>'contacttypes.index','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'contacttypes.show','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'contacttypes.create','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'contacttypes.update','guard_name'=> 'web']);
+        Permission::firstOrCreate(['name'=>'contacttypes.destroy','guard_name'=> 'web']);
         // permissions for countries
         Permission::firstOrCreate(['name'=>'countries.index','guard_name'=> 'web']);
         Permission::firstOrCreate(['name'=>'countries.show','guard_name'=> 'web']);
