@@ -1,246 +1,147 @@
 <?php
-
 function generateFormComponent($modelName, $fields) {
-    // Convertimos el nombre del modelo a minúsculas para usar en la URL y permisos
+    // Convertir el nombre del modelo a minúsculas para usar en la URL y permisos
     $modelNameLower = strtolower($modelName);
+    $formTitle = "{#if edit == true}Actualizar $modelName{:else}Crear $modelName{/if}";
 
-    // Obtenemos el primer campo para usar en la ordenación predeterminada
-    $defaultField = $fields[0];
-
-    // Iniciamos el contenido del archivo
+    // Crear el inicio del script con configuración y eventos
     $svelteTemplate = "
 <script>
-    import { onMount } from 'svelte';
-    import { inertia } from '@inertiajs/inertia-svelte';
     import axios from 'axios';
-    import {Pagination, DeleteModal, Modal} from '@components/utilities/';
-    import {Alert, ErrorAlert} from '@components/Alerts/';
-    import {SearchIcon, SortIcon} from '@components/Icons/';
-    import Form from './form.svelte';
-    
-    export let user;
+    import { onMount } from 'svelte';
+    import { createEventDispatcher } from 'svelte';
+    import {Textfield} from '@components/FormComponents';
     export let appUrl;
-    let data = [];
-    let error = null;
-    let openAlert = false;
-    let _new = false;
-    let edit = false;
-    let item = null;
-    let search_param = '';
-    let openDeleteModal = false;
-    let alertMessage = '';
-    let alertType = '';
+    export let edit;
+    export let item;
+    export let token = '';
+    const dispatch = createEventDispatcher();
+    
     let id = 0;
-    let orderBy = '$defaultField';
-    let order = 'asc';
-    let total_pages;
-    let total_items;
-    let current_page = 1;
-    let items_per_page = '10';
-    let url = `\${appUrl}/api/{$modelNameLower}s?`;
-
-    function updateData() {
-        fetchData();
-        closeModal();
+    let errors = null;
+    let config = {
+        headers: {
+            authorization: `token: \${token}`,
+        },
+    };
+    
+    // Variables dinámicas para cada campo
+    ";
+    
+    // Declaración de las variables para cada campo
+    foreach ($fields as $field) {
+        $svelteTemplate .= "let $field = '';\n";
     }
 
-    async function fetchData(page = current_page, rows = items_per_page) {
-        let token = '';
-        let config = {
-            headers: {
-                authorization: `token: \${token}`,
-            },
-        };
-        axios
-            .get(`\${url}sort_by=\${orderBy}&order=\${order}&page=\${page}&per_page=\${rows}`, config)
-            .then((response) => {
-                data = response.data.data;
-                current_page = response.data.currentPage;
-                total_items = response.data.per_page;
-                total_pages = response.data.last_page;
-            })
-            .catch((err) => {
-                error = err.request.response;
-            });
-    }
-
-    function closeAlert() {
-        openAlert = false;
+    // Definición de la función close
+    $svelteTemplate .= "
+    function close() {
+        dispatch('close');
     }
 
     function OpenAlertMessage(event) {
-        openAlert = true;
-        alertType = event.detail.type;
-        alertMessage = event.detail.message;
+        dispatch('message', event.detail);
     }
 
-    function ClearError(){
-        error = null;
+    onMount(() => {
+        if (edit == true) {
+            id = item.id;
+            ";
+
+    // Asignar valores iniciales a cada campo en caso de edición
+    foreach ($fields as $field) {
+        $svelteTemplate .= "$field = item.$field;\n";
     }
 
-    function deleteRecord() {
-        let token = '';
-        let config = {
-            headers: {
-                authorization: `token: \${token}`,
-            },
-        };
-        axios.delete(`\${appUrl}/api/{$modelNameLower}s/\${id}`, config).then((res) => {
+    $svelteTemplate .= "
+        }
+    });
+
+    async function handleCreateObject() {
+        try {
+            const res = await axios.post(`/api/{$modelNameLower}s`, { ";
+
+    // Pasar cada campo como datos para la creación
+    foreach ($fields as $field) {
+        $svelteTemplate .= "$field, ";
+    }
+
+    $svelteTemplate = rtrim($svelteTemplate, ", ") . " }, config);
+
             let detail = {
                 detail: {
-                    type: 'delete',
+                    type: 'success',
                     message: res.data.message
                 }
             };
             OpenAlertMessage(detail);
-            closeDeleteModal();
-        });
+            close();
+        } catch (err) {
+            errors = err.response.data.details ? err.response.data.details : null;
+            let detail = {
+                detail: {
+                    type: 'error',
+                    message: err.response.data.message
+                }
+            };
+            OpenAlertMessage(detail);
+        }
     }
 
-    function openEditModal(data) {
-        edit = true;
-        item = data;
-        _new = false;
+    async function handleUpdateObject() {
+        try {
+            const res = await axios.put(`/api/{$modelNameLower}s/\${id}`, { ";
+
+    // Pasar cada campo como datos para la actualización
+    foreach ($fields as $field) {
+        $svelteTemplate .= "$field, ";
     }
 
-    function closeModal() {
-        edit = false;
-        _new = false;
-    }
+    $svelteTemplate = rtrim($svelteTemplate, ", ") . " }, config);
 
-    function openNewModal() {
-        edit = false;
-        item = null;
-        _new = true;
+            let detail = {
+                detail: {
+                    type: 'success',
+                    message: res.data.message
+                }
+            };
+            OpenAlertMessage(detail);
+            close();
+        } catch (err) {
+            errors = err.response.data.details ? err.response.data.details : null;
+            let detail = {
+                detail: {
+                    type: 'error',
+                    message: err.response.data.message
+                }
+            };
+            OpenAlertMessage(detail);
+        }
     }
-
-    function closeDeleteModal() {
-        openDeleteModal = false;
-        fetchData();
-    }
-
-    function sortData(param) {
-        orderBy = param;
-        order = (order == 'asc') ? 'desc' : 'asc';
-        fetchData(current_page, items_per_page);
-    }
-
-    function OpenDeleteModal(data) {
-        id = data;
-        openDeleteModal = true;
-    }
-
-    function handleRowsPerPage(event) {
-        items_per_page = event.detail.value;
-        fetchData(current_page, event.detail.value);
-    }
-
-    function handlePage(event) {
-        current_page = event.detail.value;
-        fetchData(event.detail.value, items_per_page);
-    }
-
-    function search(event) {
-        search_param = event.target.value;
-        url = search_param === '' ? `\${appUrl}/api/{$modelNameLower}s?` : `\${appUrl}/api/{$modelNameLower}s?{$defaultField}=\${search_param}&`;
-        fetchData(1, items_per_page);
-    }
-
-    onMount(async () => {
-        fetchData();
-    });
 </script>
 
-{#if error}
-    <ErrorAlert message={error} on:clearError={ClearError} />
-{/if}
-<h3 class=\"mb-4 text-center text-2xl\">Tipos de {$modelName}</h3>
-<div class=\"flex justify-center\">
-    <label class=\"input input-bordered flex items-center gap-2\">
-        <input type=\"text\" class=\"grow\" placeholder=\"Buscar\" on:change={search} />
-        <SearchIcon />
-    </label>
-</div>
-{#if openAlert}
-    <Alert {alertMessage} {alertType} on:close={closeAlert} />
-{/if}
-{#if openDeleteModal}
-    <dialog class=\"modal modal-open\">
-        <DeleteModal on:close={closeDeleteModal} on:confirm={deleteRecord} />
-    </dialog>
-{/if}
-{#if _new}
-    <Modal on:close={() => updateData()}>
-        <Form {edit} on:message={OpenAlertMessage} on:close={() => updateData()} />
-    </Modal>
-{/if}
-{#if edit}
-    <Modal on:close={() => updateData()}>
-        <Form {edit} {item} on:message={OpenAlertMessage} on:close={() => updateData()} />
-    </Modal>
-{/if}
-{#if data}
-    <div class=\"overflow-x-auto\">
-        <table class=\"table w-full\">
-            <thead>
-                <tr>
-                    <th class=\"text-center text-lg\">#</th>";
+<h3 class=\"mb-4 text-center text-2xl\">$formTitle</h3>
+<form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>
+";
 
-    // Agregamos las columnas de los campos dinámicos
+    // Generar el componente de entrada de texto para cada campo
     foreach ($fields as $field) {
         $svelteTemplate .= "
-                    <th class=\"text-center text-lg\">
-                        <div class=\"flex items-center justify-center\">
-                            {$field}
-                            <button on:click={() => sortData('{$field}')}>
-                                <SortIcon />
-                            </button>
-                        </div>
-                    </th>";
+    <Textfield
+        label=\"" . ucfirst($field) . "\"
+        required={true}
+        bind:value={{$field}}
+        errors={errors?.{$field} ? {message:errors.{$field}[0]} : null}
+    />
+";
     }
 
-    // Agregamos botones de acción si el usuario tiene permisos
+    // Agregar los botones de guardar y cancelar
     $svelteTemplate .= "
-                    {#if user.permissions != undefined && user.permissions.includes('{$modelNameLower}s.create')}
-                        <th><button class=\"btn btn-primary\" on:click={() => (_new = true)}>Agregar</button></th>
-                    {/if}
-                </tr>
-            </thead>
-            <tbody>
-                {#each data as item, i (item.id)}
-                    <tr class=\"hover\">
-                        <td>{i+1}</td>";
+    <button class=\"btn btn-primary\" type=\"submit\">Guardar</button>
+    <button class=\"btn btn-secondary\" on:click={close}>Cancelar</button>
+</form>
+";
 
-    foreach ($fields as $field) {
-        $svelteTemplate .= "
-                        <td class=\"text-center\">{item.{$field}}</td>";
-    }
-
-    // Agregamos botones de edición, eliminación y visualización basados en permisos
-    $svelteTemplate .= "
-                        {#if user.permissions != undefined && user.permissions.includes('{$modelNameLower}s.show')}
-                            <td><button class=\"btn btn-info\" use:inertia={{ href: `/{$modelNameLower}s/\${item.id}` }}>Mostrar</button></td>
-                        {/if}
-                        {#if user.permissions != undefined && user.permissions.includes('{$modelNameLower}s.update')}
-                            <td><button class=\"btn btn-warning\" on:click={() => openEditModal(item)}>Editar</button></td>
-                        {/if}
-                        {#if user.permissions != undefined && user.permissions.includes('{$modelNameLower}s.destroy')}
-                            <td><button class=\"btn btn-secondary\" on:click={() => OpenDeleteModal(item.id)}>Eliminar</button></td>
-                        {/if}
-                    </tr>
-                {/each}
-            </tbody>
-        </table>
-        <Pagination
-            current_page={current_page}
-            {total_pages}
-            {items_per_page}
-            on:page={handlePage}
-            on:row={handleRowsPerPage}
-        />
-    </div>
-{/if}";
-
-    // Retornamos la plantilla completa
     return $svelteTemplate;
 }

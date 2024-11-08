@@ -16,7 +16,7 @@ function generateListComponent($modelName, $fields) {
     import {Pagination, DeleteModal, Modal} from '@components/utilities/';
     import {Alert, ErrorAlert} from '@components/Alerts/';
     import {SearchIcon, SortIcon} from '@components/Icons/';
-    import Form from './form.svelte';
+    import Form from './Form.svelte';
     
     export let user;
     export let appUrl;

@@ -26,7 +26,7 @@ class MakeSvelteTemplate extends Command
         $generateShow = $this->option('show');
 
         // Directorio de plantillas
-        $directory = resource_path("js/Pages/{$model}");
+        $directory = resource_path("js/Pages/{$model}s");
         $filesystem->ensureDirectoryExists($directory);
 
         // Generar archivos específicos o todos si no se especifican opciones
