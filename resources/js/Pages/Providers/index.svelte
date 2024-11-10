@@ -210,7 +210,7 @@
 							>
 						</div>
 					</th>
-					{#if user.permissions != undefined && user.permissions.includes('users.create')}
+					{#if user.permissions != undefined && user.permissions.includes('providers.create')}
 						<th>
 							<button class="btn btn-primary" on:click={() => (_new = true)}>
 								Agregar
@@ -226,21 +226,21 @@
 						<td class="text-center">{person.person_idnumber}</td>
 						<td class="text-center">{person.person_fname}</td>
 						<td class="text-center">{person.person_lastname}</td>
-						{#if user.permissions != undefined && user.permissions.includes('users.show')}
+						{#if user.permissions != undefined && user.permissions.includes('providers.show')}
 							<td>
 								<button class="btn btn-info" use:inertia={{ href: `/providers/${person.id}` }}>
 									Mostrar
 								</button>
 							</td>
 						{/if}
-						{#if user.permissions != undefined && user.permissions.includes('users.update')}
+						{#if user.permissions != undefined && user.permissions.includes('providers.update')}
 							<td>
 								<button class="btn btn-warning" on:click={() => openEditModal(person)}>
 									Editar
 								</button>
 							</td>
 						{/if}
-						{#if user.permissions != undefined && user.permissions.includes('users.destroy')}
+						{#if user.permissions != undefined && user.permissions.includes('providers.destroy')}
 							<td>
 								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}>
 									Eliminar
