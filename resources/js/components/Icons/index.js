@@ -10,3 +10,4 @@ export {default as LocationIcon} from './LocationIcon.svelte';
 export {default as UserIcon} from './UserIcon.svelte';
 export {default as ReportIcon} from './ReportIcon.svelte';
 export {default as ProductIcon} from './ProductIcon.svelte';
+export {default as PeopleIcon} from './PeopleIcon.svelte';
