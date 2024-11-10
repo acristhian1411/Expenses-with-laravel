@@ -49,6 +49,13 @@
                 required={required}
                 class="input input-bordered w-full max-w-xs block" 
             />
+        {:else if type == 'password'}
+            <input 
+                type='password'
+                bind:value={value} 
+                required={required}
+                class="input input-bordered w-full max-w-xs block" 
+            />
         {:else}
             <input 
                 type='text'
