@@ -12,6 +12,12 @@ export const personsItems =(user)=> [
         route: '/employees',
         icon: BoxesIcon,
         permission: user != undefined && user.permissions != undefined && user.permissions.includes('employees.index')
+    },
+    {
+        label: 'Clientes',
+        route: '/clients',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('clients.index')
     }
 ];
 
