@@ -15,12 +15,17 @@ class TillsController extends ApiController
      */
     public function index()
     {
-        //
-        $t = Tills::query()->first();
-        $query = Tills::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
+        try{
+            $t = Tills::query()->first();
+            $query = Tills::query();
+            $query = $this->filterData($query, $t);
+            $datos = $query->join('till_types','tills.t_type_id','=','till_types.id')
+            ->select('tills.*','till_types.till_type_desc')
+            ->get();
+            return $this->showAll($datos, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);            
+        }
     }
 
     /**
@@ -31,15 +36,24 @@ class TillsController extends ApiController
      */
     public function store(Request $request)
     {
-        //
-        $rules = [
-            'till_name' => 'required|string|max:255',
-            'till_account_number' => 'required|string|max:255',
-            't_type_id' => 'required|integer',
-        ];
-        $this->validate($request, $rules);
-        $tills = Tills::create($request->all());
-        return $this->showOne($tills, 201);
+        try{
+            $rules = [
+                'till_name' => 'required|string|max:255',
+                'till_account_number' => 'required|string|max:255',
+                't_type_id' => 'required|integer',
+            ];
+            $request->validate($rules);
+            $tills = Tills::create($request->all());
+            return $this->showAfterAction($tills,'create',201);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'Ocurrió un error al procesar los datos.'],500);            
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
     }
 
     /**
@@ -50,15 +64,23 @@ class TillsController extends ApiController
      */
     public function show($id)
     {
-        //
-        $till = Tills::findOrFail($id);
-        return $this->showOne($till, 200);
+        try{
+            $till = Tills::findOrFail($id);
+            $audits = $till->audits;
+            return $this->showOne($till, $audits, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);            
+        }
     }
 
 //
 public function getByTypeId($id){
-    $tills = Tills::where('t_type_id', $id)->get();
-    return $this->showAll($tills, 200);
+    try{
+        $tills = Tills::where('t_type_id', $id)->get();
+        return $this->showAll($tills, 200);
+    }catch(\Exception $e){
+        return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
+    }
 }
 
     /**
@@ -70,16 +92,25 @@ public function getByTypeId($id){
      */
     public function update(Request $request, $id)
     {
-        //
-        $rules = [
-            'till_name' => 'required|string|max:255',
-            'till_account_number' => 'required|string|max:255',
-            't_type_id' => 'required|integer',
-        ];
-        $this->validate($request, $rules);
-        $tills = Tills::findOrFail($id);
-        $tills->update($request->all());
-        return $this->showOne($tills, 200);
+        try{
+            $rules = [
+                'till_name' => 'required|string|max:255',
+                'till_account_number' => 'required|string|max:255',
+                't_type_id' => 'required|integer',
+            ];
+            $request->validate($rules);
+            $tills = Tills::findOrFail($id);
+            $tills->update($request->all());
+            return $this->showAfterAction($tills,'update',200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo actualizar los datos'],500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
     }
 
     /**
@@ -90,9 +121,12 @@ public function getByTypeId($id){
      */
     public function destroy($id)
     {
-        //
-        $tills = Tills::findOrFail($id);
-        $tills->delete();
-        return response()->json('Eliminado con exito');
+        try{
+            $tills = Tills::findOrFail($id);
+            $tills->delete();
+            return response()->json(['message'=>'Eliminado con exito']);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo eliminar los datos'],500);
+        }
     }
 }

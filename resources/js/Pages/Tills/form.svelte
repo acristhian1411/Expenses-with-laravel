@@ -4,18 +4,21 @@
 	// import {getToken} from '../../services/authservice'
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
-	import {Textfield} from '@components/FormComponents';
+	import {Textfield, Autocomplete} from '@components/FormComponents';
 
 	const dispatch = createEventDispatcher();
 	let id = 0;
-	let till_type_desc = '';
-	let city_code = '';
+	let till_name = '';
+	let till_account_number = '';
 	let country_id = '';
 	export let edit;
 	export let item;
 	let errors = null;
-	let states = [];
-	let state_selected ;
+	let till_types = [];
+	let till_type_selected ;
+	let searchTerm = '';
+	let showDropdown = false;
+	let loading = false;
 	let token = '';
 	let config = {
 		headers: {
@@ -26,11 +29,14 @@
 		dispatch('close');
 	}
 
-	function getCountries() {
-		axios.get(`/api/states`).then((response) => {
-			states = response.data.data;
+
+
+	function getTillTypes() {
+		axios.get(`/api/tilltypes`).then((response) => {
+			till_types = response.data.data;
 			if (edit == true) {
-				state_selected = states.find(state => state.id === item.state_id);
+				till_type_selected = till_types.find(till_type => till_type.id === item.till_type_id);
+				searchTerm = till_type_selected.till_type_desc;
 			}
 		}).catch((err) => {
 			// errors = err.response.data.details ? err.response.data.details : null;
@@ -43,22 +49,35 @@
 		});
 	}
 
+	function TillTypes(){
+		return till_types.map(
+			till_type => ({
+				label: till_type.till_type_desc,
+				value: till_type.id
+			})
+		)
+	}
+
 	function OpenAlertMessage(event) {
 		dispatch('message', event.detail);
 	}
 
 	onMount(() => {
+		getTillTypes();
 		if (edit == true) {
 			id = item.id;
-			till_type_desc = item.till_type_desc;
+			till_name = item.till_name;
+			till_account_number = item.till_account_number;
+
 		}
 	});
 	// http://127.0.0.1:5173/tilltypes
 	function handleCreateObject() {
-		
 		axios
-			.post(`/api/tilltypes`, {
-				till_type_desc
+			.post(`/api/tills`, {
+				till_name,
+				t_type_id: till_type_selected?.value? till_type_selected.value : null,
+				till_account_number:till_account_number
 			},config)
 			.then((res) => {
 				let detail = {
@@ -71,6 +90,7 @@
 				close();
 			}).catch((err) => {
 				errors = err.response.data.details ? err.response.data.details : null;
+				console.log(err.response)
 				let detail = {
 					detail: {
 						type: 'delete',
@@ -82,8 +102,8 @@
 	}
 	function handleUpdateObject() {
 		axios
-			.put(`/api/tilltypes/${id}`, {
-				till_type_desc
+			.put(`/api/tills/${id}`, {
+				till_name
 			},config)
 			.then((res) => {
 				let detail = {
@@ -112,16 +132,31 @@
 {:else}
 	<h3 class="mb-4 text-center text-2xl">Crear Tipo de Caja</h3>
 {/if}
-<!-- <form> -->
- 	<Textfield
-		errors={errors?.till_type_desc ? {message:errors.till_type_desc[0]} : null}
-		bind:value={till_type_desc} 
+<form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>
+	<Textfield
+		errors={errors?.till_name ? {message:errors.till_name[0]} : null}
+		bind:value={till_name} 
 		label="Descripción"
 	/>
-	
+	<Textfield
+		errors={errors?.till_account_number ? {message:errors.till_account_number[0]} : null}
+		bind:value={till_account_number} 
+		label="Número de Cuenta"
+	/>
+	<Autocomplete
+		errors={errors}
+		label="País"
+		bind:item_selected={till_type_selected}
+		items={till_types.map(x => ({label: x.till_type_desc, value: x.id}))}
+		searchTerm={searchTerm}
+		showDropdown={showDropdown}
+		loading={loading}
+		filterdItem={TillTypes()}
+	/>
 	<button
 		class="btn btn-primary"
-		on:click={edit == true ? handleUpdateObject() : handleCreateObject()}>Guardar</button
-	>
+		type="submit">
+		Guardar
+	</button>
 	<button class="btn btn-secondary" on:click={close}>Cancelar</button>
-<!-- </form> -->
+</form>

@@ -192,6 +192,12 @@
 							<button><SortIcon/></button>
 						</div>
 					</th>
+					<th class="text-center text-lg" on:click={() => sortData('t_type_id')}>
+						<div class="flex items-center justify-center">
+							Tipo
+							<button><SortIcon/></button>
+						</div>
+					</th>					
 					<th class="text-center text-lg" on:click={() => sortData('till_status')}>
 						<div class="flex items-center justify-center">
 							Estado
@@ -202,19 +208,20 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as person, i (person.id)}
+				{#each data as till, i (till.id)}
 					<tr class="hover">
-						<td>{person.id}</td>
-						<td class="text-center">{person.till_name}</td>
-						<td class="text-center">{person.till_status}</td>
+						<td>{till.id}</td>
+						<td class="text-center">{till.till_name}</td>
+						<td class="text-center">{till.till_type_desc}</td>
+						<td class="text-center">{ till.till_status != null && till.till_status == true ? 'Activo' : 'Inactivo'}</td>
 						<td>
-							<button class="btn btn-info" use:inertia={{ href: `/tills/${person.id}` }}>Mostrar</button>
+							<button class="btn btn-info" use:inertia={{ href: `/tills/${till.id}` }}>Mostrar</button>
 						</td>
 						<td>
-							<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>
+							<button class="btn btn-warning" on:click={() => openEditModal(till)}>Editar</button>
 						</td>
 						<td>
-							<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}
+							<button class="btn btn-secondary" on:click={() => OpenDeleteModal(till.id)}
 								>Eliminar</button
 							></td
 						>
