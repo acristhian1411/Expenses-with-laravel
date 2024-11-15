@@ -150,6 +150,14 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('ContactTypes/Show', ['id' => $id]);
     })->middleware('permission:contacttypes.show');
 
+    Route::get('/purchases',function(){
+        return Inertia::render('Purchases/List');
+    })->middleware('permission:purchases.index');
+
+    Route::get('/purchases/{id}', function ($id) {
+        return Inertia::render('Purchases/Show', ['id' => $id]);
+    })->middleware('permission:purchases.show');
+
 });
 
 
