@@ -174,13 +174,13 @@ Route::delete('salesdetails/{id}', [SalesDetailsController::class, 'destroy']);
 //routes for Purchases
 Route::get('purchases', [PurchasesController::class, 'index']);
 Route::post('purchases', [PurchasesController::class, 'store']);
-Route::post('purchases-many', [PurchasesController::class, 'storeMany']);
 Route::put('purchases/{id}', [PurchasesController::class, 'update']);
 Route::get('purchases/{id}', [PurchasesController::class, 'show']);
 Route::delete('purchases/{id}', [PurchasesController::class, 'destroy']);
 //routes for PurchasesDetails
 Route::get('purchasesdetails', [PurchasesDetailsController::class, 'index']);
 Route::post('purchasesdetails', [PurchasesDetailsController::class, 'store']);
+Route::post('purchasesdetails-many', [PurchasesDetailsController::class, 'storeMany']);
 Route::put('purchasesdetails/{id}', [PurchasesDetailsController::class, 'update']);
 Route::get('purchasesdetails/{id}', [PurchasesDetailsController::class, 'show']);
 Route::delete('purchasesdetails/{id}', [PurchasesDetailsController::class, 'destroy']);
