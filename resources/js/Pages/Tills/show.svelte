@@ -2,12 +2,13 @@
     import { onMount } from 'svelte';
     import {blur} from 'svelte/transition';
     import axios from 'axios';
+    import { Inertia } from '@inertiajs/inertia';
     export let appUrl
     export let id = 0;
     let tilltype = {};
     let audits = [];
     let error = null;
-    let url = `${appUrl}/api/tilltypes/`;
+    let url = `${appUrl}/api/tills/`;
 
     async function fetchData() {
         axios.get(`${url}${id}`).then((response) => {
@@ -21,20 +22,25 @@
     onMount(async () => {
         fetchData();
     });
+    function goTo(route){
+        Inertia.visit(route);
+    }
 </script>
 {#if error}
 	<p>{error}</p>
 {/if}
 <div class="breadcrumbs text-md mb-4">
 	<ul>
-		<li><a href="/">Inicio</a></li>
-		<li><a href="/tilltypes">Tipos de cajas</a></li>
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+        <li><span class="cursor-pointer" on:click={() => goTo('/')}>Inicio</span></li>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <li><span class="cursor-pointer" on:click={() => goTo('/tills')}>Cajas</span></li>
 	</ul>
 </div>
 {#if tilltype}
     <div transition:blur>
         <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{tilltype.till_type_desc}</p>
+        <p class="text-1xl">{tilltype.till_name}</p>
     </div>
 {/if}
 {#if audits}

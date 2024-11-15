@@ -68,6 +68,7 @@
 			id = item.id;
 			till_name = item.till_name;
 			till_account_number = item.till_account_number;
+			searchTerm = item.till_type_desc
 
 		}
 	});
@@ -90,7 +91,6 @@
 				close();
 			}).catch((err) => {
 				errors = err.response.data.details ? err.response.data.details : null;
-				console.log(err.response)
 				let detail = {
 					detail: {
 						type: 'delete',
@@ -103,7 +103,8 @@
 	function handleUpdateObject() {
 		axios
 			.put(`/api/tills/${id}`, {
-				till_name
+				till_name,
+				t_type_id: till_type_selected?.value? till_type_selected.value : null
 			},config)
 			.then((res) => {
 				let detail = {

@@ -39,7 +39,6 @@ class TillsController extends ApiController
         try{
             $rules = [
                 'till_name' => 'required|string|max:255',
-                'till_account_number' => 'required|string|max:255',
                 't_type_id' => 'required|integer',
             ];
             $request->validate($rules);
@@ -95,7 +94,6 @@ public function getByTypeId($id){
         try{
             $rules = [
                 'till_name' => 'required|string|max:255',
-                'till_account_number' => 'required|string|max:255',
                 't_type_id' => 'required|integer',
             ];
             $request->validate($rules);
