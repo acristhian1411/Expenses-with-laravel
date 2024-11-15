@@ -174,6 +174,7 @@ Route::delete('salesdetails/{id}', [SalesDetailsController::class, 'destroy']);
 //routes for Purchases
 Route::get('purchases', [PurchasesController::class, 'index']);
 Route::post('purchases', [PurchasesController::class, 'store']);
+Route::post('purchases-many', [PurchasesController::class, 'storeMany']);
 Route::put('purchases/{id}', [PurchasesController::class, 'update']);
 Route::get('purchases/{id}', [PurchasesController::class, 'show']);
 Route::delete('purchases/{id}', [PurchasesController::class, 'destroy']);
