@@ -15,12 +15,15 @@ class PurchasesController extends ApiController
      */
     public function index()
     {
-        //
-        $t = Purchases::query()->first();
-        $query = Purchases::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
+        try{
+            $t = Purchases::query()->first();
+            $query = Purchases::query();
+            $query = $this->filterData($query, $t);
+            $datos = $query->get();
+            return $this->showAll($datos, 200);
+        }catch(\Exception $e){   
+            return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se obtenían los datos'],500);
+        }
     }
 
     /**
@@ -31,18 +34,27 @@ class PurchasesController extends ApiController
      */
     public function store(Request $request)
     {
-        //
-        $reglas = [
-            'person_id' => 'required',
-            'purchase_desc' => 'required',
-            'purchase_date' => 'required',
-            'purchase_number' => 'required',
-            'purchase_status' => 'required',
-            'purchase_type' => 'required'
-        ];
-        $this->validate($request, $reglas);
-        $purchases = Purchases::create($request->all());
-        return $this->showOne($purchases, 201);
+        try{
+            $reglas = [
+                'person_id' => 'required',
+                'purchase_desc' => 'required',
+                'purchase_date' => 'required',
+                'purchase_number' => 'required',
+                'purchase_status' => 'required',
+                'purchase_type' => 'required'
+            ];
+            $request->validate($reglas);
+            $purchases = Purchases::create($request->all());
+            return $this->showAfterAction($purchases,'create', 201);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se creaba el registro'],500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null
+            ]);
+        } 
     }
 
     /**
@@ -53,9 +65,13 @@ class PurchasesController extends ApiController
      */
     public function show($id)
     {
-        //
-        $purchases = Purchases::find($id);
-        return $this->showOne($purchases, 200);
+        try{
+            $purchases = Purchases::find($id);
+            $audits = $purchases->audits;
+            return $this->showOne($purchases,$audits, 200);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se obtenía el registro'],500);
+        }
     }
 
     /**
@@ -67,19 +83,28 @@ class PurchasesController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
-        $reglas = [
-            'person_id' => 'required',
-            'purchase_desc' => 'required',
-            'purchase_date' => 'required',
-            'purchase_number' => 'required',
-            'purchase_status' => 'required',
-            'purchase_type' => 'required'
-        ];
-        $this->validate($request, $reglas);
-        $purchases = Purchases::find($id);
-        $purchases->update($request->all());
-        return $this->showOne($purchases, 200);
+        try{
+            $reglas = [
+                'person_id' => 'required',
+                'purchase_desc' => 'required',
+                'purchase_date' => 'required',
+                'purchase_number' => 'required',
+                'purchase_status' => 'required',
+                'purchase_type' => 'required'
+            ];
+            $request->validate($reglas);
+            $purchases = Purchases::find($id);
+            $purchases->update($request->all());
+            return $this->showAfterAction($purchases,'update', 200);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se actualizaba el registro'],500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null
+            ]);
+        }
     }
 
     /**
@@ -90,9 +115,12 @@ class PurchasesController extends ApiController
      */
     public function destroy($id)
     {
-        //
-        $purchases = Purchases::find($id);
-        $purchases->delete();
-        return response()->json('Eliminado con exito!');
+        try{
+            $purchases = Purchases::find($id);
+            $purchases->delete();
+            return response()->json(['message'=>'Eliminado con exito!']);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se eliminaba el registro'],500);
+        }
     }
 }
