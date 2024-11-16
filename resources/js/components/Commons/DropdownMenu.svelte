@@ -1,7 +1,7 @@
 <script>
     import {Inertia} from '@inertiajs/inertia';
     export let title = '';
-    export let icon;
+    // export let icon;
     export let items ;
     // Función para la navegación
     function goTo(path) {
@@ -12,9 +12,9 @@
 
 <details class="group">
     <summary class="cursor-pointer p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 rounded-lg flex items-center">
-        {#if icon}
-            <svelte:component this={icon} />
-        {/if}
+        <!-- {#if icon} -->
+            <slot/>
+        <!-- {/if} -->
         <span class="ml-3">{title}</span>
     </summary>
     <ul class="pl-5 space-y-2">

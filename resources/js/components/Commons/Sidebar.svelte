@@ -47,25 +47,54 @@
 				</span>
 			</li>
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('locations.index')}
-				<DropdownMenu title="Ubicaciones" icon={LocationIcon} items={locationItems(user)}/>
+				<DropdownMenu title="Ubicaciones" items={locationItems(user)}>
+					<LocationIcon 
+						className="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" 
+					/>
+				</DropdownMenu>
 			{/if}
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('configuration.index')}
-				<DropdownMenu title="Configuraciones generales" icon={ConfigIcon} items={configItems(user)}/>
+				<DropdownMenu title="Configuraciones generales" items={configItems(user)}>
+					<ConfigIcon 
+						className="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" 
+					/>
+				</DropdownMenu>
 			{/if}
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('products.sidebar')}
-				<DropdownMenu title="Productos" icon={ProductIcon} items={productsItems(user)}/>
+				<DropdownMenu title="Productos" 
+				items={productsItems(user)}>
+				<ProductIcon 
+					className="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" 
+				/>
+				</DropdownMenu>
 			{/if}
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('administration.index')}
-				<DropdownMenu title="Administración" icon={FinanceIcon} items={adminItems(user)}/>
+				<DropdownMenu title="Administración" items={adminItems(user)}>
+					<FinanceIcon 
+						className="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" 
+					/>
+				</DropdownMenu>
 			{/if}
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('persons.index')}
-				<DropdownMenu title="Personas" icon={PeopleIcon} items={personsItems(user)}/>
+				<DropdownMenu title="Personas" items={personsItems(user)}>
+					<PeopleIcon 
+						className="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" 
+					/>
+				</DropdownMenu>
 			{/if}
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('reports.index')}
-				<DropdownMenu title="Reportes" icon={ReportIcon} items={reportsItems(user)}/>
+				<DropdownMenu title="Reportes" items={reportsItems(user)}>
+					<ReportIcon 
+						className="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" 
+					/>
+				</DropdownMenu>
 			{/if}
 			{#if user != undefined && user.permissions != undefined && user.permissions.includes('users.index')}
-				<DropdownMenu title="Usuarios" icon={UserIcon} items={userItems(user)}/>
+				<DropdownMenu title="Usuarios" items={userItems(user)}>
+					<UserIcon 
+						className="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" 
+					/>
+				</DropdownMenu>
 			{/if}
 			<li>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
