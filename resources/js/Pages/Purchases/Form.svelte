@@ -4,7 +4,6 @@
     import { onMount } from 'svelte';
     import { createEventDispatcher } from 'svelte';
     import {Textfield} from '@components/FormComponents';
-    export let appUrl;
     export let edit;
     export let item;
     export let token = '';
@@ -37,7 +36,6 @@ let purchase_status = '';
             person_id = item.person_id;
             purchase_date = item.purchase_date;
             purchase_status = item.purchase_status;
-
         }
     });
 
@@ -90,7 +88,7 @@ let purchase_status = '';
     }
 </script>
 
-<h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar Purchases{:else}Crear Purchases{/if}</h3>
+<h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar Purchases{:else}Nueva Compra{/if}</h3>
 <form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>
 
     <Textfield

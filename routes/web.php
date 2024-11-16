@@ -154,6 +154,10 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('Purchases/List');
     })->middleware('permission:purchases.index');
 
+    Route::get('/create-purchase', function () {
+        return Inertia::render('Purchases/Form');
+    })->middleware('permission:purchases.create');
+
     Route::get('/purchases/{id}', function ($id) {
         return Inertia::render('Purchases/Show', ['id' => $id]);
     })->middleware('permission:purchases.show');
