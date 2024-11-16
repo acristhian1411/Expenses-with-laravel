@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 	import {Textfield} from '@components/FormComponents';
+	import { Grid } from '@components/utilities';
 
 	const dispatch = createEventDispatcher();
 	let id = 0;
@@ -97,16 +98,18 @@
 	<h3 class="mb-4 text-center text-2xl">Crear Pais</h3>
 {/if}
 <!-- <form> -->
-	<Textfield 
-		label="Descripción" 
-		bind:value={country_name} 
-		errors={errors?.country_name ? {message:errors.country_name[0]} : null} 
-	/>
-	<Textfield 
-		label="Código" 
-		bind:value={country_code} 
-		errors={errors?.country_code ? {message:errors.country_code[0]} : null} 
-	/>
+    <Grid columns={2} gap={2}>
+		<Textfield 
+			label="Descripción" 
+			bind:value={country_name} 
+			errors={errors?.country_name ? {message:errors.country_name[0]} : null} 
+		/>
+		<Textfield 
+			label="Código" 
+			bind:value={country_code} 
+			errors={errors?.country_code ? {message:errors.country_code[0]} : null} 
+		/>
+	</Grid>
 	<button
 		class="btn btn-primary"
 		on:click={edit == true ? handleUpdateObject() : handleCreateObject()}>Guardar</button

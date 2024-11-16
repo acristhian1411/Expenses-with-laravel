@@ -4,6 +4,7 @@
     import { onMount } from 'svelte';
     import { createEventDispatcher } from 'svelte';
     import {Textfield} from '@components/FormComponents';
+    import { Grid } from '@components/utilities';
     export let edit;
     export let item;
     export let token = '';
@@ -90,27 +91,28 @@ let purchase_status = '';
 
 <h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar Purchases{:else}Nueva Compra{/if}</h3>
 <form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>
-
-    <Textfield
-        label="Person_id"
-        required={true}
-        bind:value={person_id}
-        errors={errors?.person_id ? {message:errors.person_id[0]} : null}
-    />
-
-    <Textfield
+    <Grid columns={2} gap={3}>
+        <Textfield
+            label="Persona"
+            required={true}
+            bind:value={person_id}
+            errors={errors?.person_id ? {message:errors.person_id[0]} : null}
+        />
+        <Textfield
         label="Purchase_date"
         required={true}
         bind:value={purchase_date}
         errors={errors?.purchase_date ? {message:errors.purchase_date[0]} : null}
     />
-
     <Textfield
         label="Purchase_status"
         required={true}
         bind:value={purchase_status}
         errors={errors?.purchase_status ? {message:errors.purchase_status[0]} : null}
     />
+    </Grid>
+    
+
 
     <button class="btn btn-primary" type="submit">Guardar</button>
     <button class="btn btn-secondary" on:click={close}>Cancelar</button>
