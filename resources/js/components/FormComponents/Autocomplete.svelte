@@ -51,46 +51,64 @@ It will show up on hover.
     ```
   -->
 <main>
-    <div class="mb-4  items-start relative">
-        <span class="mr-2">{label}</span>
-        <input
-            type="text"
-            class="input input-bordered w-full max-w-xs"
-            placeholder="Buscar..."
-            bind:value={searchTerm}
-            on:input={handleInput}
-            on:focus={() => showDropdown = true}
-            on:blur={() => setTimeout(() => showDropdown = false, 200)} 
-        />
+    <div class="max-w-sm space-y-3">
+        <div class="relative">
+            <input
+                type="text"
+                id="hs-floating-input-email-value" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none
+                focus:pt-6
+                focus:pb-2
+                [&:not(:placeholder-shown)]:pt-6
+                [&:not(:placeholder-shown)]:pb-2
+                autofill:pt-6
+                autofill:pb-2"
+                placeholder="Buscar..."
+                bind:value={searchTerm}
+                on:input={handleInput}
+                on:focus={() => showDropdown = true}
+                on:blur={() => setTimeout(() => showDropdown = false, 200)} 
+            />
 
-        <!-- Dropdown de países filtrados -->
-        {#if showDropdown && filterdItem.length > 0}
-            <ul class="dropdown absolute top-full left-0 w-full max-w-xs bg-gray-500 border mt-1 z-10">
-                {#if loading == true}
-                    <!-- Loader mientras se buscan los países -->
-                    <li class="p-2 text-center">
-                    <div class="loader">Cargando...</div>
-                    </li>
-                {:else if filterdItem.length > 0}
-                    {#each filterdItem as item}
-                    <!-- svelte-ignore a11y-click-events-have-key-events -->
-                    <li
-                        class="p-2 bg-black text-gray-800 hover:text-gray-500 hover:bg-gray-800 cursor-pointer"
-                        on:click={() => selectCountry(item)}
-                    >
-                        {item.label}
-                    </li>
-                    {/each}
-                {:else}
-            <!-- Mensaje si no hay resultados -->
-                    <li class="p-2 text-center text-gray-500">No se encontraron países</li>
-                {/if}
-            </ul>
-        {/if}
+            <!-- Dropdown de países filtrados -->
+            {#if showDropdown && filterdItem.length > 0}
+                <ul class="dropdown absolute top-full left-0 w-full max-w-xs bg-gray-500 border mt-1 z-10">
+                    {#if loading == true}
+                        <!-- Loader mientras se buscan los países -->
+                        <li class="p-2 text-center">
+                        <div class="loader">Cargando...</div>
+                        </li>
+                    {:else if filterdItem.length > 0}
+                        {#each filterdItem as item}
+                        <!-- svelte-ignore a11y-click-events-have-key-events -->
+                        <li
+                            class="p-2 bg-black text-gray-800 hover:text-gray-500 hover:bg-gray-800 cursor-pointer"
+                            on:click={() => selectCountry(item)}
+                        >
+                            {item.label}
+                        </li>
+                        {/each}
+                    {:else}
+                <!-- Mensaje si no hay resultados -->
+                        <li class="p-2 text-center text-gray-500">No se encontro registros</li>
+                    {/if}
+                </ul>
+            {/if}
 
-        {#if errors != null && errors.message}
-            <span class="text-red-500 text-sm">{errors.message}</span>
-        {/if}
+            <label for="hs-floating-input-email-value" class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent  origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none
+            peer-focus:scale-90
+            peer-focus:translate-x-0.5
+            peer-focus:-translate-y-1.5
+            peer-focus:text-gray-500
+            peer-[:not(:placeholder-shown)]:scale-90
+            peer-[:not(:placeholder-shown)]:translate-x-0.5
+            peer-[:not(:placeholder-shown)]:-translate-y-1.5
+            peer-[:not(:placeholder-shown)]:text-gray-500">{label}</label>
+
+            {#if errors != null && errors.message}
+                <span class="text-red-500 text-sm">{errors.message}</span>
+            {/if}
+        </div>
+
     </div>
 </main>
 <style>
