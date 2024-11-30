@@ -103,15 +103,17 @@
                   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
                   gap: 10px;
                 }
+                .grid-container {
+                  display: grid;
+                  grid-template-columns: repeat(4, 1fr); /* Máximo 4 elementos por fila */
+                  gap: 20px;
+                }
                 .barcode-container {
-                  margin: 10px;
-                  margin-right: 20px;
-                  margin-left: 20px;
                   text-align: center;
                   page-break-inside: avoid;
                 }
                 svg {
-                  margin: 10px 10px 10px 0;
+                  margin: 10px auto;
                   display: block;
                 }
                 .description {
@@ -121,8 +123,9 @@
               </style>
             </head>
             <body>
-              ${repeatedContent}
-              
+              <div class="grid-container">
+                ${repeatedContent}
+              </div>
             </body>
           </html>
         `);
