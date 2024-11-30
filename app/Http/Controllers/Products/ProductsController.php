@@ -22,8 +22,8 @@ class ProductsController extends ApiController
             $query = $this->filterData($query, $t);
             $datos = $query->join('categories','products.category_id','=','categories.id')
             ->join('iva_types','products.iva_type_id','=','iva_types.id')
-            ->join('brands','products.brand_id','=','brands.id')
-            ->select('products.*','iva_types.iva_type_desc','categories.cat_desc', 'brands.brand_name')
+            ->join('brands','products.brand_id','=', 'brands.id')
+            ->select('products.*','iva_types.iva_type_desc','iva_types.iva_type_percent','categories.cat_desc', 'brands.brand_name')
             ->get();
             return $this->showAll($datos, 200);
         }catch(\Exception $e){
