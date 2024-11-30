@@ -134,7 +134,7 @@
 		if (search_param == '') {
 			url = `${appUrl}/api/products?`;
 		} else {
-			url = `${appUrl}/api/products?product_name=${search_param}&`;
+			url = `${appUrl}/api/products?product_name=${search_param}&product_barcode=${search_param}&`;
 		}
 		fetchData(1, items_per_page);
 	}
