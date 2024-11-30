@@ -73,7 +73,7 @@ class ProductsController extends ApiController
     public function show($id)
     {
         try{
-            $product = Products::where('id',$id)
+            $product = Products::where('products.id',$id)
             ->join('categories','products.category_id','=','categories.id')
             ->join('iva_types','products.iva_type_id','=','iva_types.id')
             ->join('brands','products.brand_id','=','brands.id')

@@ -15,6 +15,8 @@
 	let product_quantity = '';
 	let product_profit_percent = '';
 	let product_selling_price = '';
+	let product_barcode = '';
+	let product_image = '';
 	let category_id = '';
 	let iva_type_id = '';
 	let brand_id = '';
@@ -94,6 +96,8 @@
 			id = item.id;
 			product_name = item.product_name;
 			product_desc = item.product_desc;
+			product_image = item.product_image;
+			product_barcode = item.product_barcode;
 			product_cost_price = item.product_cost_price;
 			product_quantity = item.product_quantity;
 			product_selling_price = item.product_selling_price;
@@ -110,6 +114,8 @@
 				product_desc,
 				product_cost_price,
 				product_quantity,
+				product_image,
+				product_barcode,
 				product_selling_price,
 				category_id: category_selected?.value? category_selected.value : null,
 				iva_type_id: iva_type_selected?.value? iva_type_selected.value : null,
@@ -144,6 +150,8 @@
 				product_desc,
 				product_cost_price,
 				product_quantity,
+				product_image,
+				product_barcode,
 				product_selling_price,
 				category_id: category_selected?.value? category_selected.value : null,
 				iva_type_id: iva_type_selected?.value? iva_type_selected.value : null,
@@ -250,6 +258,16 @@
 		min="0"
 		bind:value={product_quantity} 
 		errors={errors?.product_quantity ? {message:errors.product_quantity[0]} : null} 
+	/>
+	<Textfield 
+		label="Código de barras" 
+		bind:value={product_barcode} 
+		errors={errors?.product_barcode ? {message:errors.product_barcode[0]} : null} 
+	/>
+	<Textfield
+		label="Imagen"
+		bind:value={product_image}
+		errors={errors?.product_image ? {message:errors.product_image[0]} : null}
 	/>
 	<Autocomplete
 		errors={errors}

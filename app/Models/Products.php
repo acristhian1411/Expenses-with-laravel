@@ -16,6 +16,8 @@ class Products extends Model implements AuditableContract
     protected $fillable = [
         'product_name',
         'product_desc',
+        'product_image',
+        'product_barcode',
         'product_cost_price',
         'product_quantity',
         'product_selling_price',
