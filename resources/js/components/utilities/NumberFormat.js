@@ -1,7 +1,7 @@
 export function formatNumber(value) {
-    console.log(value);
     if (!value) return '';
-    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    let num = value.toString();
+    return num.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 export function unformatNumber(value) {

@@ -4,3 +4,4 @@ export {default as Pagination} from './pagination.svelte';
 export {default as formatNumber} from './NumberFormat.js';
 export { default as unformatNumber } from './NumberFormat.js';
 export {default as Grid} from './grid.svelte';
+export {default as GridItem} from './gridItem.svelte';
