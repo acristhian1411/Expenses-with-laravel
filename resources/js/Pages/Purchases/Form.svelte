@@ -2,11 +2,12 @@
 <script>
     import axios from 'axios';
     import { onMount } from 'svelte';
+    import {formatNumber, unformatNumber} from '@components/utilities/NumberFormat.js';
     import { createEventDispatcher } from 'svelte';
     import {Textfield, Autocomplete} from '@components/FormComponents';
     import {Modal} from '@components/utilities';
     import DetailsTable from './DetailsTable.svelte';
-    import { Grid } from '@components/utilities';
+    import { Grid, GridItem } from '@components/utilities';
     export let edit;
     export let item;
     export let token = '';
@@ -35,6 +36,7 @@
     let person_id = '';
     let purchase_date = date.toISOString().slice(0, 10);
     let purchase_status = '';
+    let purchase_number = '';
 
     function getProviders() {
         axios.get(`/api/persons?p_type_id=1`).then((response) => {
@@ -124,25 +126,42 @@
     }
 
     function addDetail(item) {
-        let newItem = purchaseDetails
-        if(newItem.filter(x => x.id === item.id).length > 0) {
-            let itemIdx = newItem.findIndex(x => x.id === item.id);
-            newItem[itemIdx].quantity = newItem[itemIdx].quantity + 1;
+        let details = purchaseDetails
+        if(details.filter(x => x.id === item.id).length > 0) {
+            let itemIdx = details.findIndex(x => x.id === item.id);
+            if(details[itemIdx].quantity == item.quantity){
+                details[itemIdx].quantity = parseInt(details[itemIdx].quantity) + 1;
+            }else{
+                details[itemIdx].quantity = item.quantity;
+            }
         }else{
-            newItem.push(item);
+            details.push(item);
         }
+        purchaseDetails = details;
+    }
+
+    function removeDetail(item) {
+        let newItem = purchaseDetails
+        let itemIdx = newItem.findIndex(x => x.id === item.id);
+        newItem.splice(itemIdx, 1);
         purchaseDetails = newItem;
     }
 
 </script>
 {#if modal == true}
     <Modal on:close={() => CloseModal()}>
-        <DetailsTable {edit}  on:close={() => CloseModal()} />
+        <DetailsTable 
+            {edit}  
+            on:close={() => CloseModal()} 
+            on:checked={(event) => addDetail(event.detail)}
+            on:remove={(event) => removeDetail(event.detail)}
+        />
     </Modal>
 {/if}
 <h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar Purchases{:else}Nueva Compra{/if}</h3>
 <form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>
-    <Grid columns={2} gap={3}>
+    <Grid columns={3} gap={4} >
+        <GridItem span={1}>
         <Autocomplete
             errors={errors}
             label="Proveedor"
@@ -153,7 +172,8 @@
             loading={loading}
             filterdItem={providers}
         />
-        
+        </GridItem>
+        <GridItem span={1}>
         <Textfield
             label="Fecha"
             required={true}
@@ -161,6 +181,15 @@
             bind:value={purchase_date}
             errors={errors?.purchase_date ? {message:errors.purchase_date[0]} : null}
         />
+        </GridItem>
+        <GridItem span={1}>
+        <Textfield
+            label="Num. Factura"
+            required={true}
+            bind:value={purchase_number}
+            errors={errors?.purchase_number ? {message:errors.purchase_number[0]} : null}
+        />
+    </GridItem>
     </Grid>
     <table class="table w-full">
         <thead>
@@ -191,13 +220,6 @@
                 <th class="text-center text-lg">
                     <div class="flex items-center justify-center">
                         <button type="button" class="btn btn-primary" on:click={() => (
-                            addDetail({
-                                id: 1,
-                                quantity: 1,
-                                iva: 10,
-                                product_name: 'Producto 1',
-                                purchase_amount: 100,
-                            }),
                             OpenModal()
                         )}>Agregar</button>
                     </div>
@@ -207,23 +229,35 @@
         <tbody>
             {#each purchaseDetails as item, i (item.id)}
                 <tr class="hover">
-                    <td>{item.quantity}</td>
+                    <td>
+                        <Textfield
+                            label=''
+                            type='number'
+                            bind:value={item.quantity}
+                            errors={errors?.quantity ? {message:errors.quantity[0]} : null}
+                        />
+
+                    </td>
                     <td class="text-center">{item.product_name}</td>
-                    <td class="text-center">{item.iva}</td>
-                    <td class="text-center">{item.purchase_amount}</td>
-                    <td class="text-center">{parseInt(item.purchase_amount)*item.quantity}</td>
+                    <td class="text-center">{item.iva_type_percent}</td>
+                    <td class="text-center">
+                        <Textfield
+                            label=''
+                            type='number'
+                            bind:value={item.product_selling_price}
+                            errors={errors?.product_selling_price ? {message:errors.product_selling_price[0]} : null}
+                        />
+                    </td>
+                    <td class="text-center">{formatNumber((parseInt(item.product_selling_price)*item.quantity))}</td>
                 </tr>
             {/each}
             {#if purchaseDetails.length > 0}
                 <tr>
-                    <td>Total</td>
-                    <td>
-                        <span class="text-right">
-                            {purchaseDetails.reduce((acc, curr) => acc + (curr.purchase_amount * curr.quantity), 0).toFixed(2)}
-                    </td>
-                    <td  class="text-right">
+                    <td colspan="4">Total</td>
+                    
+                    <td  class="text-center">
                         <span>
-                            {purchaseDetails.reduce((acc, curr) => acc + (curr.purchase_amount * curr.quantity), 0).toFixed(2)}
+                            {formatNumber(purchaseDetails.reduce((acc, curr) => acc + (curr.product_selling_price * curr.quantity), 0).toFixed(2))}
                         </span>
                     </td>
                 </tr>

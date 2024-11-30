@@ -1,73 +1,96 @@
 <script>
+    import { Textfield } from '@components/FormComponents';
+    import {SearchIcon} from '@components/Icons';
     import { onMount } from 'svelte';
+    import { createEventDispatcher } from 'svelte';
+    const dispatch = createEventDispatcher();
+    
     let query = '';
-    let selectedItem = null;
-  
-    const options = [
-      { id: 1, name: 'Ella Lauda', group: 'Designer' },
-      { id: 2, name: 'David Harrison', group: 'Designer' },
-      { id: 3, name: 'James Collins', group: 'Backend' },
-      { id: 4, name: 'Costa Quinn', group: 'Backend' },
-      { id: 5, name: 'Lewis Clarke', group: 'Backend' },
-      { id: 6, name: 'Mia Maya', group: 'Backend' }
+    
+    let errors = null;
+    let searchUrl = '/api/products';
+    let options = [
     ];
   
     let filteredOptions = options;
   
-    const filterOptions = () => {
-      filteredOptions = options.filter(option =>
-        option.name.toLowerCase().includes(query.toLowerCase())
-      );
-    };
+    function checkItem(event,item) {
+      if(event.target.checked == true) {
+        dispatch('checked', item);
+      }else{
+        dispatch('remove', item);
+      }
+    }
+
+    function getProducts(event) {
+      
+      if(event && event.target && event.target.value) {
+        query = event.target.value;
+        searchUrl = `api/products?product_name=${query}&product_barcode=${query}`;
+      }else{
+        searchUrl = `api/products`;
+      }
+      axios.get(`${searchUrl}`).then((response) => {
+        options = response.data.data.map(x=>({...x,quantity:"1"}));
+      }).catch((err) => {
+        let detail = {
+          detail: {
+            type: 'delete',
+            message: err.response.data.message
+          }
+        };
+      });
+    }
+    
+    onMount(() => {
+      getProducts();
+    });
   
-    $: filterOptions();
   </script>
   
-  <div class="w-full max-w-md mx-auto">
-    <!-- Input field -->
-    <div class="relative">
-      <input
-        type="text"
-        placeholder="Type a name"
-        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        bind:value={query}
-      />
-    </div>
-  
-    <!-- Dropdown -->
-    <ul
-      class="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
-      style="display: {filteredOptions.length > 0 ? 'block' : 'none'};"
-    >
-      <!-- Grouped options -->
-      {#each Array.from(new Set(filteredOptions.map(option => option.group))) as group}
-        <li>
-          <div class="px-4 py-2 text-sm font-bold text-gray-700 uppercase bg-gray-100">{group}</div>
-          {#each filteredOptions.filter(option => option.group === group) as option}
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div
-              class="px-4 py-2 cursor-pointer hover:bg-blue-100"
-              on:click={() => (selectedItem = option)}
-            >
-              <div class="flex items-center">
-                <img
-                  src={`https://ui-avatars.com/api/?name=${option.name}&size=32`}
-                  alt={option.name}
-                  class="w-8 h-8 rounded-full mr-3"
-                />
-                {option.name}
-              </div>
-            </div>
-          {/each}
-        </li>
-      {/each}
-    </ul>
-  
-    <!-- Selected item -->
-    {#if selectedItem}
-      <div class="mt-4 text-gray-700">
-        Selected: <strong>{selectedItem.name}</strong>
+  <div class="grid grid-rows-2">
+    <div class="p-4 gap-0" >
+      <div class="flex justify-center">
+        <label class="input input-bordered flex items-center gap-2">
+          <input type="text" class="grow" placeholder="Search" on:change={getProducts} />
+          <SearchIcon />
+        </label>
       </div>
-    {/if}
+    </div>
+    <div class="p-4">
+      <table class="table w-full gap-0">
+          <thead>
+              <tr>
+                <th class="text-lg">
+                  Cant
+                </th>
+                <th class="text-lg">
+                  Producto
+                </th>
+                <th class="text-lg">
+                  Precio
+                </th>
+              </tr>
+          </thead>
+          <tbody>
+            {#each options as item, i (item.id)}
+              <tr class="hover">
+                <td>
+                  <Textfield 
+                    label="Cant"
+                    type="number"
+                    bind:value={item.quantity}
+                  />
+                </td>
+                <td>{item.product_desc}</td>
+                <td>{item.product_selling_price}</td>
+                <td class="text-center">
+                  <button class="btn btn-primary" on:click={() => checkItem({target:{checked:true}},item)}>Seleccionar</button>
+                  <button class="btn btn-secondary" on:click={() => checkItem({target:{checked:false}},item)}>Eliminar</button>
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+      </table>
+    </div>
   </div>
-  
