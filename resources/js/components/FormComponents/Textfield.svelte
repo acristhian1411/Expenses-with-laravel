@@ -7,6 +7,7 @@
     export let type;
     export let required;
     export let customFN;
+    export let mask;
     const dispatch = createEventDispatcher();
     function handChange(event) {
         dispatch('custom', event);
@@ -15,9 +16,29 @@
         console.log(customFN);
     })
     function handleInput(event) {
-        const unformattedValue = unformatNumber(event.target.value);
-        value = unformattedValue; // Asigna el valor sin puntos
-        event.target.value = formatNumber(unformattedValue); // Muestra el valor con puntos
+        if (mask) {    
+            console.log('tiene mascara')  
+            const rawValue = event.target.value.replace(/\D/g, ""); // Eliminar caracteres no numéricos
+            let maskedValue = "";
+            let maskIndex = 0;
+            for (let i = 0; i < rawValue.length && maskIndex < mask.length; i++) {
+                if (mask[maskIndex] === "9") {
+                maskedValue += rawValue[i];
+                maskIndex++;
+                } else {
+                maskedValue += mask[maskIndex];
+                maskIndex++;
+                i--; // Reintentar con el mismo carácter
+                }
+            }
+            event.target.value = maskedValue;
+            value = maskedValue;
+        }else{
+            console.log('no tiene mascara')
+            const unformattedValue = unformatNumber(event.target.value);
+            value = unformattedValue; // Asigna el valor sin puntos
+            event.target.value = formatNumber(unformattedValue); // Muestra el valor con puntos
+        }
     }
     function handleCustomInput(event) {
         if (customFN) {
@@ -72,11 +93,26 @@
                 autofill:pt-6
                 autofill:pb-2"
             />
+        {:else if type == 'text' && mask != null}
+            <input 
+                type='text'
+                required={required}
+                on:input={handleInput}
+                placeholder={mask}
+                id="hs-floating-input-email-value" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none
+                focus:pt-6
+                focus:pb-2
+                [&:not(:placeholder-shown)]:pt-6
+                [&:not(:placeholder-shown)]:pb-2
+                autofill:pt-6
+                autofill:pb-2" 
+            />
         {:else}
             <input 
                 type='text'
                 bind:value={value} 
                 required={required}
+                on:input={handleInput}
                 id="hs-floating-input-email-value" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none
                 focus:pt-6
                 focus:pb-2
