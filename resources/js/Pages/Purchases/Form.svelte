@@ -6,6 +6,7 @@
     import { createEventDispatcher } from 'svelte';
     import {Textfield, Autocomplete} from '@components/FormComponents';
     import {Modal} from '@components/utilities';
+	import {Alert} from '@components/Alerts/';
     import DetailsTable from './DetailsTable.svelte';
     import { Grid, GridItem } from '@components/utilities';
     export let edit;
@@ -27,7 +28,9 @@
         },
     };
     let modal = false;
-    
+    let openAlert = false;
+    let alertMessage = '';
+	let alertType = '';
     $: purchaseDetails ;
 
     let date = new Date();
@@ -53,6 +56,15 @@
 
     function close() {
         dispatch('close');
+    }
+
+    function closeAlert() {
+        openAlert = false;
+    }
+    function openAlerts(message,type) {
+        openAlert = true;
+        alertType = type;
+        alertMessage = message;
     }
 
     function OpenAlertMessage(event) {
@@ -86,23 +98,25 @@
                 purchase_details: purchaseDetails.map(x => ({product_id: x.id, pd_qty: x.quantity, pd_amount: x.product_selling_price}))
             });
 
-            let detail = {
-                detail: {
-                    type: 'success',
-                    message: res.data.message
-                }
-            };
-            OpenAlertMessage(detail);
-            close();
+            // let detail = {
+            //     detail: {
+            //         type: 'success',
+            //         message: res.data.message
+            //     }
+            // };
+            openAlerts(res.data.message,'success');
+            // OpenAlertMessage(detail);
+            // close();
         } catch (err) {
             errors = err.response.data.details ? err.response.data.details : null;
-            let detail = {
-                detail: {
-                    type: 'error',
-                    message: err.response.data.message
-                }
-            };
-            OpenAlertMessage(detail);
+            // let detail = {
+            //     detail: {
+            //         type: 'error',
+            //         message: err.response.data.message
+            //     }
+            // };
+            // OpenAlertMessage(detail);
+            openAlerts(err.response.data.message,'delete');
         }
     }
 
@@ -162,6 +176,9 @@
             on:remove={(event) => removeDetail(event.detail)}
         />
     </Modal>
+{/if}
+{#if openAlert}
+	<Alert {alertMessage} {alertType} on:close={closeAlert} />
 {/if}
 <h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar Purchases{:else}Nueva Compra{/if}</h3>
 <form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>

@@ -6,7 +6,6 @@
 	import { createEventDispatcher } from 'svelte';
 	import {Textfield, Autocomplete} from '@components/FormComponents';
 	import {formatNumber, unformatNumber} from '@components/utilities/NumberFormat.js';
-	import { Alert} from '@components/Alert';
 
 	const dispatch = createEventDispatcher();
 	let id = 0;
