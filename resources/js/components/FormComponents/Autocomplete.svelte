@@ -67,6 +67,7 @@ It will show up on hover.
                 on:input={handleInput}
                 on:focus={() => showDropdown = true}
                 on:blur={() => setTimeout(() => showDropdown = false, 200)} 
+                autocomplete="off"
             />
 
             <!-- Dropdown de países filtrados -->
