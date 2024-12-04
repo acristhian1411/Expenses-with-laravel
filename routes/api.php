@@ -27,6 +27,7 @@ use App\Http\Controllers\Permissions\PermissionsController;
 use App\Http\Controllers\Users\UsersController;
 use App\Http\Controllers\Brands\BrandController;
 use App\Http\Controllers\ContactTypes\ContactTypesController;
+use App\Http\Controllers\Purchases\PurchaseStoreController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -184,6 +185,8 @@ Route::post('purchasesdetails-many', [PurchasesDetailsController::class, 'storeM
 Route::put('purchasesdetails/{id}', [PurchasesDetailsController::class, 'update']);
 Route::get('purchasesdetails/{id}', [PurchasesDetailsController::class, 'show']);
 Route::delete('purchasesdetails/{id}', [PurchasesDetailsController::class, 'destroy']);
+// routes for purchaseStore
+Route::post('storePurchase', [PurchaseStoreController::class, 'store']);
 // routes for ContactTypes
 Route::get('contacttypes', [ContactTypesController::class, 'index']);
 Route::post('contacttypes', [ContactTypesController::class, 'store']);

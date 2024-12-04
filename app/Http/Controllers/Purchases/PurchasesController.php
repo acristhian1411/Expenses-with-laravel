@@ -37,16 +37,16 @@ class PurchasesController extends ApiController
         try{
             $reglas = [
                 'person_id' => 'required',
-                'purchase_desc' => 'required',
                 'purchase_date' => 'required',
                 'purchase_number' => 'required',
-                'purchase_status' => 'required',
-                'purchase_type' => 'required'
             ];
+            // dd($request);
             $request->validate($reglas);
             $purchases = Purchases::create($request->all());
+            // dd($purchases);
             return $this->showAfterAction($purchases,'create', 201);
         }catch(\Exception $e){
+            // dd($e->getMessage());
             return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se creaba el registro'],500);
         }catch(\Illuminate\Validation\ValidationException $e){
             return response()->json([

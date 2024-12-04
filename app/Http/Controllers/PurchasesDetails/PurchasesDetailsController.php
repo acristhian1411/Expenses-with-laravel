@@ -64,12 +64,14 @@ class PurchasesDetailsController extends ApiController
     public function storeMany(Request $req){
         try{
             $reglas = [
-                'purchase_id' => 'required',
                 'details'=> 'required:array'
             ];
             $req->validate($reglas);
-            $details = PurchasesDetails::createMany($req->details);
-            return $this->showAfterAction($details,'create', 201);
+            // dd('hola');
+            $details = PurchasesDetails::insert($req->details);
+            $algo = [];
+            
+            return $this->showAfterAction($algo,'create', 201);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se creaba el registro'],500);
         }catch(\Illuminate\Validation\ValidationException $e){
@@ -77,7 +79,7 @@ class PurchasesDetailsController extends ApiController
                 'error'=>$e->getMessage(),
                 'message'=>'Los datos no son correctos',
                 'details' => method_exists($e, 'errors') ? $e->errors() : null
-            ]);
+            ],422);
         }
     }
 

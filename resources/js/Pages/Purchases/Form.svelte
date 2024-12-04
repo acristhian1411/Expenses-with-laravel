@@ -79,7 +79,12 @@
 
     async function handleCreateObject() {
         try {
-            const res = await axios.post(`/api/purchases`, { person_id, purchase_date, purchase_status }, config);
+            const res = await axios.post(`/api/storePurchase`, { 
+                person_id: providersSelected.value, 
+                purchase_date, 
+                purchase_number,
+                purchase_details: purchaseDetails.map(x => ({product_id: x.id, pd_qty: x.quantity, pd_amount: x.product_selling_price}))
+            });
 
             let detail = {
                 detail: {
@@ -160,37 +165,39 @@
 {/if}
 <h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar Purchases{:else}Nueva Compra{/if}</h3>
 <form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>
-    <Grid columns={3} gap={4} >
-        <GridItem span={1}>
-        <Autocomplete
-            errors={errors}
-            label="Proveedor"
-            bind:item_selected={providersSelected}
-            items={providers.map(x => ({label: x.person_fname + ' ' + x.person_lastname, value: x.id}))}
-            searchTerm={searchTermProviders}
-            showDropdown={showDropdownProviders}
-            loading={loading}
-            filterdItem={providers}
-        />
-        </GridItem>
-        <GridItem span={1}>
-        <Textfield
-            label="Fecha"
-            required={true}
-            type="date"
-            bind:value={purchase_date}
-            errors={errors?.purchase_date ? {message:errors.purchase_date[0]} : null}
-        />
-        </GridItem>
-        <GridItem span={1}>
-        <Textfield
-            label="Num. Factura"
-            required={true}
-            bind:value={purchase_number}
-            errors={errors?.purchase_number ? {message:errors.purchase_number[0]} : null}
-        />
-    </GridItem>
-    </Grid>
+    <div class="grid grid-cols-12 gap-4">
+        <div class="col-span-4 ">
+            <Autocomplete
+                errors={errors}
+                label="Proveedor"
+                bind:item_selected={providersSelected}
+                items={providers.map(x => ({label: x.person_fname + ' ' + x.person_lastname, value: x.id}))}
+                searchTerm={searchTermProviders}
+                showDropdown={showDropdownProviders}
+                loading={loading}
+                filterdItem={providers}
+            />
+        </div>
+        <div class="col-span-4">
+            <Textfield
+                label="Num. Factura"
+                required={true}
+                type="text"
+                mask="999-999-9999999"
+                bind:value={purchase_number}
+                errors={errors?.purchase_number ? {message:errors.purchase_number[0]} : null}
+            />
+        </div>
+        <div class="col-span-4">
+            <Textfield
+                label="Fecha"
+                required={true}
+                type="date"
+                bind:value={purchase_date}
+                errors={errors?.purchase_date ? {message:errors.purchase_date[0]} : null}
+            />
+        </div> 
+    </div>    
     <table class="table w-full">
         <thead>
             <tr>

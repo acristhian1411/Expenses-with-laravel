@@ -55,8 +55,15 @@ trait ApiResponser
 		return $this->successResponse($collection, $code);
 	}
 
-	protected function showAfterAction(Model $instance, $action, $code = 200){
-		// $
+	/**
+	 * @param \Illuminate\Database\Eloquent\Model|array $instance
+	 * @param string $action
+	 * @param int $code
+	 */
+	protected function showAfterAction(Model|array $instance, $action, $code = 200){
+		if(!($instance instanceof Model || is_array($instance))){
+			throw new \InvalidArgumentException('El argumento $instance debe ser de tipo Model o array');
+		}
 		$act = $action == 'update' ? 'actualizado' : 'creado';
 		$message = "Registro {$act} con exito"; 
 		return response()->json(['message'=>$message, 'data'=>$instance], $code);
