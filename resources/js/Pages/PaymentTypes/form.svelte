@@ -6,6 +6,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import {Textfield} from '@components/FormComponents';
     import { bind } from 'svelte/internal';
+	import Form from '@pages/ProofPayments/form.svelte';
 
 	const dispatch = createEventDispatcher();
 	let id = 0;
@@ -99,6 +100,8 @@
 		bind:value={payment_type_desc} 
 		label="Descripción"
 	/>
+
+	<Form payment_type_id={id}/>
 
 	<button
 		class="btn btn-primary"
