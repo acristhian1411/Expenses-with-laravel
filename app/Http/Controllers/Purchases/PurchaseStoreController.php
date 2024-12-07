@@ -24,7 +24,7 @@ class PurchaseStoreController extends ApiController {
             $reglas = [
                 'person_id' => 'required|integer',
                 'purchase_date' => 'required|date',
-                'purchase_number' => 'required|string',
+                'purchase_number' => 'required|string|unique:purchases',
                 'purchase_details' => 'required|array'
             ];
             $request->validate($reglas);

@@ -209,7 +209,7 @@
 		}
 		product_profit_percent = value;
 		// Calcula el precio de venta basado en el precio de costo y el porcentaje de ganancias
-		let porcentaje = parseFloat(product_cost_price) + (parseFloat(product_cost_price) * parseFloat(product_profit_percent) / 100)
+		let porcentaje = parseInt(parseFloat(product_cost_price) + (parseFloat(product_cost_price) * parseFloat(product_profit_percent) / 100))
 		console.log(porcentaje);
 		console.log('porcentaje',porcentaje.toString());
 		product_selling_price = porcentaje.toString();

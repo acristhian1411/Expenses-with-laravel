@@ -15,12 +15,15 @@ class TillDetailsController extends ApiController
      */
     public function index()
     {
-        //
-        $t = TillDetails::query()->first();
-        $query = TillDetails::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
+        try{
+            $t = TillDetails::query()->first();
+            $query = TillDetails::query();
+            $query = $this->filterData($query, $t);
+            $datos = $query->get();
+            return $this->showAll($datos, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
+        }
     }
 
     /**
@@ -31,31 +34,61 @@ class TillDetailsController extends ApiController
      */
     public function store(Request $request)
     {
-        //
-        $rules = [
-            'till_id' => 'required|integer',
-            'person_id' => 'required|integer',
-            'account_p_id' => 'required|integer',
-            'td_desc' => 'required|string|max:255',
-            'td_date' => 'required|date',
-            'td_type' => 'required|string|max:255',
-            'td_amount' => 'required|numeric',
-        ];
-        
-        $this->validate($request, $rules);
-        $tillDetails = TillDetails::create($request->all());
-        return $this->showOne($tillDetails, 201);
+        try{
+            $rules = [
+                'till_id' => 'required|integer',
+                'person_id' => 'required|integer',
+                'account_p_id' => 'required|integer',
+                'td_desc' => 'required|string|max:255',
+                'td_date' => 'required|date',
+                'td_type' => 'required|string|max:255',
+                'td_amount' => 'required|numeric',
+            ];
+            
+            $request->validate($rules);
+            $tillDetails = TillDetails::create($request->all());
+            return $this->showAfterAction($tillDetails,'create', 201);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo guardar los datos'],500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=> 'Ls datos no son correrctos',
+                'details'=> method_exists($e, 'errors') ? $e->errors() : null
+            ]);
+        }
+    }
+
+    /**
+     * Retrive the amount of money in a specific till from the last close
+     * @param int $id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function showTillAmount($id){
+        try{
+            $amount = TillDetails::query()->sum('td_amount')
+            ->where('till_id',$id);
+            return response()->json(['amount'=>$amount]);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
+        }
     }
 
     public function storeFromArray(Request $request){
-        // write code to store TillDetails iterating a array obtained from request. Include validation
-          
-    $tillDetails = collect($request->all())->map(function ($item) {
-        return TillDetails::create($item);
-    });
-
-    return $this->showAll($tillDetails, 201);
-
+        try{
+            $tillDetails = collect($request->all())->map(function ($item) {
+                return TillDetails::create($item);
+            });
+            return $this->showAll($tillDetails, 201);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo guardar los datos'],500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=> 'Ls datos no son correrctos',
+                'details'=> method_exists($e, 'errors') ? $e->errors() : null
+            ]);
+        }
     }
 
     /**
@@ -66,9 +99,19 @@ class TillDetailsController extends ApiController
      */
     public function show($id)
     {
-        //
-        $tillDetails = TillDetails::findOrFail($id);
-        return $this->showOne($tillDetails, 200);
+        try{
+            $tillDetails = TillDetails::findOrFail($id);
+            $audits = $tillDetails->audits;
+            return $this->showOne($tillDetails,$audits, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=> 'Ls datos no son correrctos',
+                'details'=> method_exists($e, 'errors') ? $e->errors() : null
+            ]);
+        }
     }
 
     /**
@@ -80,11 +123,24 @@ class TillDetailsController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
-        $tillDetails = TillDetails::findOrFail($id);
-        $tillDetails->fill($request->all());
-        $tillDetails->save();
-        return $this->showOne($tillDetails, 200);
+        try{
+            $rules = [
+                'till_id' => 'required|integer',
+            ];
+            $request->validate($rules);
+            $tillDetails = TillDetails::findOrFail($id);
+            $tillDetails->fill($request->all());
+            $tillDetails->save();
+            return $this->showAfterAction($tillDetails,'create', 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo actualizar los datos'],500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=> 'Ls datos no son correrctos',
+                'details'=> method_exists($e, 'errors') ? $e->errors() : null
+            ]);
+        }
     }
 
     /**
@@ -95,9 +151,12 @@ class TillDetailsController extends ApiController
      */
     public function destroy( $id)
     {
-        //
-        $tillDetails = TillDetails::findOrFail($id);
-        $tillDetails->delete();
-        return response()->json('Eliminado con exito');
+        try{
+            $tillDetails = TillDetails::findOrFail($id);
+            $tillDetails->delete();
+            return response()->json('Eliminado con exito');
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo eliminar los datos'],500);
+        }
     }
 }

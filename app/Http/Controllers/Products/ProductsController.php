@@ -85,6 +85,33 @@ class ProductsController extends ApiController
         }
     }
 
+    public function updatePriceAndQty(Request $req){
+        try{
+            $rules = [
+                'details'=>'required|array',
+                'details.*.product_cost_price' => 'required|numeric',
+                'details.*.product_quantity'=> 'required|numeric',
+            ];
+            $req->validate($rules);
+            foreach ($req->details as $key => $value) {
+                $product = Products::findOrFail($value->id);
+                $product->product_cost_price = $value->product_cost_price;
+                $product->product_quantity = $value->product_quantity;
+            }
+            return response()->json(['message'=>'Actualizado con éxito']);
+
+        }catch (\Exception $e){
+            return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se procesaba lo datos'], 400);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error' => $e->errors(), 
+                'message'=>'Ocurrió un error mientras se procesaba lo datos',
+                'details'=>  method_exists($e, 'errors') ? $e->errors() : null 
+            ], 400);
+        }
+    }
+
+
     /**
      * Update the specified resource in storage.
      *
