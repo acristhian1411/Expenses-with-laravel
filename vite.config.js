@@ -15,6 +15,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@components': `${__dirname}/resources/js/components`,
+            '@pages': `${__dirname}/resources/js/Pages`,
             'axios': path.resolve(__dirname, 'node_modules', 'axios/dist/esm/axios.js'), 
         }
     },
