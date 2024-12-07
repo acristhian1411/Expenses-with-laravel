@@ -156,6 +156,7 @@ Route::delete('tilldetailproofpayments/{id}', [TillDetailProofPaymentsController
 Route::get('proofpaypments', [ProofPaymentsController::class, 'index']);
 Route::post('proofpaypments', [ProofPaymentsController::class, 'store']);
 Route::post('proofpaypments_multiple', [ProofPaymentsController::class, 'storeMultiple']);
+Route::put('proofpaypments_multiple', [ProofPaymentsController::class, 'updateMultiple']);
 Route::put('proofpaypments/{id}', [ProofPaymentsController::class, 'update']);
 Route::get('proofpaypments/{id}', [ProofPaymentsController::class, 'show']);
 Route::get('proofpaypments_type/{id}', [ProofPaymentsController::class, 'showByType']);

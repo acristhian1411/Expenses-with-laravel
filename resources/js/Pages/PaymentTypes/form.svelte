@@ -15,11 +15,8 @@
 	export let item;
 	let errors = null;
 	let token = '';
-	let config = {
-		headers: {
-			authorization: `token: ${token}`,
-		},
-	}
+	let parentFormRef;
+  	let childFormRef;
 	function close() {
 		dispatch('close');
 	}
@@ -36,12 +33,12 @@
 		}
 	});
 	// http://127.0.0.1:5173/tilltypes
-	function handleCreateObject() {
-		
+	function handleCreateObject(event) {
+		event.preventDefault();
 		axios
 			.post(`/api/paymenttypes`, {
 				payment_type_desc,
-			},config)
+			})
 			.then((res) => {
 				let detail = {
 					detail: {
@@ -62,11 +59,16 @@
 				OpenAlertMessage(detail);
 			});
 	}
-	function handleUpdateObject() {
+	function handleUpdateObject(event) {
+		event.preventDefault();
+		console.log('childFormRef',childFormRef);
+		childFormRef?.submitForm();
+		// Envía el formulario del padre
+		// parentFormRef?.requestSubmit();
 		axios
 			.put(`/api/paymenttypes/${id}`, {
 				payment_type_desc,
-			},config)
+			})
 			.then((res) => {
 				let detail = {
 					detail: {
@@ -94,18 +96,26 @@
 {:else}
 	<h3 class="mb-4 text-center text-2xl">Crear Tipos de pago</h3>
 {/if}
-<!-- <form> -->
- 	<Textfield
+<form bind:this={parentFormRef} on:submit|preventDefault={edit == true ? handleUpdateObject : handleCreateObject}>
+	<Textfield
 		errors={errors?.payment_type_desc ? {message:errors.payment_type_desc[0]} : null}
 		bind:value={payment_type_desc} 
 		label="Descripción"
 	/>
-
-	<Form payment_type_id={id}/>
-
+	{#if edit == true}
+		<div class="mt-4 mb-4">
+			<Form 
+				payment_type_id={id} 
+				bind:this={childFormRef}
+				on:message={OpenAlertMessage}
+			/>
+		</div>
+	{/if}
 	<button
 		class="btn btn-primary"
-		on:click={edit == true ? handleUpdateObject() : handleCreateObject()}>Guardar</button
+		type="submit"
 	>
+		Guardar
+	</button>
 	<button class="btn btn-secondary" on:click={close}>Cancelar</button>
-<!-- </form> -->
+</form>
