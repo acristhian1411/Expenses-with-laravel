@@ -213,7 +213,7 @@
 						<td>{till.id}</td>
 						<td class="text-center">{till.till_name}</td>
 						<td class="text-center">{till.till_type_desc}</td>
-						<td class="text-center">{ till.till_status != null && till.till_status == true ? 'Activo' : 'Inactivo'}</td>
+						<td class="text-center">{ till.till_status != null && till.till_status == true ? 'Abierto' : 'Cerrado'}</td>
 						<td>
 							<button class="btn btn-info" use:inertia={{ href: `/tills/${till.id}` }}>Mostrar</button>
 						</td>

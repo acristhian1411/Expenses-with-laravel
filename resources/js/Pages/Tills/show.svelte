@@ -3,32 +3,53 @@
     import {blur} from 'svelte/transition';
     import axios from 'axios';
     import { Inertia } from '@inertiajs/inertia';
+
+    import {Tabs, formatNumber, Modal} from '@components/utilities';
+    import Details from './details.svelte';
+    import TillActions from './tillActions.svelte';
+
+
     export let appUrl
     export let id = 0;
-    let tilltype = {};
+    let till = {};
+    let tabs = ['Acciones','Detalles','Historial'];
     let audits = [];
     let error = null;
     let url = `${appUrl}/api/tills/`;
+    let active = 'Acciones';
+    let tillActions = false;
+    let acctionType = 'open';
+
+    function handleActiveTab(tab) {
+        active = tab.detail;
+    }
 
     async function fetchData() {
         axios.get(`${url}${id}`).then((response) => {
-            tilltype = response.data.data;
+            till = response.data.data;
             audits = response.data.audits;
         }).catch((err) => {
             error = err.request.response;
         });
     }
 
-    onMount(async () => {
-        fetchData();
-    });
+    function closeModal(){
+        tillActions = false;
+        acctionType = '';
+    }
+    function openModal(){
+        acctionType = 'open'
+        tillActions = true;
+    }
+
     function goTo(route){
         Inertia.visit(route);
     }
+    onMount(async () => {
+        fetchData();
+    });
 </script>
-{#if error}
-	<p>{error}</p>
-{/if}
+
 <div class="breadcrumbs text-md mb-4">
 	<ul>
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -37,39 +58,37 @@
         <li><span class="cursor-pointer" on:click={() => goTo('/tills')}>Cajas</span></li>
 	</ul>
 </div>
-{#if tilltype}
-    <div transition:blur>
-        <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{tilltype.till_name}</p>
-    </div>
+
+<Tabs 
+    tabs={tabs} 
+    on:active={handleActiveTab}
+    active={active}
+    till={till}
+/>
+
+{#if tillActions == true}
+    <Modal on:close={() => closeModal()}>
+        <TillActions type={acctionType} tillId={till.id} on:close={() => closeModal()}/>
+    </Modal>
 {/if}
-{#if audits}
+
+{#if active == 'Detalles'}
+    <Details {till} {audits}/>
+{:else if active == 'Acciones'}
     <div transition:blur>
-        <h1 class="text-xl font-bold mt-4">Detalles de cambios:</h1>
-        <table class="table w-full">
-            <thead>
-                <tr>
-                    <!-- <th>Id</th> -->
-                    <th class="text-center text-lg">Usuario</th>
-                    <th class="text-center text-lg">Evento</th>
-                    <th class="text-center text-lg">Fecha</th>
-                    <th class="text-center text-lg">Detalles</th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each audits as audit}
-                    <tr>
-                        <td class="text-center">{audit.user?audit.user.name:''}</td>
-                        <td class="text-center">{audit.event}</td>
-                        <td class="text-center">{new Date(audit.created_at).toLocaleString()}</td>
-                        <td class="text-center">
-                            <strong>Valores antiguos:</strong> {JSON.stringify(audit.old_values)}<br>
-                            <strong>Valores nuevos:</strong> {JSON.stringify(audit.new_values)}
-                        </td>
-    
-                    </tr>
-                {/each}
-            </tbody>
-        </table>
+        <h1 class="text-xl font-bold mt-4">
+            Caja: {till.till_name}
+        </h1>
+        <h2 class="text-xl font-bold mt-4">
+            Estado: {till.tilltype_status ? 'Abierto' : 'Cerrado'}
+        </h2>
+        {#if till.tilltype_status == true}
+            <h2 class="text-xl font-bold mt-4">Monto en caja: {formatNumber(till.tilltype_amount)}</h2>
+        {/if}
+        {#if till.tilltype_status == false || till.tilltype_status == null}
+            <button class="btn btn-primary mt-4" on:click={() => openModal('open')}>
+                Abrir caja
+            </button>
+        {/if}
     </div>
 {/if}

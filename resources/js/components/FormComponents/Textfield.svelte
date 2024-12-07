@@ -13,11 +13,9 @@
         dispatch('custom', event);
     }    
     onMount(() => {
-        console.log(customFN);
     })
     function handleInput(event) {
         if (mask) {    
-            console.log('tiene mascara')  
             const rawValue = event.target.value.replace(/\D/g, ""); // Eliminar caracteres no numéricos
             let maskedValue = "";
             let maskIndex = 0;
@@ -34,7 +32,6 @@
             event.target.value = maskedValue;
             value = maskedValue;
         }else{
-            console.log('no tiene mascara')
             const unformattedValue = unformatNumber(event.target.value);
             value = unformattedValue; // Asigna el valor sin puntos
             event.target.value = formatNumber(unformattedValue); // Muestra el valor con puntos
