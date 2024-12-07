@@ -24,4 +24,9 @@ class Tills extends Model implements AuditableContract
     {
         return $this->belongsTo(TillType::class, 't_type_id');
     }
+
+    public function open(){
+        $this->till_status = true;
+        $this->save();
+    }
 }

@@ -38,7 +38,6 @@ class TillDetailsController extends ApiController
             $rules = [
                 'till_id' => 'required|integer',
                 'person_id' => 'required|integer',
-                'account_p_id' => 'required|integer',
                 'td_desc' => 'required|string|max:255',
                 'td_date' => 'required|date',
                 'td_type' => 'required|string|max:255',
