@@ -5,7 +5,7 @@ namespace App\Http\Controllers\ProofPaypments;
 use App\Models\ProofPayments;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
-
+use Illuminate\Support\Facades\DB;
 
 class ProofPaymentsController extends ApiController
 {
@@ -80,7 +80,10 @@ class ProofPaymentsController extends ApiController
         try{
             $proofPayments = ProofPayments::join('payment_types','payment_types.id','=','proof_payments.payment_type_id')
             ->where('payment_type_id', $payment_type_id)
-            ->select('proof_payments.*','payment_types.payment_type_desc')
+            ->select('proof_payments.*','payment_types.payment_type_desc',
+            DB::raw("false as edited"),
+            DB::raw("true as created")
+            )
             ->get();
             
             return $this->showAll($proofPayments, 200);
@@ -137,6 +140,31 @@ class ProofPaymentsController extends ApiController
         }
     }
 
+    public function updateMultiple(Request $request){
+        try{
+            $validated = $request->validate([
+                'payments' => 'required|array', 
+                'payments.*.proof_payment_desc' => 'required|string', 
+                'payments.*.payment_type_id' => 'required|int',
+                'payments.*.id' => 'required|int'
+            ]);
+            foreach ($validated['payments'] as $key => $value) {
+                // dd($value);
+                $proofPayments = ProofPayments::findOrFail($value['id']);
+                $proofPayments->update($value);
+            }
+            return response()->json(['message'=>'Registro actualizado con exito']);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo actualizar los datos'],500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null 
+            ],422);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -148,7 +176,7 @@ class ProofPaymentsController extends ApiController
         try{
             $proofPayments = ProofPayments::findOrFail($id);
             $proofPayments->delete();
-            return response()->json('Eliminado con exito');
+            return response()->json(['message'=>'Eliminado con exito']);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo eliminar los datos']);
         }
