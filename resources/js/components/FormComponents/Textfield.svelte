@@ -8,6 +8,8 @@
     export let required;
     export let customFN;
     export let mask;
+    export let id
+    export let onChange; // Callback para cambios en el valor
     const dispatch = createEventDispatcher();
     function handChange(event) {
         dispatch('custom', event);
@@ -31,9 +33,11 @@
             }
             event.target.value = maskedValue;
             value = maskedValue;
+            if (onChange) onChange(maskedValue)
         }else{
-            const unformattedValue = unformatNumber(event.target.value);
-            value = unformattedValue; // Asigna el valor sin puntos
+        const unformattedValue = unformatNumber(event.target.value);
+        value = unformattedValue; // Asigna el valor sin puntos
+        if (onChange) onChange(event.target.value); 
             event.target.value = formatNumber(unformattedValue); // Muestra el valor con puntos
         }
     }
@@ -109,8 +113,9 @@
                 type='text'
                 bind:value={value} 
                 required={required}
-                on:input={handleInput}
-                id="hs-floating-input-email-value" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none
+                id={id}
+                on:input={(event) => handleInput(event, onChange)} 
+                class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none
                 focus:pt-6
                 focus:pb-2
                 [&:not(:placeholder-shown)]:pt-6
