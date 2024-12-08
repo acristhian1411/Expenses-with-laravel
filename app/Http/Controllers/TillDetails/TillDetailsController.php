@@ -40,7 +40,7 @@ class TillDetailsController extends ApiController
                 'person_id' => 'required|integer',
                 'td_desc' => 'required|string|max:255',
                 'td_date' => 'required|date',
-                'td_type' => 'required|string|max:255',
+                'td_type' => 'required|boolean',
                 'td_amount' => 'required|numeric',
             ];
             
