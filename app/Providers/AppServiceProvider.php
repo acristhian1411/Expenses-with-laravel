@@ -46,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
                         
                         return [
                             'id' => Auth::user()->id,
+                            'person_id'=>Auth::user()->person_id,
                             'roles' => $roles,
                             'permissions' => $permissions[0],
                         ];

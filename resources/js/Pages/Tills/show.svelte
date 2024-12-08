@@ -8,7 +8,7 @@
     import Details from './details.svelte';
     import TillActions from './tillActions.svelte';
 
-
+	export let user
     export let appUrl
     export let id = 0;
     let till = {};
@@ -37,8 +37,8 @@
         tillActions = false;
         acctionType = '';
     }
-    function openModal(){
-        acctionType = 'open'
+    function openModal(type){
+        acctionType = type
         tillActions = true;
     }
 
@@ -68,7 +68,13 @@
 
 {#if tillActions == true}
     <Modal on:close={() => closeModal()}>
-        <TillActions type={acctionType} tillId={till.id} on:close={() => closeModal()}/>
+        <TillActions 
+            type={acctionType} 
+            person_id={user.person_id} 
+            tillId={till.id} 
+            on:updateData={() => fetchData()}
+            on:close={() => closeModal()}
+        />
     </Modal>
 {/if}
 
@@ -80,14 +86,18 @@
             Caja: {till.till_name}
         </h1>
         <h2 class="text-xl font-bold mt-4">
-            Estado: {till.tilltype_status ? 'Abierto' : 'Cerrado'}
+            Estado: {till.till_status ? 'Abierto' : 'Cerrado'}
         </h2>
-        {#if till.tilltype_status == true}
+        <!-- {#if till.till_status == true}
             <h2 class="text-xl font-bold mt-4">Monto en caja: {formatNumber(till.tilltype_amount)}</h2>
-        {/if}
-        {#if till.tilltype_status == false || till.tilltype_status == null}
+        {/if} -->
+        {#if till.till_status != true}
             <button class="btn btn-primary mt-4" on:click={() => openModal('open')}>
                 Abrir caja
+            </button>
+        {:else}
+            <button class="btn btn-primary mt-4" on:click={() => openModal('close')}>
+                Cerrar caja
             </button>
         {/if}
     </div>

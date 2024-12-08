@@ -28,6 +28,7 @@ use App\Http\Controllers\Users\UsersController;
 use App\Http\Controllers\Brands\BrandController;
 use App\Http\Controllers\ContactTypes\ContactTypesController;
 use App\Http\Controllers\Purchases\PurchaseStoreController;
+use App\Http\Controllers\TillsProcess\TillsProcessController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -139,6 +140,8 @@ Route::post('tills', [TillsController::class, 'store']);
 Route::put('tills/{id}', [TillsController::class, 'update']);
 Route::get('tills/{id}', [TillsController::class, 'show']);
 Route::get('tills_tilltype/{id}', [TillsController::class, 'getByTypeId']);
+Route::post('tills/{id}/open', [TillsProcessController::class, 'cashOpening']);
+Route::post('tills/{id}/close', [TillsProcessController::class, 'close']);
 Route::delete('tills/{id}', [TillsController::class, 'destroy']);
 //routes for tilldetails
 Route::get('tilldetails', [TillDetailsController::class, 'index']);
