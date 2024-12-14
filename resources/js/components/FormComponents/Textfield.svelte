@@ -51,7 +51,7 @@
         }
     }
 </script>
-<div class="max-w-sm space-y-3">
+<div class="max-w-sm space-y-3 mb-2">
     <div class="relative">
         {#if type == 'number'}
             <input
