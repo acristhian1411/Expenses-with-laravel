@@ -29,6 +29,7 @@
 	let searchTermCity = '';
 	export let edit;
 	export let item;
+	export let from;
 	let errors = null;
 	let token = '';
 	let config = {
@@ -38,6 +39,9 @@
 	}
 	function close() {
 		dispatch('close');
+	}
+	function selectProvider(item) {
+		dispatch('providerSelected', item);
 	}
 
 	function OpenAlertMessage(event) {
@@ -123,6 +127,9 @@
 				p_type_id: p_type_id
 			},config)
 			.then((res) => {
+				if(from == 'purchases'){
+					selectProvider({label: res.data.data.person_fname + ' ' + res.data.data.person_lastname, value: res.data.data.id});
+				}
 				let detail = {
 					detail: {
 						type: 'success',
