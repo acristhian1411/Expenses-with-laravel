@@ -1,40 +1,55 @@
 <script>
     import { onMount } from "svelte";
-	/** What should we call the user? */
+    import { createEventDispatcher } from 'svelte';
     export let errors;
     export let item_selected;
     export let searchTerm;
     export let showDropdown;
     export let loading;
     export let filterdItem;
+    export let searchFromApi;
     export let items
     export let label
+    let dispatch = createEventDispatcher();
+    
+    $: searchTerm, filterItems();
 
-    $: searchTerm, filterCountries();
-
+    function CustonSearch(event) {
+        dispatch('customSearch', event.detail);
+    }
+    
     function handleInput(event) {
         searchTerm = event.target.value;
-        filterCountries();
+        filterItems();
         showDropdown = true; // Muestra el dropdown mientras se busca
     }
-    function selectCountry(item) {
+    function selectItem(item) {
         item_selected = item;
         searchTerm = item.label;
         showDropdown = false; // Oculta el dropdown después de la selección
     }
-    async function filterCountries() {
-		loading = true; // Inicia el loader
-		// Simula el tiempo de respuesta de una API
-		await new Promise((resolve) => setTimeout(resolve, 1000)); 
-		filterdItem = items.filter(item =>
-		item.label.toLowerCase().includes(searchTerm.toLowerCase())
-		);
+    async function filterItems() {
+		loading = true; // Inicia el loader 
+        if(searchFromApi == true){
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            CustonSearch({detail: searchTerm});
+        }else{
+            await new Promise((resolve) => setTimeout(resolve, 1000)); 
+            filterdItem = items.filter(item =>
+                searchTerm != '' ? item.label.toLowerCase().includes(searchTerm.toLowerCase()) : true
+            );
+        }
 
 		loading = false; // Desactiva el loader
     }
 
+    const clearInput = () => {
+        searchTerm = "";
+        filterItems();
+    }
+
     onMount(() => {
-        filterCountries();
+        filterItems();
     })
 
 </script>
@@ -55,13 +70,16 @@ It will show up on hover.
         <div class="relative">
             <input
                 type="text"
-                id="hs-floating-input-email-value" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none
+                id="autocomplete" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 
+                disabled:pointer-events-none
+                focus:ring-2
                 focus:pt-6
                 focus:pb-2
                 [&:not(:placeholder-shown)]:pt-6
                 [&:not(:placeholder-shown)]:pb-2
                 autofill:pt-6
-                autofill:pb-2"
+                autofill:pb-2
+                shadow-sm"
                 placeholder="Buscar..."
                 bind:value={searchTerm}
                 on:input={handleInput}
@@ -69,21 +87,36 @@ It will show up on hover.
                 on:blur={() => setTimeout(() => showDropdown = false, 200)} 
                 autocomplete="off"
             />
-
+            <!-- {#if searchTerm != ''}
+            <div class="pl-2">
+                <button
+                type="button"
+                on:click={clearInput}
+                class="pr-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                </button>
+            </div>
+            {/if} -->
             <!-- Dropdown de países filtrados -->
             {#if showDropdown && filterdItem.length > 0}
-                <ul class="dropdown absolute top-full left-0 w-full max-w-xs bg-gray-500 border mt-1 z-10">
+                <ul class="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg w-full">
                     {#if loading == true}
                         <!-- Loader mientras se buscan los países -->
-                        <li class="p-2 text-center">
-                        <div class="loader">Cargando...</div>
-                        </li>
+                         <div class="absolute right-2">
+                            <svg class="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                            </svg>
+                        </div>
                     {:else if filterdItem.length > 0}
                         {#each filterdItem as item}
                         <!-- svelte-ignore a11y-click-events-have-key-events -->
                         <li
-                            class="p-2 bg-black text-gray-800 hover:text-gray-500 hover:bg-gray-800 cursor-pointer"
-                            on:click={() => selectCountry(item)}
+                            class="px-4 py-2 cursor-pointer bg-gray-500 hover:bg-blue-100"
+                            on:click={() => selectItem(item)}
                         >
                             {item.label}
                         </li>
@@ -95,7 +128,7 @@ It will show up on hover.
                 </ul>
             {/if}
 
-            <label for="hs-floating-input-email-value" class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent  origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none
+            <label for="autocomplete" class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent  origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none
             peer-focus:scale-90
             peer-focus:translate-x-0.5
             peer-focus:-translate-y-1.5
@@ -113,11 +146,7 @@ It will show up on hover.
     </div>
 </main>
 <style>
-	.dropdown {
-        max-height: 150px;
-        overflow-y: auto;
-	}
-
+	
 	.loader {
         border: 4px solid rgba(0, 0, 0, 0.1);
         border-left-color: #4fa94d;
