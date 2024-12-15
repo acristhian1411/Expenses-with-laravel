@@ -6,7 +6,7 @@
     export let searchTerm;
     export let showDropdown;
     export let loading;
-    export let filterdItem;
+    export let filteredItem;
     export let searchFromApi;
     export let items
     export let label
@@ -20,7 +20,7 @@
     
     function handleInput(event) {
         searchTerm = event.target.value;
-        filterItems();
+        filteredItem = items;
         showDropdown = true; // Muestra el dropdown mientras se busca
     }
     function selectItem(item) {
@@ -30,16 +30,18 @@
     }
     async function filterItems() {
 		loading = true; // Inicia el loader 
-        if(searchFromApi == true){
+        if(searchFromApi != null && searchFromApi == true){
             await new Promise((resolve) => setTimeout(resolve, 1000));
             CustonSearch({detail: searchTerm});
         }else{
             await new Promise((resolve) => setTimeout(resolve, 1000)); 
-            filterdItem = items.filter(item =>
-                searchTerm != '' ? item.label.toLowerCase().includes(searchTerm.toLowerCase()) : true
-            );
+            filteredItem = searchTerm != '' ? items.filter(item =>
+                item.label.toLowerCase().includes(searchTerm.toLowerCase())
+            ): items;
+            // filteredItem = items.filter(item =>
+            //     searchTerm != '' ? item.label.toLowerCase().includes(searchTerm.toLowerCase()) : true
+            // );
         }
-
 		loading = false; // Desactiva el loader
     }
 
@@ -87,32 +89,19 @@ It will show up on hover.
                 on:blur={() => setTimeout(() => showDropdown = false, 200)} 
                 autocomplete="off"
             />
-            <!-- {#if searchTerm != ''}
-            <div class="pl-2">
-                <button
-                type="button"
-                on:click={clearInput}
-                class="pr-2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                </button>
-            </div>
-            {/if} -->
             <!-- Dropdown de países filtrados -->
-            {#if showDropdown && filterdItem.length > 0}
+            {#if showDropdown && filteredItem.length > 0}
                 <ul class="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg w-full">
                     {#if loading == true}
                         <!-- Loader mientras se buscan los países -->
-                         <div class="absolute right-2">
+                        <div class="absolute right-2">
                             <svg class="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                             </svg>
                         </div>
-                    {:else if filterdItem.length > 0}
-                        {#each filterdItem as item}
+                    {:else if filteredItem.length > 0}
+                        {#each filteredItem as item}
                         <!-- svelte-ignore a11y-click-events-have-key-events -->
                         <li
                             class="px-4 py-2 cursor-pointer bg-gray-500 hover:bg-blue-100"
@@ -146,17 +135,6 @@ It will show up on hover.
     </div>
 </main>
 <style>
-	
-	.loader {
-        border: 4px solid rgba(0, 0, 0, 0.1);
-        border-left-color: #4fa94d;
-        border-radius: 50%;
-        width: 24px;
-        height: 24px;
-        animation: spin 1s linear infinite;
-        display: inline-block;
-    }
-    
 	@keyframes spin {
         0% {
             transform: rotate(0deg);
