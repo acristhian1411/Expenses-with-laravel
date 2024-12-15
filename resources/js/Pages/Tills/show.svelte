@@ -4,7 +4,9 @@
     import axios from 'axios';
     import { Inertia } from '@inertiajs/inertia';
 
-    import {Tabs, formatNumber, Modal} from '@components/utilities';
+    import {Tabs,Modal} from '@components/utilities';
+    import {formatNumber, unformatNumber} from '@components/utilities/NumberFormat.js';
+
     import Details from './details.svelte';
     import TillActions from './tillActions.svelte';
 
@@ -14,14 +16,23 @@
     let till = {};
     let tabs = ['Acciones','Detalles','Historial'];
     let audits = [];
+    let till_amount
     let error = null;
     let url = `${appUrl}/api/tills/`;
     let active = 'Acciones';
     let tillActions = false;
     let acctionType = 'open';
-
+    $: id, getTillAmount(id);
     function handleActiveTab(tab) {
         active = tab.detail;
+    }
+
+    async function getTillAmount(tillId) {
+        axios.get(`${appUrl}/api/tills/${tillId}/amount`).then((response) => {
+            till_amount = response.data.till_amount;
+        }).catch((err) => {
+            error = err.request.response;
+        });
     }
 
     async function fetchData() {
@@ -47,13 +58,18 @@
     }
     onMount(async () => {
         fetchData();
+        getTillAmount(id);
     });
 </script>
 
 <div class="breadcrumbs text-md mb-4">
 	<ul>
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
-        <li><span class="cursor-pointer" on:click={() => goTo('/')}>Inicio</span></li>
+        <li>
+            <span class="cursor-pointer" on:click={() => goTo('/')}>
+                Inicio
+            </span>
+        </li>
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <li><span class="cursor-pointer" on:click={() => goTo('/tills')}>Cajas</span></li>
 	</ul>
@@ -88,9 +104,9 @@
         <h2 class="text-xl font-bold mt-4">
             Estado: {till.till_status ? 'Abierto' : 'Cerrado'}
         </h2>
-        <!-- {#if till.till_status == true}
-            <h2 class="text-xl font-bold mt-4">Monto en caja: {formatNumber(till.tilltype_amount)}</h2>
-        {/if} -->
+        {#if till.till_status === true}
+            <h2 class="text-xl font-bold mt-4">Monto en caja: {formatNumber(till_amount)}</h2>
+        {/if}
         {#if till.till_status != true}
             <button class="btn btn-primary mt-4" on:click={() => openModal('open')}>
                 Abrir caja

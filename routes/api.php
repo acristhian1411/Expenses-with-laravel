@@ -34,6 +34,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+
+
 Route::get('/roles', [RolesController::class, 'index'])->description('Get list of roles with pagination.');
 Route::get('/roles/{id}', [RolesController::class, 'show'])->description('Show a role.');
 Route::post('/roles', [RolesController::class, 'store'])->description('Store a new role.');
@@ -139,6 +141,7 @@ Route::get('tills', [TillsController::class, 'index']);
 Route::post('tills', [TillsController::class, 'store']);
 Route::put('tills/{id}', [TillsController::class, 'update']);
 Route::get('tills/{id}', [TillsController::class, 'show']);
+Route::get('tills/{id}/amount', [TillsController::class, 'showTillAmount']);
 Route::get('tills_tilltype/{id}', [TillsController::class, 'getByTypeId']);
 Route::post('tills/{id}/open', [TillsProcessController::class, 'cashOpening']);
 Route::post('tills/{id}/close', [TillsProcessController::class, 'close']);
