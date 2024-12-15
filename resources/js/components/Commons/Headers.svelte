@@ -3,7 +3,7 @@
 	import axios from 'axios';
 	import { onMount } from 'svelte';
 	import { sidebarOpen } from './sidebar.js';
-	import {Inertia} from '@inertiajs/inertia';
+	import {Link} from '@inertiajs/inertia-svelte';
 
 	export let appUrl
 	export let user;
@@ -69,15 +69,14 @@
 						></path>
 					</svg>
 				</button>
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<span on:click={() => Inertia.visit('/')}
-					class="ml-3 flex md:mr-24 cursor-pointer">
-					<img src="/img/logo.webp" class="mr-2 h-10 w-10 rounded-full" alt="FlowBite Logo" />
+				<Link href="/"
+					class="ml-3 flex md:mr-24"
+				>
+					<img src="/img/logo.webp" class="mr-2 h-10 w-10 rounded-full" alt="Company Logo" />
 					<span
 						class="self-center whitespace-nowrap text-xl font-semibold dark:text-white sm:text-2xl"
-						>Company Name</span
-				>
-				</span>
+						>Company Name</span>
+				</Link>
 			</div>
 			<div class="flex items-center">
 				<div class="ml-3 flex items-center">

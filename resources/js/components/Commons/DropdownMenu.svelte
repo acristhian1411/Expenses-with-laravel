@@ -1,5 +1,6 @@
 <script>
     import {Inertia} from '@inertiajs/inertia';
+    import { Link } from '@inertiajs/inertia-svelte';
     export let title = '';
     // export let icon;
     export let items ;
@@ -22,15 +23,15 @@
             {#if item.permission}
             <li>
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <span
-                on:click={() => goTo(item.route)}
-                class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                <Link
+                    href={item.route}
+                    class="group flex items-center cursor-pointer rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                 >
-                {#if item.icon}
-                    <svelte:component this={item.icon}/>
-                {/if}
-                <span class="ml-3 flex-1 whitespace-nowrap">{item.label}</span>
-                </span>
+                    {#if item.icon}
+                        <svelte:component this={item.icon}/>
+                    {/if}
+                    <span class="ml-3 flex-1 whitespace-nowrap">{item.label}</span>
+                </Link>
             </li>
             {/if}
         {/each}
