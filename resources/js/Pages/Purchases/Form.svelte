@@ -18,11 +18,12 @@
     
     let providers = [];
     let paymentTypes = [];
-    let paymentTypesSelected = [];
+    let paymentTypesSelected ;
     let searchTermPaymentTypes = '';
     let showDropdownPaymentTypes = false;
     let loadingPaymentTypes = false;
     let proofPaymentTypes = [];
+    let proofPaymentTypesSelected;
     let providersSelected = [];
     let searchTermProviders = '';
     let showDropdownProviders = false;
@@ -41,7 +42,7 @@
     let alertMessage = '';
 	let alertType = '';
     $: purchaseDetails ;
-
+    $: paymentTypesSelected, filterProofPaymentTypes();
     let date = new Date();
 
     // Variables dinámicas para cada campo
@@ -49,8 +50,6 @@
     let purchase_date = date.toISOString().slice(0, 10);
     let purchase_status = '';
     let purchase_number = '';
-
-
 
     function getPaymentTypes() {
         axios.get(`/api/paymenttypes`).then((response) => {
@@ -140,13 +139,24 @@
         modal = false;
     }
 
+    function filterProofPaymentTypes(event) {
+        if(paymentTypesSelected != null){
+            proofPaymentTypes = paymentTypes.filter(x => x.id == paymentTypesSelected.value)[0].proof_payments.map(x => ({
+                label: x.proof_payment_desc, 
+                value: x.id,
+                td_pr_desc: ''
+            }))
+        }
+    }
+
     async function handleCreateObject() {
         try {
             const res = await axios.post(`/api/storePurchase`, { 
                 person_id: providersSelected.value, 
                 purchase_date, 
                 purchase_number,
-                purchase_details: purchaseDetails.map(x => ({product_id: x.id, pd_qty: x.quantity, pd_amount: x.product_selling_price}))
+                purchase_details: purchaseDetails.map(x => ({product_id: x.id, pd_qty: x.quantity, pd_amount: x.product_selling_price})),
+                proofPayments: proofPaymentsSelected
             });
 
             openAlerts(res.data.message,'success');
@@ -266,7 +276,7 @@
                 errors={errors?.purchase_date ? {message:errors.purchase_date[0]} : null}
             />
         </div> 
-    </div>    
+    </div>
     <div class="grid grid-cols-12 mt-4 gap-4">
         <div class="col-span-6">
             <Autocomplete
@@ -280,19 +290,16 @@
                 filterdItem={paymentTypes}
             />
         </div>
-        {#if paymentTypesSelected } 
-            <div class="col-span-6">
-                <Autocomplete
-                    errors={errors}
-                    label="Comprobante"
-                    bind:item_selected={proofPaymentTypes}
-                    items={paymentTypes.map(x => ({label: x.payment_type, value: x.id}))}
-                    searchTerm={searchTermPaymentTypes}
-                    showDropdown={showDropdownPaymentTypes}
-                    loading={loadingPaymentTypes}
-                    filterdItem={paymentTypes}
-                />
-            </div>
+        {#if paymentTypesSelected && paymentTypesSelected.value != 1 } 
+            {#each proofPaymentTypes as item}
+                <div class="col-span-6">
+                    <Textfield
+                        label={item.label}
+                        bind:value={item.td_pr_desc}
+                        errors={errors?.td_pr_desc ? {message:errors.td_pr_desc[0]} : null}
+                    />
+                </div>
+            {/each}
         {/if}
     </div>
     <table class="table w-full">
