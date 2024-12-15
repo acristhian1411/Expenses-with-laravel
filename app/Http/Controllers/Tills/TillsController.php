@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Tills;
 use App\Models\Tills;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
-
+use Illuminate\Support\Facades\DB;
 class TillsController extends ApiController
 {
     /**
@@ -69,6 +69,61 @@ class TillsController extends ApiController
             return $this->showOne($till, $audits, 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);            
+        }
+    }
+
+    public function showTillAmount(Request $req, int $id){
+        try{
+            $till = Tills::findOrFail($id);
+            if($till->till_status == true){
+                $amount = DB::select("
+                    WITH apertura AS (
+                        SELECT td.created_at
+                        FROM till_details td
+                        WHERE td.deleted_at IS NULL
+                        AND td.td_desc = 'Apertura de Caja'
+                        AND td.till_id = {$id}
+                        ORDER BY td.created_at DESC
+                        LIMIT 1
+                    ),
+                    egresos AS (
+                        SELECT COALESCE(SUM(td.td_amount), 0) AS suma
+                        FROM till_details td
+                        left JOIN till_detail_proof_payments dpp ON dpp.till_detail_id = td.id
+                        left JOIN proof_payments pp ON pp.id = dpp.proof_payment_id
+                        CROSS JOIN apertura
+                        WHERE td.td_type = false
+                        AND td.created_at >= apertura.created_at
+                        AND td.till_id = {$id}
+                        AND td.deleted_at IS NULL
+                    ),
+                    ingresos AS (
+                        SELECT COALESCE(SUM(td.td_amount), 0) AS suma
+                        FROM till_details td
+                        left JOIN till_detail_proof_payments dpp ON dpp.till_detail_id = td.id
+                        left JOIN proof_payments pp ON pp.id = dpp.proof_payment_id
+                        CROSS JOIN apertura
+                        WHERE td.created_at >= apertura.created_at
+                        AND td.till_id = {$id}
+                        and td.td_type = true
+                        AND td.deleted_at IS NULL
+                        AND dpp.deleted_at IS NULL
+                    )
+                    SELECT CAST((ingresos.suma - egresos.suma) AS float) AS till_amount
+                    FROM ingresos, egresos
+                ");
+                if($req->fromController == true){
+                    return $amount[0]->till_amount;
+                }
+                return response()->json(['till_amount'=>$amount[0]->till_amount]);
+            }else{
+                if($req->fromController == true){
+                    return false;
+                }
+                return response()->json(['error'=>'till closed','message'=>'La caja está cerrada'],500);
+            }
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }
     }
 
