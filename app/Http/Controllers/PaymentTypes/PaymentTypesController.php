@@ -19,7 +19,8 @@ class PaymentTypesController extends ApiController
             $t = PaymentTypes::query()->first();
             $query = PaymentTypes::query();
             $query = $this->filterData($query, $t);
-            $datos = $query->get();
+            $datos = $query->with('proofPayments')
+            ->get();
             return $this->showAll($datos, 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);

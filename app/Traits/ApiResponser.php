@@ -70,7 +70,7 @@ trait ApiResponser
 	}
 
 	// add audit parameter
-	protected function showOne(Model $instance,Collection $audit = null, $code = 200)
+	protected function showOne(Model|array $instance,Collection $audit = null, $code = 200)
 	{
 		//$transformer = $instance->transformer;
 		$transformer = "";

@@ -49,7 +49,7 @@ class TillDetailProofPaymentsController extends ApiController
         }catch(\Illuminate\Validation\ValidationException $e){
             return response()->json([
                 'error'=>$e->getMessage(),
-                'message'=> 'Ls datos no son correrctos',
+                'message'=> 'Los datos no son correrctos',
                 'details'=> method_exists($e, 'errors') ? $e->errors() : null
             ]);
         }

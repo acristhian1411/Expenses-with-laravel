@@ -18,6 +18,6 @@ class ProofPayments extends Model implements AuditableContract
 
     public function paymentType()
     {
-        return $this->belongsTo(PaymentTypes::class);
+        return $this->belongsTo(PaymentTypes::class,'id','payment_type_id');
     }
 }

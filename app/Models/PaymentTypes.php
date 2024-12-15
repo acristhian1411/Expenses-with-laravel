@@ -15,6 +15,9 @@ class PaymentTypes extends Model implements AuditableContract
     use SoftDeletes;
     protected $fillable = ['payment_type_desc'];
 
-    
+    public function proofPayments()
+    {
+        return $this->hasMany(ProofPayments::class,'payment_type_id','id');
+    }
 
 }

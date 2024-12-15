@@ -16,7 +16,7 @@ class TillDetailProofPayments extends Model implements AuditableContract
 
     protected $fillable = [
         'till_detail_id',
-        'proof_payments_id',
+        'proof_payment_id',
         'td_pr_desc'
     ];
 
