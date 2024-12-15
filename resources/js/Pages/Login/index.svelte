@@ -12,7 +12,6 @@
 	}
 
 	function OpenAlertMessage(event) {
-		console.log('details desde index',event.detail);
 		openAlert = true;
 		alertType = event.detail.type;
 		alertMessage = event.detail.message;
