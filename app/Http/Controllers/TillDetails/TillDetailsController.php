@@ -37,13 +37,13 @@ class TillDetailsController extends ApiController
         try{
             $rules = [
                 'till_id' => 'required|integer',
+                'ref_id' => 'required|integer',
                 'person_id' => 'required|integer',
                 'td_desc' => 'required|string|max:255',
                 'td_date' => 'required|date',
                 'td_type' => 'required|boolean',
                 'td_amount' => 'required|numeric',
             ];
-            
             $request->validate($rules);
             $tillDetails = TillDetails::create($request->all());
             return $this->showAfterAction($tillDetails,'create', 201);
@@ -52,27 +52,18 @@ class TillDetailsController extends ApiController
         }catch(\Illuminate\Validation\ValidationException $e){
             return response()->json([
                 'error'=>$e->getMessage(),
-                'message'=> 'Ls datos no son correrctos',
+                'message'=> 'Los datos no son correrctos',
                 'details'=> method_exists($e, 'errors') ? $e->errors() : null
             ]);
         }
     }
 
     /**
-     * Retrive the amount of money in a specific till from the last close
-     * @param int $id
-     * @return mixed|\Illuminate\Http\JsonResponse
+     * Store a newly created resource in storage from an array
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function showTillAmount($id){
-        try{
-            $amount = TillDetails::query()->sum('td_amount')
-            ->where('till_id',$id);
-            return response()->json(['amount'=>$amount]);
-        }catch(\Exception $e){
-            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
-        }
-    }
-
     public function storeFromArray(Request $request){
         try{
             $tillDetails = collect($request->all())->map(function ($item) {
@@ -125,6 +116,7 @@ class TillDetailsController extends ApiController
         try{
             $rules = [
                 'till_id' => 'required|integer',
+                'ref_id' => 'required|integer',
             ];
             $request->validate($rules);
             $tillDetails = TillDetails::findOrFail($id);

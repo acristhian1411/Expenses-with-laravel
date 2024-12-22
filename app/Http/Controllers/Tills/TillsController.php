@@ -72,6 +72,35 @@ class TillsController extends ApiController
         }
     }
 
+    /**
+     * Show the list of tills opened by the user
+     * @param \Illuminate\Http\Request $req
+     * @param int $id
+     * @return mixed
+     */
+    public function showTillsByUser(Request $req, int $id){
+        try{
+            $tills = Tills::join('till_details','tills.id','=','till_details.till_id')
+            ->where('person_id', $id)
+            ->where('till_status', true)
+            ->where('td_desc', 'Apertura de Caja')
+            ->select('tills.*')
+            ->orderBy('tills.id')
+            ->orderByDesc('till_details.created_at')
+            ->distinct('tills.id')
+            ->get();
+            return $this->showAll($tills, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
+        }
+    }
+
+    /**
+     * * Show the till amount of a specific till if the till is open
+     * @param \Illuminate\Http\Request $req
+     * @param int $id
+     * @return mixed
+     */
     public function showTillAmount(Request $req, int $id){
         try{
             $till = Tills::findOrFail($id);
@@ -127,15 +156,20 @@ class TillsController extends ApiController
         }
     }
 
-//
-public function getByTypeId($id){
-    try{
-        $tills = Tills::where('t_type_id', $id)->get();
-        return $this->showAll($tills, 200);
-    }catch(\Exception $e){
-        return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
+    /**
+     * * Show a list of tills filtered by till_type
+     * @param \Illuminate\Http\Request $req
+     * @param int $id
+     * @return mixed
+     */
+    public function getByTypeId($id){
+        try{
+            $tills = Tills::where('t_type_id', $id)->get();
+            return $this->showAll($tills, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
+        }
     }
-}
 
     /**
      * Update the specified resource in storage.

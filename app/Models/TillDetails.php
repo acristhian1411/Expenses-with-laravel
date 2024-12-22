@@ -16,6 +16,7 @@ class TillDetails extends Model implements AuditableContract
 
     protected $fillable = [
         'till_id',
+        'ref_id',
         'person_id',
         'account_p_id',
         'td_desc',

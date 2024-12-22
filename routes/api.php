@@ -142,6 +142,7 @@ Route::post('tills', [TillsController::class, 'store']);
 Route::put('tills/{id}', [TillsController::class, 'update']);
 Route::get('tills/{id}', [TillsController::class, 'show']);
 Route::get('tills/{id}/amount', [TillsController::class, 'showTillAmount']);
+Route::get('tills/{id}/byPerson',[TillsController::class, 'showTillsByUser']);
 Route::get('tills_tilltype/{id}', [TillsController::class, 'getByTypeId']);
 Route::post('tills/{id}/open', [TillsProcessController::class, 'cashOpening']);
 Route::post('tills/{id}/close', [TillsProcessController::class, 'close']);
