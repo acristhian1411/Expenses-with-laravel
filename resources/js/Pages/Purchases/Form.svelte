@@ -11,11 +11,17 @@
     import { Grid, GridItem } from '@components/utilities';
     import Form from '@pages/Providers/form.svelte';
 
+    // cosas que se optienen por props
+    export let user
     export let edit;
     export let item;
     export let token = '';
+    
     const dispatch = createEventDispatcher();
     
+    let tillsSelected = [];
+    let tills = [];
+    let tillsSearchTerm = '';
     let providers = [];
     let paymentTypes = [];
     let paymentTypesSelected ;
@@ -51,6 +57,40 @@
     let purchase_status = '';
     let purchase_number = '';
 
+    // region Cajas
+    /**
+     * Función para obtener las cajas por usuario
+     * @param {void}
+     * @returns {void}
+     */
+    function getTillsByUser(){
+        axios.get(`/api/tills/${user.person_id}/byPerson`).then((response) => {
+            tills = response.data.data;
+            if (tills.length === 1) {
+                tillsSelected = {
+                    value: tills[0].id,
+                    label: tills[0].till_name
+                };
+                tillsSearchTerm = tills[0].till_name;
+            }
+        }).catch((err) => {
+            let detail = {
+                detail: {
+                    type: 'delete',
+                    message: err.response.data.message
+                }
+            };
+            OpenAlertMessage(detail);
+        });
+    }
+    // end region
+
+    // region Tipos de pago
+    /**
+     * Función para obtener los tipos de pago
+     * @param {void}
+     * @returns {void}
+     */
     function getPaymentTypes() {
         axios.get(`/api/paymenttypes`).then((response) => {
             paymentTypes = response.data.data;
@@ -63,7 +103,32 @@
             };
         });
     }
+    // end region
 
+    // region Proveedores
+    /**
+     * Función para obtener los proveedores
+     * @param {void}
+     * @returns {void}
+     */
+    function getProviders() {
+        axios.get(`/api/persons?p_type_id=1`).then((response) => {
+            providers = response.data.data;
+        }).catch((err) => {
+            let detail = {
+                detail: {
+                    type: 'delete',
+                    message: err.response.data.message
+                }
+            };
+        });
+    }
+
+    /**
+     * Función para buscar los proveedores por nombre
+     * @param {event} event
+     * @returns {void}
+     */
     function searchProvividers(event) {
         let search = event.detail;
         axios.get(`/api/persons-search-by-type/1?search=${search}`).then((response) => {
@@ -78,19 +143,18 @@
         });
     }
 
-    function getProviders() {
-        axios.get(`/api/persons?p_type_id=1`).then((response) => {
-            providers = response.data.data;
-        }).catch((err) => {
-            let detail = {
-                detail: {
-                    type: 'delete',
-                    message: err.response.data.message
-                }
-            };
-        });
+    /**
+     * Función para seleccionar el proveedor
+     * @param {event} item
+     * @returns {void} 
+     */
+    function selectProvider(item) {
+        providersSelected = item.detail;
+        searchTermProviders = item.detail.label;
     }
+    // end region
 
+    // region Alertas
     function close() {
         dispatch('close');
     }
@@ -103,11 +167,8 @@
         alertType = type;
         alertMessage = message;
     }
-
-    function selectProvider(item) {
-        providersSelected = item.detail;
-        searchTermProviders = item.detail.label;
-    }
+    // end region
+    
 
     function OpenAlertMessage(event) {
         dispatch('message', event.detail);
@@ -123,6 +184,7 @@
     onMount(() => {
         getPaymentTypes();
         getProviders();
+        getTillsByUser();
         if (edit == true) {
             id = item.id;
             person_id = item.person_id;
@@ -152,13 +214,14 @@
     async function handleCreateObject() {
         try {
             const res = await axios.post(`/api/storePurchase`, { 
+                user_id: user.id,
+                till_id: tillsSelected.value,
                 person_id: providersSelected.value, 
                 purchase_date, 
                 purchase_number,
                 purchase_details: purchaseDetails.map(x => ({product_id: x.id, pd_qty: x.quantity, pd_amount: x.product_selling_price})),
-                proofPayments: proofPaymentsSelected
+                proofPayments: proofPaymentTypesSelected
             });
-
             openAlerts(res.data.message,'success');
         } catch (err) {
             errors = err.response.data.details ? err.response.data.details : null;
@@ -170,7 +233,6 @@
     async function handleUpdateObject() {
         try {
             const res = await axios.put(`/api/purchases/${id}`, { person_id, purchase_date, purchase_status }, config);
-
             let detail = {
                 detail: {
                     type: 'success',
@@ -243,9 +305,9 @@
         <div class="col-span-3">
             <Autocomplete
                 errors={errors}
-                searchFromApi={true}
+                
                 label="Proveedor"
-                on:customSearch={searchProvividers}
+                
                 bind:item_selected={providersSelected}
                 items={providers.map(x => ({label: x.person_fname + ' ' + x.person_lastname, value: x.id}))}
                 searchTerm={searchTermProviders}
@@ -278,7 +340,20 @@
         </div> 
     </div>
     <div class="grid grid-cols-12 mt-4 gap-4">
-        <div class="col-span-6">
+        <div class="col-span-4">
+            <Autocomplete
+                errors={errors}
+                label="Caja"
+                bind:item_selected={tillsSelected}
+                items={tills.map(x => ({label: x.till_name, value: x.id}))}
+                searchTerm={tillsSearchTerm}
+                showDropdown={showDropdownPaymentTypes}
+                loading={loadingPaymentTypes}
+                filterdItem={tills}
+            />
+
+        </div>
+        <div class="col-span-4">
             <Autocomplete
                 errors={errors}
                 label="Tipo de Pago"
@@ -292,7 +367,7 @@
         </div>
         {#if paymentTypesSelected && paymentTypesSelected.value != 1 } 
             {#each proofPaymentTypes as item}
-                <div class="col-span-6">
+                <div class="col-span-4">
                     <Textfield
                         label={item.label}
                         bind:value={item.td_pr_desc}

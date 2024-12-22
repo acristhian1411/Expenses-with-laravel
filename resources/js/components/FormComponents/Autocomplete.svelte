@@ -14,6 +14,8 @@
     
     $: searchTerm, filterItems();
 
+    $: searchFromApi
+
     function CustonSearch(event) {
         dispatch('customSearch', event.detail);
     }
@@ -30,7 +32,7 @@
     }
     async function filterItems() {
 		loading = true; // Inicia el loader 
-        if(searchFromApi != null && searchFromApi == true){
+        if(searchFromApi != null && searchFromApi === true){
             await new Promise((resolve) => setTimeout(resolve, 1000));
             CustonSearch({detail: searchTerm});
         }else{
@@ -90,7 +92,7 @@ It will show up on hover.
                 autocomplete="off"
             />
             <!-- Dropdown de países filtrados -->
-            {#if showDropdown && filteredItem.length > 0}
+            {#if showDropdown == true && filteredItem.length > 0}
                 <ul class="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg w-full">
                     {#if loading == true}
                         <!-- Loader mientras se buscan los países -->
