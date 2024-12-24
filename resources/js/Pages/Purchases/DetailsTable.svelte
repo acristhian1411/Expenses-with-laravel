@@ -83,7 +83,7 @@
                   />
                 </td>
                 <td>{item.product_desc}</td>
-                <td>{item.product_selling_price}</td>
+                <td>{item.product_cost_price}</td>
                 <td class="text-center">
                   <button class="btn btn-primary" on:click={() => checkItem({target:{checked:true}},item)}>Seleccionar</button>
                   <button class="btn btn-secondary" on:click={() => checkItem({target:{checked:false}},item)}>Eliminar</button>

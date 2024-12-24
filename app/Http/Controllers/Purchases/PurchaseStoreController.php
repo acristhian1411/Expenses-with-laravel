@@ -10,6 +10,7 @@ use App\Http\Controllers\PurchasesDetails\PurchasesDetailsController;
 use App\Http\Controllers\TillDetails\TillDetailsController;
 use App\Http\Controllers\TillDetailProofPayments\TillDetailProofPaymentsController;
 use App\Http\Controllers\Tills\TillsController;
+use App\Http\Controllers\Products\ProductsController;
 use Illuminate\Support\Collection;
 class PurchaseStoreController extends ApiController {
     /**
@@ -28,7 +29,7 @@ class PurchaseStoreController extends ApiController {
                 'user_id' => 'required|integer',
                 'person_id' => 'required|integer',
                 'purchase_date' => 'required|date',
-                'purchase_number' => 'required|string|unique:purchases',
+                // 'purchase_number' => 'required|string|unique:purchases',
                 'purchase_details' => 'required|array'
             ];
             $request->validate($reglas);
@@ -47,7 +48,19 @@ class PurchaseStoreController extends ApiController {
             if($till_amount < $purchase_amount){
                 return response()->json(['error'=>'No hay suficiente efectivo en la caja para realizar la compra','message'=>'No hay suficiente efectivo en la caja para realizar la compra'],400);
             }
-
+            
+            $product_data = new Request([
+                'fromController' => true,
+                'details' => collect($request->purchase_details)->map(function ($item) {
+                    return [
+                        'id' => $item['product_id'],
+                        'product_cost_price' => $item['pd_amount'],
+                        'product_quantity' => $item['pd_qty']
+                    ];
+                })->toArray()
+            ]);
+            $products = new ProductsController;
+            $update = $products->updatePriceAndQty($product_data);
             $purchases = new PurchasesController;
             $purchase_data = new Request([
                 'person_id' => $request->person_id,
@@ -87,13 +100,13 @@ class PurchaseStoreController extends ApiController {
                 'td_pr_desc' => 'ninguno'
             ]);
             $till_detail_proof_payments_stored = $till_detail_proof_payments->store($till_detail_proof_payments_data);
-            // dd($till_detail_proof_payments_stored);
+            
             DB::commit();
             $something = [];
             return $this->showAfterAction($something,'create', 201);
         }catch(\Exception $e){
             DB::rollback();
-            return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se creaba el registro'],500);
+            return response()->json(['error' => $e, 'message'=>'Ocurrió un error mientras se creaba el registro'],500);
         }catch(\Illuminate\Validation\ValidationException $e){
             DB::rollBack();
             return response()->json([

@@ -218,6 +218,14 @@
 							>
 						</div>
 					</th>
+					<th class="text-center text-lg">
+						<div class="flex items-center justify-center">
+							Cantidad
+							<button on:click={() => sortData('product_quantity')}
+								><SortIcon/></button
+							>
+						</div>
+					</th>
 					{#if user.permissions != undefined && user.permissions.includes('products.create')}
 						<th>
 							<button class="btn btn-primary" on:click={() => (_new = true)}>Agregar</button>
@@ -233,6 +241,7 @@
 						<td class="text-center">{product.product_desc}</td>
 						<td class="text-center">{product.cat_desc}</td>
 						<td class="text-center">{product.brand_name}</td>
+						<td class="text-center">{product.product_quantity}</td>
 						{#if user.permissions != undefined && user.permissions.includes('products.show')}
 							<td>
 								<button class="btn btn-info" use:inertia={{ href: `/products/${product.id}` }}>Mostrar</button>

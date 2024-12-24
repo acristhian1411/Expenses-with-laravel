@@ -94,15 +94,27 @@ class ProductsController extends ApiController
             ];
             $req->validate($rules);
             foreach ($req->details as $key => $value) {
-                $product = Products::findOrFail($value->id);
-                $product->product_cost_price = $value->product_cost_price;
-                $product->product_quantity = $value->product_quantity;
+                $product = Products::findOrFail($value['id']);
+                $product->product_cost_price = $value['product_cost_price'];
+                $product->product_quantity += intval($value['product_quantity']);
+                $product->save();
+            }
+            if($req->has('fromController') && $req->fromController == true){
+                return true;
             }
             return response()->json(['message'=>'Actualizado con éxito']);
-
         }catch (\Exception $e){
-            return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se procesaba lo datos'], 400);
+            if($req->has('fromController') && $req->fromController == true){
+                return false;
+            }
+            return response()->json([
+                'error' => $e->getMessage(), 
+                'message'=>'Ocurrió un error mientras se procesaba lo datos'
+            ], 400);
         }catch(\Illuminate\Validation\ValidationException $e){
+            if($req->has('fromController') && $req->fromController == true){
+                return false;
+            }
             return response()->json([
                 'error' => $e->errors(), 
                 'message'=>'Ocurrió un error mientras se procesaba lo datos',
