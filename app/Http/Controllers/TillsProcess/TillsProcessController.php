@@ -23,8 +23,8 @@ class TillsProcessController extends ApiController{
             'td_amount' => 'required|numeric'
         ];
         $request->validate($rules);
-        
-            try{                
+            try{
+                // DB::beginTransaction();
                 $till = Tills::findOrFail($request->till_id);
                 $till->open();
                 $now = date('Y-m-d');
@@ -37,10 +37,10 @@ class TillsProcessController extends ApiController{
                     'td_desc' => 'Apertura de Caja',
                     'td_date' => $now,
                     'td_type' => true,
-                    'td_amount' => $request->td_amount
+                    'ref_id'=> 0,
+                    'td_amount' => intval($request->td_amount)
                 ]);
                 $detailMessage = $detail->store($detail_data);
-                
                 $details_id = $detailMessage->original['data']['id'];
                 $detProofPayment = new TillDetailProofPaymentsController;
                 $proofs = new Request([
@@ -49,13 +49,15 @@ class TillsProcessController extends ApiController{
                     'td_pr_desc'=>'Ninguno'
                 ]);
                 $detProofPayment->store($proofs);
-                
+                // DB::commit();
                 return response()->json(['message'=>'Caja abierta con exito']);
             }catch(\Exception $e){
-                
+                // DB::rollback();
                 return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo abrir la caja'],500);
+            }catch(\Illuminate\Validation\ValidationException $e){
+                // DB::rollback();
+                return response()->json(['error'=>$e->getMessage(),'message'=>'Los datos enviados no son correctos'],420);
             }
-
     }
 
     public function close(Request $request){
@@ -77,6 +79,7 @@ class TillsProcessController extends ApiController{
                     'account_p_id' => 0,
                     'td_desc' => 'Cierre de Caja',
                     'td_date' => $now,
+                    'ref_id'=>0,
                     'td_type' => false,
                     'td_amount' => $request->td_amount
                 ]);
