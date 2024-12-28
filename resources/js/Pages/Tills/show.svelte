@@ -8,6 +8,7 @@
     import {formatNumber, unformatNumber} from '@components/utilities/NumberFormat.js';
 
     import Details from './details.svelte';
+    import TillsHistory from './TillsHistory.svelte';
     import TillActions from './tillActions.svelte';
 
 	export let user
@@ -117,4 +118,6 @@
             </button>
         {/if}
     </div>
+{:else if active == 'Historial'}
+    <TillsHistory till_id={id}/>
 {/if}

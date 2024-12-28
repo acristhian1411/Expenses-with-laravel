@@ -105,6 +105,32 @@ class TillDetailsController extends ApiController
     }
 
     /**
+     * Display a list of resource filtered by till_id and a range of dates
+     * @param  \Illuminate\Http\Request  $request
+     * @param int $till_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function showByTillIdAndDate(Request $request, $till_id){
+        try{
+            $tillDetails = TillDetails::where('till_id', $till_id)
+                ->get();
+            if(($request->has('from') && $request->from != '') && ($request->has('to') && $request->to != '')){
+                $tillDetails = $tillDetails->whereBetween('td_date', [$request->from, $request->to]);
+            }
+            return $this->showAll($tillDetails, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=> 'Ls datos no son correrctos',
+                'details'=> method_exists($e, 'errors') ? $e->errors() : null
+            ]);
+        }
+    }
+
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

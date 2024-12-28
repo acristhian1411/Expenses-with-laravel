@@ -150,6 +150,7 @@ Route::delete('tills/{id}', [TillsController::class, 'destroy']);
 //routes for tilldetails
 Route::get('tilldetails', [TillDetailsController::class, 'index']);
 Route::post('tilldetails', [TillDetailsController::class, 'store']);
+Route::get('tilldetails/{till_id}/history', [TillDetailsController::class, 'showByTillIdAndDate']);
 Route::put('tilldetails/{id}', [TillDetailsController::class, 'update']);
 Route::get('tilldetails/{id}', [TillDetailsController::class, 'show']);
 Route::delete('tilldetails/{id}', [TillDetailsController::class, 'destroy']);
