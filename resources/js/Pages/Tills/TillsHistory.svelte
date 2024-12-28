@@ -72,7 +72,7 @@
             <tr class="hover">
                 <td class="text-center">{till.id}</td>
                 <td class="text-center">{till.td_desc}</td>
-                <td class="text-center">{till.created_at}</td>
+                <td class="text-center">{new Date(till.created_at).toLocaleString()}</td>
                 <td class="text-center">{till.td_type == true ? 'Ingreso' : 'Egreso'}</td>
                 <td class="text-center">{formatNumber(till.td_amount)}</td>
                 <!-- //TODO agregar función para poder eliminar un registro del historial de caja -->
@@ -83,3 +83,4 @@
         {/each}
     </tbody>
 </table>
+<!-- //TODO agregar paginación -->
