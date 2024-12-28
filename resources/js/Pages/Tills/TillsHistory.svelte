@@ -64,6 +64,7 @@
             <th class="text-center text-lg">Fecha</th>
             <th class="text-center text-lg">Tipo</th>
             <th class="text-center text-lg">Monto</th>
+            <th class="text-center text-lg">Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -74,6 +75,10 @@
                 <td class="text-center">{till.created_at}</td>
                 <td class="text-center">{till.td_type == true ? 'Ingreso' : 'Egreso'}</td>
                 <td class="text-center">{formatNumber(till.td_amount)}</td>
+                <!-- //TODO agregar función para poder eliminar un registro del historial de caja -->
+                <td class="text-center">
+                    <button class="btn btn-error" 
+                    >Eliminar</button>
             </tr>
         {/each}
     </tbody>

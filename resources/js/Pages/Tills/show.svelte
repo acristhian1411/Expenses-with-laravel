@@ -112,6 +112,7 @@
             <button class="btn btn-primary mt-4" on:click={() => openModal('open')}>
                 Abrir caja
             </button>
+            <!-- //TODO agregar función para ingresar dinero en caja -->
         {:else}
             <button class="btn btn-primary mt-4" on:click={() => openModal('close')}>
                 Cerrar caja

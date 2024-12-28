@@ -120,6 +120,8 @@
         <button class="btn btn-primary" type="submit">Guardar</button>
     </form>
 {:else if type == 'close'}
+
+    <!-- //TODO el monto con el que se tiene que cerrar la caja debe estar por defecto y el textfield tiene que estar desabilitado -->
     <form on:submit|preventDefault={handleSubmit}>
         <div class="grid grid-cols-12 gap-4 mt-4 mb-4">
             <div class="col-span-6">
