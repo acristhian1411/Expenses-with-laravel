@@ -220,7 +220,7 @@
                 purchase_date, 
                 purchase_number,
                 purchase_details: purchaseDetails.map(x => ({product_id: x.id, pd_qty: x.quantity, pd_amount: x.product_selling_price})),
-                proofPayments: proofPaymentTypesSelected
+                proofPayments: proofPaymentTypes
             });
             openAlerts(res.data.message,'success');
         } catch (err) {

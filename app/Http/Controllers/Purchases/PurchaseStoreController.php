@@ -29,11 +29,10 @@ class PurchaseStoreController extends ApiController {
                 'user_id' => 'required|integer',
                 'person_id' => 'required|integer',
                 'purchase_date' => 'required|date',
-                // 'purchase_number' => 'required|string|unique:purchases',
+                'purchase_number' => 'required|string|unique:purchases',
                 'purchase_details' => 'required|array'
             ];
             $request->validate($reglas);
-
             // Check if there is enough cash in the till to make the purchase
             $tills = new TillsController;
             $till_data = new Request([
@@ -96,8 +95,8 @@ class PurchaseStoreController extends ApiController {
             $till_detail_proof_payments = new TillDetailProofPaymentsController;
             $till_detail_proof_payments_data = new Request([
                 'till_detail_id' => $till_detail_stored->original['data']['id'],
-                'proof_payment_id' => 1,
-                'td_pr_desc' => 'ninguno'
+                'proof_payment_id' => $request->proofPayments[0]['value'],
+                'td_pr_desc' => $request->proofPayments[0]['value'] == 1 ? 'Efectivo' : $request->proofPayments[0]['td_pr_desc'],
             ]);
             $till_detail_proof_payments_stored = $till_detail_proof_payments->store($till_detail_proof_payments_data);
             
