@@ -102,7 +102,7 @@
 <table class="table w-full">
     <thead>
         <tr>
-            <th class="text-center text-lg">ID</th>
+            <th class="text-center text-lg">#</th>
             <th class="text-center text-lg">Descripcion</th>
             <th class="text-center text-lg">Fecha</th>
             <th class="text-center text-lg">Tipo</th>
@@ -111,9 +111,9 @@
         </tr>
     </thead>
     <tbody>
-        {#each tills as till}
+        {#each tills as till, index}
             <tr class="hover">
-                <td class="text-center">{till.id}</td>
+                <td class="text-center">{index+1}</td>
                 <td class="text-center">{till.td_desc}</td>
                 <td class="text-center">{new Date(till.created_at).toLocaleString()}</td>
                 <td class="text-center">{till.td_type == true ? 'Ingreso' : 'Egreso'}</td>
