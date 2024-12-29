@@ -86,6 +86,31 @@
                 };
                 OpenAlertMessage(detail);
             });
+        }else if(type == 'deposit'){
+            axios.post(`/api/tills/${tillId}/deposit`, {
+                till_id:tillId,
+                td_amount:amount,
+                person_id:person_id
+            }).then((res) => {
+                let detail = {
+                    detail: {
+                        type: 'success',
+                        message: res.data.message
+                    }
+                };
+                updateData();
+                OpenAlertMessage(detail);
+                close();
+            }).catch((err) => {
+                errors = err.response.data.details ? err.response.data.details : null;
+                let detail = {
+                    detail: {
+                        type: 'error',
+                        message: err.response.data.message
+                    }
+                };
+                OpenAlertMessage(detail);
+            });
         }
     }
     onMount(() => {
@@ -102,6 +127,8 @@
         Abrir caja
     {:else if type == 'close'}
         Cerrar caja
+    {:else if type == 'deposit'}
+        Ingresar dinero
     {/if}
 </h1>
 
@@ -117,11 +144,25 @@
                 />
             </div>
         </div>
-        <button class="btn btn-primary" type="submit">Guardar</button>
+        <button class="btn btn-primary" type="submit">Abrir caja</button>
     </form>
 {:else if type == 'close'}
-
     <!-- //TODO el monto con el que se tiene que cerrar la caja debe estar por defecto y el textfield tiene que estar desabilitado -->
+    <form on:submit|preventDefault={handleSubmit}>
+        <div class="grid grid-cols-12 gap-4 mt-4 mb-4">
+            <div class="col-span-6">
+                <Textfield
+                    label="Monto"
+                    disabled={true}
+                    required={true}
+                    type="number"
+                    bind:value={amount}
+                />
+            </div>
+        </div>
+        <button class="btn btn-secondary" type="submit">Cerrar caja</button>
+    </form>
+{:else if type == 'deposit'}
     <form on:submit|preventDefault={handleSubmit}>
         <div class="grid grid-cols-12 gap-4 mt-4 mb-4">
             <div class="col-span-6">
@@ -133,6 +174,16 @@
                 />
             </div>
         </div>
-        <button class="btn btn-primary" type="submit">Guardar</button>
+        <button class="btn btn-primary" type="submit">Ingresar dinero</button>
     </form>
+{/if}
+
+{#if errors}
+    <div class="mt-4">
+        <ul class="list-disc list-inside text-red-500">
+            {#each errors as error}
+                <li>{error}</li>
+            {/each}
+        </ul>
+    </div>
 {/if}

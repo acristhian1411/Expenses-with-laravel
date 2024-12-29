@@ -87,6 +87,7 @@
     <Modal on:close={() => closeModal()}>
         <TillActions 
             type={acctionType} 
+            amount={acctionType == 'close' ? till_amount:0}
             person_id={user.person_id} 
             tillId={till.id} 
             on:updateData={() => fetchData()}
@@ -112,9 +113,12 @@
             <button class="btn btn-primary mt-4" on:click={() => openModal('open')}>
                 Abrir caja
             </button>
-            <!-- //TODO agregar función para ingresar dinero en caja -->
         {:else}
-            <button class="btn btn-primary mt-4" on:click={() => openModal('close')}>
+            <!-- //TODO agregar función para ingresar dinero en caja -->
+            <button class="btn btn-primary mt-4" on:click={() => openModal('deposit')}>
+                Ingresar dinero
+            </button>
+            <button class="btn btn-secondary mt-4" on:click={() => openModal('close')}>
                 Cerrar caja
             </button>
         {/if}
