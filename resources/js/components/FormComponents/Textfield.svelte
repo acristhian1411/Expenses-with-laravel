@@ -8,6 +8,7 @@
     export let required;
     export let customFN;
     export let mask;
+    export let disabled;
     export let id
     export let onChange; // Callback para cambios en el valor
     const dispatch = createEventDispatcher();
@@ -57,6 +58,7 @@
             <input
                 required={required}
                 inputmode="numeric"
+                disabled={disabled}
                 value={formatNumber(value)}
                 on:input={handleCustomInput}
                 placeholder=""
@@ -73,6 +75,7 @@
                 type='date'
                 bind:value={value} 
                 required={required}
+                disabled={disabled}
                 id="hs-floating-input-email-value" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none
                 focus:pt-6
                 focus:pb-2
@@ -86,6 +89,7 @@
                 type='password'
                 bind:value={value} 
                 required={required}
+                disabled={disabled}
                 id="hs-floating-input-email-value" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none
                 focus:pt-6
                 focus:pb-2
@@ -100,6 +104,8 @@
                 required={required}
                 on:input={handleInput}
                 placeholder={mask}
+                disabled={disabled}
+
                 id="hs-floating-input-email-value" class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none
                 focus:pt-6
                 focus:pb-2
@@ -113,6 +119,7 @@
                 type='text'
                 bind:value={value} 
                 required={required}
+                disabled={disabled}
                 id={id}
                 on:input={(event) => handleInput(event, onChange)} 
                 class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none
