@@ -117,13 +117,16 @@ class TillDetailsController extends ApiController
             if(($request->has('from') && $request->from != '') && ($request->has('to') && $request->to != '')){
                 $tillDetails = $tillDetails->whereBetween('td_date', [$request->from, $request->to]);
             }
+            if($request->has('type') && $request->type != '' && $request->type != 'ambos'){
+                $tillDetails = $tillDetails->where('td_type', $request->type == 'ingresos'? true : false );
+            }
             return $this->showAll($tillDetails, 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }catch(\Illuminate\Validation\ValidationException $e){
             return response()->json([
                 'error'=>$e->getMessage(),
-                'message'=> 'Ls datos no son correrctos',
+                'message'=> 'Los datos no son correrctos',
                 'details'=> method_exists($e, 'errors') ? $e->errors() : null
             ]);
         }
