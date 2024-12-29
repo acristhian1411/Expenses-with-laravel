@@ -146,7 +146,7 @@
 	/>
 	<Autocomplete
 		errors={errors}
-		label="País"
+		label="Tipo de Caja"
 		bind:item_selected={till_type_selected}
 		items={till_types.map(x => ({label: x.till_type_desc, value: x.id}))}
 		searchTerm={searchTerm}
