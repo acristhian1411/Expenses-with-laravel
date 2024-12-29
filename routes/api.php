@@ -29,6 +29,7 @@ use App\Http\Controllers\Brands\BrandController;
 use App\Http\Controllers\ContactTypes\ContactTypesController;
 use App\Http\Controllers\Purchases\PurchaseStoreController;
 use App\Http\Controllers\TillsProcess\TillsProcessController;
+use App\Http\Controllers\TillsTransfers\TillsTransfersController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -147,6 +148,7 @@ Route::get('tills_tilltype/{id}', [TillsController::class, 'getByTypeId']);
 Route::post('tills/{id}/open', [TillsProcessController::class, 'cashOpening']);
 Route::post('tills/{id}/close', [TillsProcessController::class, 'close']);
 Route::post('tills/{id}/deposit', [TillsProcessController::class, 'deposit']);
+Route::post('tills/{id}/transfer', [TillsProcessController::class, 'transfer']);
 Route::delete('tills/{id}', [TillsController::class, 'destroy']);
 //routes for tilldetails
 Route::get('tilldetails', [TillDetailsController::class, 'index']);
@@ -155,6 +157,13 @@ Route::get('tilldetails/{till_id}/history', [TillDetailsController::class, 'show
 Route::put('tilldetails/{id}', [TillDetailsController::class, 'update']);
 Route::get('tilldetails/{id}', [TillDetailsController::class, 'show']);
 Route::delete('tilldetails/{id}', [TillDetailsController::class, 'destroy']);
+//routes for tillsTransfers
+Route::get('tillstransfers', [TillsTransfersController::class, 'index']);
+Route::post('tillstransfers', [TillsTransfersController::class, 'store']);
+Route::put('tillstransfers/{id}', [TillsTransfersController::class, 'update']);
+Route::get('tillstransfers/{id}', [TillsTransfersController::class, 'show']);
+Route::get('tillstransfers/{id}/history', [TillsTransfersController::class, 'showByTillIdAndDate']);
+Route::delete('tillstransfers/{id}', [TillsTransfersController::class, 'destroy']);
 //routes for TillDetailProofPayments
 Route::get('tilldetailproofpayments', [TillDetailProofPaymentsController::class, 'index']);
 Route::post('tilldetailproofpayments', [TillDetailProofPaymentsController::class, 'store']);

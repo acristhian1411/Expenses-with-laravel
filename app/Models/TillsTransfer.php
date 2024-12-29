@@ -22,8 +22,12 @@ class TillsTransfer extends Model implements AuditableContract
         't_transfer_obs', 
     ];
 
-    public function till()
+    public function origin()
     {
-        return $this->belongsTo(Tills::class, 'till_id');
+        return $this->belongsTo(Tills::class, 'till_id', 'origin_id');
+    }
+    public function destiny()
+    {
+        return $this->belongsTo(Tills::class, 'till_id', 'destiny_id');
     }
 }

@@ -25,6 +25,9 @@ class Tills extends Model implements AuditableContract
         return $this->belongsTo(TillType::class, 't_type_id');
     }
 
+    public function transfers(){
+        return $this->hasMany(TillsTransfer::class);
+    }
     public function details(){
         return $this->hasMany(TillDetails::class);
     }

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\TillDetails\TillDetailsController;
 use App\Http\Controllers\TillDetailProofPayments\TillDetailProofPaymentsController;
+use App\Http\Controllers\TillsTransfers\TillsTransfersController;
+use App\Http\Controllers\Tills\TillsController;
 use Illuminate\Support\Facades\DB;
 
 class TillsProcessController extends ApiController{
@@ -153,6 +155,93 @@ class TillsProcessController extends ApiController{
         }catch(\Exception $e){
             
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo realizar el deposito'],500);
+        }
+    }
+
+    /**
+    * processes a transfer between tills
+    * @param int $id the origin till
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\JsonResponse
+    */
+    public function transfer(Request $req,$id){
+        try{
+            $rules = [
+                'destiny_id' => 'required|integer',
+                't_transfer_amount' => 'required|numeric',
+                't_transfer_obs' => 'required|string|max:255'
+            ];
+            $req->validate($rules);
+            DB::beginTransaction();
+            $tillsTransfers = new TillsTransfersController;
+            $tills = new TillsController;
+            $till_data = new Request([
+                'fromController'=> true
+            ]);
+            $till_amount = $tills->showTillAmount($till_data,$id);
+            if($till_amount < $req->t_transfer_amount){
+                return response()->json(['error'=>'No hay suficiente efectivo en la caja para realizar la transferencia','message'=>'No hay suficiente efectivo en la caja para realizar la transferencia'],400);
+            }
+
+            $now = date('Y-m-d');
+            $transfer_req = new Request([
+                'origin_id' => $id,
+                'destiny_id' => $req->destiny_id,
+                't_transfer_amount' => $req->t_transfer_amount,
+                't_transfer_date' => $now,
+                't_transfer_obs' => $req->t_transfer_obs
+            ]);
+            $transferStored = $tillsTransfers->store($transfer_req);
+            $ref_id = $transferStored->original['data']['id'];
+            $destinyDetail = new TillDetailsController;
+            $destiny_req = new Request([
+                'till_id' => $req->destiny_id,
+                'person_id' => $req->person_id,
+                'account_p_id' => 0,
+                'td_desc' => 'Transferencia de caja',
+                'td_date' => $now,
+                'ref_id'=>$ref_id,
+                'td_type' => true,
+                'td_amount' => $req->t_transfer_amount
+            ]);
+            $destinyStored = $destinyDetail->store($destiny_req);
+            $destinyID = $destinyStored->original['data']['id'];
+            $detProofPayment = new TillDetailProofPaymentsController;
+            $proofs = new Request([
+                'till_detail_id'=>$destinyID,
+                'proof_payment_id'=>1,
+                'td_pr_desc'=>'Ninguno'
+            ]);
+            $detProofPayment->store($proofs);
+
+            $origin_req = new Request([
+                'till_id' => $id,
+                'person_id' => $req->person_id,
+                'account_p_id' => 0,
+                'td_desc' => 'Transferencia de caja',
+                'td_date' => $now,
+                'ref_id'=>$ref_id,
+                'td_type' => false,
+                'td_amount' => $req->t_transfer_amount
+            ]);
+            $originDetail = new TillDetailsController;
+            $originStored = $originDetail->store($origin_req);
+            // dd($originStored);
+            $originID = $originStored->original['data']['id'];
+            // dd($originID);
+            $detProofPayment = new TillDetailProofPaymentsController;
+            $proofs = new Request([
+                'till_detail_id'=>$originID,
+                'proof_payment_id'=>1,
+                'td_pr_desc'=>'Ninguno'
+            ]);
+            $detProofPayment->store($proofs);
+            DB::commit();
+            return response()->json(['message'=>'Transferencia realizada con exito']);
+        }catch(\Exception $e){
+            DB::rollback();
+            dd($e);
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo realizar la transferencia'],500);
         }
     }
 }

@@ -9,13 +9,14 @@
 
     import Details from './details.svelte';
     import TillsHistory from './TillsHistory.svelte';
+    import Transfers from '@pages/Transfers/transfers.svelte';
     import TillActions from './tillActions.svelte';
 
 	export let user
     export let appUrl
     export let id = 0;
     let till = {};
-    let tabs = ['Acciones','Detalles','Historial'];
+    let tabs = ['Acciones','Historial','Transferencias','Detalles'];
     let audits = [];
     let till_amount
     let error = null;
@@ -125,4 +126,12 @@
     </div>
 {:else if active == 'Historial'}
     <TillsHistory till_id={id}/>
+{:else if active == 'Transferencias'}
+    <h1 align="center" class="text-xl font-bold mt-4">Transferencias</h1>
+    <Transfers 
+        till_id={id} 
+        origin={till}
+        origin_amount={till_amount}
+        person_id={user.person_id} 
+        />
 {/if}
