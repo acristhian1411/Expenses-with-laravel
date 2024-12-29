@@ -166,6 +166,9 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('Sales/index');
     })->middleware('permission:sales.index');
 
+    Route::get('/create-sales', function () {
+        return Inertia::render('Sales/form');
+    })->middleware('permission:sales.create');
 });
 
 

@@ -8,7 +8,7 @@
   
   <div class="grid grid-cols-2 gap-6 p-8">
     <!-- //TODO agregar vista para registrar ventas -->
-    <button class="flex flex-col items-center justify-center p-6 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700" on:click={() => goTo('/sales')}>
+    <button class="flex flex-col items-center justify-center p-6 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700" on:click={() => goTo('/create-sales')}>
       <!-- SVG Icon for Ventas -->
       <CartIcon/>
       
@@ -24,8 +24,6 @@
       </svg> -->
       <span>Compras</span>
     </button>
-  
-   
   
     <button class="flex flex-col items-center justify-center p-6 bg-yellow-600 text-white rounded-lg shadow-md hover:bg-yellow-700" on:click={() => goTo('/tills')}>
       <!-- SVG Icon for Cajas -->
@@ -51,7 +49,7 @@
       <span>Productos</span>
     </button>
 
-    <button class="flex flex-col items-center justify-center p-6 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700" on:click={() => goTo('/charts')}>
+    <button class="flex flex-col col-span-2 items-center justify-center p-6 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700" on:click={() => goTo('/charts')}>
       <!-- SVG Icon for Cajas -->
       <BarsIcon
         className="w-12 h-12 mb-2"
