@@ -1,6 +1,6 @@
 <script>
     import {Inertia} from '@inertiajs/inertia';
-    import { CartIcon, MoneyIcon, ProductIcon} from '@components/Icons/';
+    import { CartIcon, MoneyIcon, ProductIcon, BarsIcon} from '@components/Icons/';
     function goTo(url) {
       Inertia.visit(url);
     }
@@ -8,7 +8,7 @@
   
   <div class="grid grid-cols-2 gap-6 p-8">
     <!-- //TODO agregar vista para registrar ventas -->
-    <button class="flex flex-col items-center justify-center p-6 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700" on:abort={() => goTo('/sales')}>
+    <button class="flex flex-col items-center justify-center p-6 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700" on:click={() => goTo('/sales')}>
       <!-- SVG Icon for Ventas -->
       <CartIcon/>
       
@@ -50,5 +50,21 @@
       </svg> -->
       <span>Productos</span>
     </button>
+
+    <button class="flex flex-col items-center justify-center p-6 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700" on:click={() => goTo('/charts')}>
+      <!-- SVG Icon for Cajas -->
+      <BarsIcon
+        className="w-12 h-12 mb-2"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1"
+      />
+      <!-- <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2l4 -4m5 0a9 9 0 11-18 0a9 9 0 0118 0z" />
+      </svg> -->
+      <span>Informes</span>
+    </button>
+
   </div>
   

@@ -162,6 +162,10 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('Purchases/Show', ['id' => $id]);
     })->middleware('permission:purchases.show');
 
+    Route::get('/sales', function () {
+        return Inertia::render('Sales/index');
+    })->middleware('permission:sales.index');
+
 });
 
 
