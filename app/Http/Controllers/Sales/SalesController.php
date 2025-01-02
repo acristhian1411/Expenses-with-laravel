@@ -15,12 +15,15 @@ class SalesController extends ApiController
      */
     public function index()
     {
-        //
-        $t = Sales::query()->first();
-        $query = Sales::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
+        try{
+            $t = Sales::query()->first();
+            $query = Sales::query();
+            $query = $this->filterData($query, $t);
+            $datos = $query->get();
+            return $this->showAll($datos, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'], 500);
+        }
     }
 
     /**
@@ -31,19 +34,28 @@ class SalesController extends ApiController
      */
     public function store(Request $request)
     {
-        //
-        $reglas = [
-            'person_id' => 'required',
-            'sale_desc' => 'required',
-            'sale_date' => 'required',
-            'sale_number' => 'required',
-            'sale_status' => 'required',
-            'sale_type' => 'required'
-        ];
-        $this->validate($request, $reglas);
-        $data = $request->all();
-        $sales = Sales::create($data);
-        return $this->showOne($sales, 201);
+        try{
+            $reglas = [
+                'person_id' => 'required',
+                'sale_desc' => 'required',
+                'sale_date' => 'required',
+                'sale_number' => 'required',
+                'sale_status' => 'required',
+                'sale_type' => 'required'
+            ];
+            $request->validate( $reglas);
+            $data = $request->all();
+            $sales = Sales::create($data);
+            return $this->showAfterAction($sales,'create', 201);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'], 500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->errors(),
+                'message'=>'Los datos enviados no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null
+        ], 422);
+        }
     }
 
     /**
@@ -54,9 +66,13 @@ class SalesController extends ApiController
      */
     public function show($id)
     {
-        //
-        $sales = Sales::findOrFail($id);
-        return $this->showOne($sales, 200);
+        try{
+            $sales = Sales::findOrFail($id);
+            $audits = $sales->audits;
+            return $this->showOne($sales,$audits, 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'], 500);
+        }
     }
 
     /**
@@ -68,20 +84,29 @@ class SalesController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
-        $reglas = [
-            'person_id' => 'required',
-            'sale_desc' => 'required',
-            'sale_date' => 'required',
-            'sale_number' => 'required',
-            'sale_status' => 'required',
-            'sale_type' => 'required'
-        ];
-        $this->validate($request, $reglas);
-        $data = $request->all();
-        $sales = Sales::findOrFail($id);
-        $sales->update($data);
-        return $this->showOne($sales, 200);
+        try{
+            $reglas = [
+                'person_id' => 'required',
+                'sale_desc' => 'required',
+                'sale_date' => 'required',
+                'sale_number' => 'required',
+                'sale_status' => 'required',
+                'sale_type' => 'required'
+            ];
+            $request->validate( $reglas);
+            $data = $request->all();
+            $sales = Sales::findOrFail($id);
+            $sales->update($data);
+            return $this->showAfterAction($sales,'update', 200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo actualizar los datos'], 500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Los datos no son correctos',
+                'details' => method_exists($e, 'errors') ? $e->errors() : null
+            ]);
+        }
     }
 
     /**
@@ -92,9 +117,12 @@ class SalesController extends ApiController
      */
     public function destroy($id)
     {
-        //
-        $sales = Sales::findOrFail($id);
-        $sales->delete();
-        return response()->json('Eliminado con exito!');
+        try{
+            $sales = Sales::findOrFail($id);
+            $sales->delete();
+            return response()->json(['message'=>'Eliminado con exito!']);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo eliminar el registro'],500);
+        }
     }
 }

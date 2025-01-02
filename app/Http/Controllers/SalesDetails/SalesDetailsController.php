@@ -15,12 +15,18 @@ class SalesDetailsController extends ApiController
      */
     public function index()
     {
-        //
-        $t = SalesDetails::query()->first();
-        $query = SalesDetails::query();
-        $query = $this->filterData($query, $t);
-        $datos = $query->get();
-        return $this->showAll($datos, 200);
+        try{
+            $t = SalesDetails::query()->first();
+            $query = SalesDetails::query();
+            $query = $this->filterData($query, $t);
+            $datos = $query->get();
+            return $this->showAll($datos, 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Ocurrió un error mientras se obtenían los datos'
+            ],500);
+        }
     }
 
     /**
@@ -31,19 +37,59 @@ class SalesDetailsController extends ApiController
      */
     public function store(Request $request)
     {
-        //
-        $rules = [
-            'sale_id',
-            'product_id',
-            'sd_qty',
-            'sd_desc',
-            'sd_amount',
-        ];
-        $this->validate($request, $rules);
-        $data = $request->all();
-        $salesDetails = SalesDetails::create($data);
-        return $this->showOne($salesDetails, 201);
+        try{
+            $rules = [
+                'sale_id',
+                'product_id',
+                'sd_qty',
+                'sd_desc',
+                'sd_amount',
+            ];
+            $request->validate( $rules);
+            $data = $request->all();
+            $salesDetails = SalesDetails::create($data);
+            return $this->showAfterAction($salesDetails,'create', 201);
+        }catch(\Exception $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Ocurrió un error al crear el registro'
+            ],500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->errors(),
+                'message'=>'Los datos enviados no son correctos',
+                'details'=>method_exists($e, 'errors') ? $e->errors() : null
+            ],422);
+        }
     }
+
+    /**
+     * Almacena varios detalles de venta a la vez
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function storeMany(Request $request){
+        try{
+            $reglas =[
+                'details'=>'required:array'
+            ];
+            $request->validate( $reglas);
+            $details = SalesDetails::insert($request->details);
+            return $this->showAfterAction([],'create',200);
+        }catch(\Exception $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Ocurrió un error al crear los registros'
+        ]);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->errors(),
+                'message'=>'Los datos enviados no son correctos',
+                'details'=>method_exists($e, 'errors') ? $e->errors() : null
+            ],422);
+        }
+    }
+    
 
     /**
      * Display the specified resource.
@@ -53,9 +99,16 @@ class SalesDetailsController extends ApiController
      */
     public function show($id)
     {
-        //
-        $dato = SalesDetails::findOrFail($id);
-        return $this->showOne($dato, 200);
+        try{
+            $dato = SalesDetails::findOrFail($id);
+            $audits = $dato->audits;
+            return $this->showOne($dato,$audits, 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Ocurrió un error al obtener los datos'
+                ],500);
+        }
     }
 
     /**
@@ -67,19 +120,31 @@ class SalesDetailsController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
-        $rules = [
-            'sale_id',
-            'product_id',
-            'sd_qty',
-            'sd_desc',
-            'sd_amount',
-        ];
-        $this->validate($request, $rules);
-        $data = $request->all();
-        $salesDetails = SalesDetails::findOrFail($id);
-        $salesDetails->update($data);
-        return $this->showOne($salesDetails, 200);
+        try{
+            $rules = [
+                'sale_id',
+                'product_id',
+                'sd_qty',
+                'sd_desc',
+                'sd_amount',
+            ];
+            $request->validate($rules);
+            $data = $request->all();
+            $salesDetails = SalesDetails::findOrFail($id);
+            $salesDetails->update($data);
+            return $this->showAfterAction($salesDetails,'update', 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Ocurrió un error al actualizar los datos'
+            ],500);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json([
+                'error'=>$e->errors(),
+                'message'=>'Los datos enviados no son correctos',
+                'details'=>method_exists($e, 'errors') ? $e->errors() : null
+            ],422);
+        }
     }
 
     /**
@@ -90,9 +155,15 @@ class SalesDetailsController extends ApiController
      */
     public function destroy($id)
     {
-        //
-        $salesDetails = SalesDetails::findOrFail($id);
-        $salesDetails->delete();
-        return response()->json('Eliminado con exito!');
+        try{
+            $salesDetails = SalesDetails::findOrFail($id);
+            $salesDetails->delete();
+            return response()->json(['message'=>'Eliminado con exito!']);
+        }catch(\Exception $e){
+            return response()->json([
+                'error'=>$e->getMessage(),
+                'message'=>'Ocurrió un error al eliminar los datos'
+            ],500);
+        }
     }
 }

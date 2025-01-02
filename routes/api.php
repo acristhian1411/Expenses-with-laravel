@@ -187,6 +187,7 @@ Route::get('sales/{id}', [SalesController::class, 'show']);
 Route::delete('sales/{id}', [SalesController::class, 'destroy']);
 //routes for salesdetails
 Route::get('salesdetails', [SalesDetailsController::class, 'index']);
+Route::post('salesdetails-,any', [SalesDetailsController::class, 'storeMany']);
 Route::post('salesdetails', [SalesDetailsController::class, 'store']);
 Route::put('salesdetails/{id}', [SalesDetailsController::class, 'update']);
 Route::get('salesdetails/{id}', [SalesDetailsController::class, 'show']);

@@ -60,7 +60,7 @@ trait ApiResponser
 	 * @param string $action
 	 * @param int $code
 	 */
-	protected function showAfterAction(Model|array $instance, $action, $code = 200){
+	protected function showAfterAction(Model|array|Collection $instance, $action, $code = 200){
 		if(!($instance instanceof Model || is_array($instance))){
 			throw new \InvalidArgumentException('El argumento $instance debe ser de tipo Model o array');
 		}
@@ -70,7 +70,7 @@ trait ApiResponser
 	}
 
 	// add audit parameter
-	protected function showOne(Model|array $instance,Collection $audit = null, $code = 200)
+	protected function showOne(Model|array|Collection $instance,Collection $audit = null, $code = 200)
 	{
 		//$transformer = $instance->transformer;
 		$transformer = "";

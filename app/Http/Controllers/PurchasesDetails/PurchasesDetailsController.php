@@ -67,7 +67,6 @@ class PurchasesDetailsController extends ApiController
                 'details'=> 'required:array'
             ];
             $req->validate($reglas);
-            // dd('hola');
             $details = PurchasesDetails::insert($req->details);
             $algo = [];
             
