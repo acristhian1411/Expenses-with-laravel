@@ -299,7 +299,7 @@
 {#if openAlert}
 	<Alert {alertMessage} {alertType} on:close={closeAlert} />
 {/if}
-<h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar Purchases{:else}Nueva Compra{/if}</h3>
+<h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar Compra{:else}Nueva Compra{/if}</h3>
 <form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>
     <div class="grid grid-cols-12  ">
         <div class="col-span-3">

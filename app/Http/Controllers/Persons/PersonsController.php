@@ -155,11 +155,12 @@ class PersonsController extends ApiController
 
     public function searchPerType(Request $request, $type){
         try{
-            // dd($request);
             $person = Persons::where('p_type_id', $type)
             ->where(function ($query) use ($request) {
-                $query->where('person_fname', 'ilike', '%'.$request->search.'%')
-                    ->orWhere('person_lastname','ilike', '%'.$request->search.'%');
+                $query->where('person_fname', 'ilike', "%$request->search%")
+                    ->orWhere('person_ruc','ilike',"%$request->search%")
+                    ->orWhere('person_idnumber','ilike',"%$request->search%")
+                    ->orWhere('person_lastname','ilike', "%$request->search%");
             })
             ->get();
             // dd($person);
