@@ -1,10 +1,10 @@
-
 <script>
     import axios from 'axios';
     import { onMount } from 'svelte';
     import {formatNumber, unformatNumber} from '@components/utilities/NumberFormat.js';
+    import { SearchIcon} from '@components/Icons/';
     import { createEventDispatcher } from 'svelte';
-    import {Textfield, Autocomplete} from '@components/FormComponents';
+    import {Textfield, Autocomplete, SearchPersons} from '@components/FormComponents';
     import {Modal} from '@components/utilities';
 	import {Alert} from '@components/Alerts/';
     import DetailsTable from './DetailsTable.svelte';
@@ -33,6 +33,7 @@
     let providersSelected = [];
     let searchTermProviders = '';
     let showDropdownProviders = false;
+    let showPersonSearchForm = false;
     let loading = false;
     let purchaseDetails = [];
     let id = 0;
@@ -162,6 +163,25 @@
     function closeAlert() {
         openAlert = false;
     }
+
+    /**
+     * Función para seleccionar el Cliente
+     * @param {event} item
+     * @returns {void} 
+     */
+     function selectPerson(item) {
+        providersSelected = item.detail.person.id;
+        searchTermProviders = item.detail.label;
+    }
+
+    function OpenPersonSearchForm() {
+        showPersonSearchForm = true;
+    }
+
+    function ClosePersonSearchForm() {
+        showPersonSearchForm = false;
+    }
+
     function openAlerts(message,type) {
         openAlert = true;
         alertType = type;
@@ -276,6 +296,16 @@
     }
 
 </script>
+{#if showPersonSearchForm == true}
+    <Modal on:close={() => ClosePersonSearchForm()}>
+        <SearchPersons 
+            label="Proveedor"
+            type=1
+            on:selectPerson={selectPerson}
+            on:close={() => ClosePersonSearchForm()}
+        />
+    </Modal>
+{/if}
 {#if showProviderForm == true}
     <Modal on:close={() => CloseProviderForm()}>
         <Form 
@@ -302,24 +332,22 @@
 <h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar Compra{:else}Nueva Compra{/if}</h3>
 <form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>
     <div class="grid grid-cols-12  ">
-        <div class="col-span-3">
-            <Autocomplete
-                errors={errors}
-                
+        <div class="col-span-3 pr-2"> 
+            <Textfield
+                errors={errors?.provider ? errors.provider[0] : []}
                 label="Proveedor"
-                
-                bind:item_selected={providersSelected}
-                items={providers.map(x => ({label: x.person_fname + ' ' + x.person_lastname, value: x.id}))}
-                searchTerm={searchTermProviders}
-                showDropdown={showDropdownProviders}
-                loading={loading}
-                filterdItem={providers}
+                type="text"
+                bind:value={searchTermProviders}
+                required={true}
             />
         </div>
-        <div class="col-span-1 gap-4">
+        <div class="col-span-2 flex gap-3 items-center mb-2">
+            <button class="btn btn-primary" type="button" on:click={OpenPersonSearchForm}>
+                <SearchIcon/>
+            </button>
             <button class="btn btn-primary" type="button" on:click={OpenProviderForm}>+</button>
         </div>
-        <div class="col-span-4 mr-4" >
+        <div class="col-span-3 mr-4" >
             <Textfield
                 label="Num. Factura"
                 required={true}
