@@ -1,4 +1,3 @@
-
 <script>
     import axios from 'axios';
     import { SearchIcon} from '@components/Icons/';
@@ -42,7 +41,7 @@
     let showDropdownClients = false;
     let showPersonSearchForm = false;
     let loading = false;
-    let purchaseDetails = [];
+    let saleDetails = [];
     let id = 0;
     let errors = null;
     let config = {
@@ -55,15 +54,15 @@
     let openAlert = false;
     let alertMessage = '';
 	let alertType = '';
-    $: purchaseDetails ;
+    $: saleDetails ;
     $: paymentTypesSelected, filterProofPaymentTypes();
     let date = new Date();
 
     // Variables dinámicas para cada campo
     let person_id = '';
-    let purchase_date = date.toISOString().slice(0, 10);
-    let purchase_status = '';
-    let purchase_number = '';
+    let sale_date = date.toISOString().slice(0, 10);
+    let sale_status = '';
+    let sale_number = '';
 
     // region Cajas
     /**
@@ -157,7 +156,6 @@
      * @returns {void} 
      */
     function selectClient(item) {
-        console.log('algo: ',item)
         ClientsSelected = item.detail.person.id;
         searchTermClients = item.detail.label;
     }
@@ -197,8 +195,8 @@
         if (edit == true) {
             id = item.id;
             person_id = item.person_id;
-            purchase_date = item.purchase_date;
-            purchase_status = item.purchase_status;
+            sale_date = item.sale_date;
+            sale_status = item.sale_status;
         }
     });
 
@@ -230,13 +228,13 @@
 
     async function handleCreateObject() {
         try {
-            const res = await axios.post(`/api/storePurchase`, { 
+            const res = await axios.post(`/api/storesale`, { 
                 user_id: user.id,
                 till_id: tillsSelected.value,
-                person_id: ClientsSelected.value, 
-                purchase_date, 
-                purchase_number,
-                purchase_details: purchaseDetails.map(x => ({product_id: x.id, pd_qty: x.quantity, pd_amount: x.product_selling_price})),
+                person_id: ClientsSelected, 
+                sale_date, 
+                sale_number,
+                sale_details: saleDetails.map(x => ({product_id: x.id, sd_qty: x.quantity, sd_amount: x.product_selling_price})),
                 proofPayments: proofPaymentTypes
             });
             openAlerts(res.data.message,'success');
@@ -249,7 +247,7 @@
 
     async function handleUpdateObject() {
         try {
-            const res = await axios.put(`/api/purchases/${id}`, { person_id, purchase_date, purchase_status }, config);
+            const res = await axios.put(`/api/sales/${id}`, { person_id, sale_date, sale_status }, config);
             let detail = {
                 detail: {
                     type: 'success',
@@ -271,7 +269,7 @@
     }
 
     function addDetail(item) {
-        let details = purchaseDetails
+        let details = saleDetails
         if(details.filter(x => x.id === item.id).length > 0) {
             let itemIdx = details.findIndex(x => x.id === item.id);
             if(details[itemIdx].quantity == item.quantity){
@@ -282,14 +280,14 @@
         }else{
             details.push(item);
         }
-        purchaseDetails = details;
+        saleDetails = details;
     }
 
     function removeDetail(item) {
-        let newItem = purchaseDetails
+        let newItem = saleDetails
         let itemIdx = newItem.findIndex(x => x.id === item.id);
         newItem.splice(itemIdx, 1);
-        purchaseDetails = newItem;
+        saleDetails = newItem;
     }
 
 </script>
@@ -307,7 +305,7 @@
     <Modal on:close={() => CloseClientForm()}>
         <Form 
             on:ClientSelected={selectClient}
-            from={'purchases'}
+            from={'sales'}
             edit={false}
             on:message={OpenAlertMessage} 
             on:close={() => CloseClientForm()} />
@@ -328,8 +326,8 @@
 {/if}
 <h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar Venta{:else}Nueva Venta{/if}</h3>
 <form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>
-    <div class="grid grid-cols-12  ">
-        <div class="col-span-3">
+    <div class="grid grid-cols-12 ">
+        <div class="col-span-3 pr-2">
             <Textfield
                 errors={errors?.client ? errors.client[0] : []}
                 label="Cliente"
@@ -338,22 +336,26 @@
                 required={true}
             />
         </div>
-        <div class="col-span-2 flex gap-3 items-center">
-            <button class="btn btn-primary" type="button" on:click={OpenPersonSearchForm}>
-                <SearchIcon/>
-            </button>
-            <button class="btn btn-primary" type="button" on:click={OpenClientForm}>
-                +
-            </button>
+        <div class="col-span-2 flex gap-3 items-center mb-2">
+            <div class="tooltip " data-tip="Buscar cliente">
+                <button  class="btn btn-primary" type="button" on:click={OpenPersonSearchForm}>
+                    <SearchIcon/>
+                </button>
+            </div>
+            <div class="tooltip " data-tip="Agregar cliente">
+                <button class="btn btn-primary" type="button" on:click={OpenClientForm}>
+                    +
+                </button>
+            </div>
         </div>
-        <div class="col-span-3 mr-4" >
+        <div class="col-span-3 mr-4">
             <Textfield
                 label="Num. Factura"
                 required={true}
                 type="text"
                 mask="999-999-9999999"
-                bind:value={purchase_number}
-                errors={errors?.purchase_number ? {message:errors.purchase_number[0]} : null}
+                bind:value={sale_number}
+                errors={errors?.sale_number ? {message:errors.sale_number[0]} : null}
             />
         </div>
         <div class="col-span-4 gap-0">
@@ -361,8 +363,8 @@
                 label="Fecha"
                 required={true}
                 type="date"
-                bind:value={purchase_date}
-                errors={errors?.purchase_date ? {message:errors.purchase_date[0]} : null}
+                bind:value={sale_date}
+                errors={errors?.sale_date ? {message:errors.sale_date[0]} : null}
             />
         </div> 
     </div>
@@ -432,15 +434,17 @@
                 </th>
                 <th class="text-center text-lg">
                     <div class="flex items-center justify-center">
-                        <button type="button" class="btn btn-primary" on:click={() => (
-                            OpenModal()
-                        )}>Agregar</button>
+                        <div class="tooltip " data-tip="Agregar productos al carrito">
+                            <button type="button" class="btn btn-primary" on:click={() => (
+                                OpenModal()
+                            )}>Agregar</button>
+                        </div>
                     </div>
                 </th>
             </tr>
         </thead>
         <tbody>
-            {#each purchaseDetails as item, i (item.id)}
+            {#each saleDetails as item, i (item.id)}
                 <tr class="hover">
                     <td>
                         <Textfield
@@ -464,13 +468,13 @@
                     <td class="text-center">{formatNumber((parseInt(item.product_selling_price)*item.quantity))}</td>
                 </tr>
             {/each}
-            {#if purchaseDetails.length > 0}
+            {#if saleDetails.length > 0}
                 <tr>
                     <td colspan="4">Total</td>
                     
                     <td  class="text-center">
                         <span>
-                            {formatNumber(purchaseDetails.reduce((acc, curr) => acc + (curr.product_selling_price * curr.quantity), 0).toFixed(2))}
+                            {formatNumber(saleDetails.reduce((acc, curr) => acc + (curr.product_selling_price * curr.quantity), 0).toFixed(2))}
                         </span>
                     </td>
                 </tr>
