@@ -342,10 +342,16 @@
             />
         </div>
         <div class="col-span-2 flex gap-3 items-center mb-2">
-            <button class="btn btn-primary" type="button" on:click={OpenPersonSearchForm}>
-                <SearchIcon/>
-            </button>
-            <button class="btn btn-primary" type="button" on:click={OpenProviderForm}>+</button>
+            <div class="tooltip " data-tip="Buscar proveedor">
+                <button class="btn btn-primary" type="button" on:click={OpenPersonSearchForm}>
+                    <SearchIcon/>
+                </button>
+            </div>
+            <div class="tooltip " data-tip="Agregar proveedor">
+                <button class="btn btn-primary" type="button" on:click={OpenProviderForm}>
+                    +
+                </button>
+            </div>
         </div>
         <div class="col-span-3 mr-4" >
             <Textfield
@@ -433,9 +439,11 @@
                 </th>
                 <th class="text-center text-lg">
                     <div class="flex items-center justify-center">
-                        <button type="button" class="btn btn-primary" on:click={() => (
-                            OpenModal()
-                        )}>Agregar</button>
+                        <div class="tooltip " data-tip="Agregar productos al carrito">
+                            <button type="button" class="btn btn-primary" on:click={() => (
+                                OpenModal()
+                            )}>Agregar</button>
+                        </div>
                     </div>
                 </th>
             </tr>
