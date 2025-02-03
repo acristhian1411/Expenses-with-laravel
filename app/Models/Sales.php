@@ -16,7 +16,6 @@ class Sales extends Model implements AuditableContract
 
     protected $fillable = [
         'person_id',
-        'sale_desc',
         'sale_date',
         'sale_number',
         'sale_status',

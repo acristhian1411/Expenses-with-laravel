@@ -12,6 +12,7 @@ use App\Http\Controllers\TillDetailProofPayments\TillDetailProofPaymentsControll
 use App\Http\Controllers\Tills\TillsController;
 use App\Http\Controllers\Products\ProductsController;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 class SaleStoreController extends ApiController {
     /**
      * Use the store method of SalesController and SalesDetailsController to create a new sale with each details. Also it will use DBTransaction
@@ -29,28 +30,33 @@ class SaleStoreController extends ApiController {
                 'user_id' => 'required|integer',
                 'person_id' => 'required|integer',
                 'sale_date' => 'required|date',
-                'sale_number' => 'required|string|unique:Sales',
+                'sale_number' => 'required|string|unique:sales',
                 'sale_details' => 'required|array'
             ];
             $request->validate($reglas);
-            // Check if there is enough cash in the till to make the sale
             $tills = new TillsController;
             $till_data = new Request([
                 'fromController'=> true
             ]);
-            
+            $sale_amount = collect($request->sale_details)
+                ->map(function ($detail) {
+                    return $detail['sd_amount'] * $detail['sd_qty'];
+                })
+                ->sum();
             $product_data = new Request([
                 'fromController' => true,
+                'controller'=>'sales',
                 'details' => collect($request->sale_details)->map(function ($item) {
                     return [
                         'id' => $item['product_id'],
-                        'product_cost_price' => $item['pd_amount'],
-                        'product_quantity' => $item['pd_qty']
+                        'product_cost_price' => $item['sd_amount'],
+                        'product_quantity' => $item['sd_qty']
                     ];
                 })->toArray()
             ]);
             $products = new ProductsController;
             $update = $products->updatePriceAndQty($product_data);
+            // Log::alert($update);
             $Sales = new SalesController;
             $sale_data = new Request([
                 'person_id' => $request->person_id,
@@ -58,11 +64,13 @@ class SaleStoreController extends ApiController {
                 'sale_number' => $request->sale_number,
             ]);
             $ret = $Sales->store($sale_data);
+            Log::alert($ret);
             $sale_id = $ret->original['data']['id'];
             $sale_details = new SalesDetailsController;
-            $details = collect($request->sale_details)->map(function ($item) use ($sale_id) {
+            $details = collect($request->sale_details)->map(function ($item) use ($sale_id, $request) {
                 return array_merge($item, [
                     'sale_id' => $sale_id,
+                    'sd_desc' => "Venta {$request->sale_number}",
                     'created_at' => now(),
                     'updated_at' => now()
             ]);
@@ -71,18 +79,20 @@ class SaleStoreController extends ApiController {
                 'details' => $details
             ]);
             $det = $sale_details->storeMany($sale_details_data);
+            Log::alert($det);
             $till_details = new TillDetailsController;
             $till_details_data = new Request([
                 'till_id' => $request->till_id,
                 'account_p_id'=> 1,
                 'ref_id' => $sale_id,
                 'person_id' => $request->user_id,
-                'td_desc' => "Compra {$request->sale_number}",
+                'td_desc' => "Venta {$request->sale_number}",
                 'td_date' => $request->sale_date,
-                'td_type' => false,
+                'td_type' => true,
                 'td_amount' => $sale_amount
             ]);
             $till_detail_stored = $till_details->store($till_details_data);
+            Log::error($till_detail_stored);
             $till_detail_proof_payments = new TillDetailProofPaymentsController;
             $till_detail_proof_payments_data = new Request([
                 'till_detail_id' => $till_detail_stored->original['data']['id'],
@@ -96,6 +106,7 @@ class SaleStoreController extends ApiController {
             return $this->showAfterAction($something,'create', 201);
         }catch(\Exception $e){
             DB::rollback();
+            // dd($e);
             return response()->json(['error' => $e, 'message'=>'Ocurrió un error mientras se creaba el registro'],500);
         }catch(\Illuminate\Validation\ValidationException $e){
             DB::rollBack();

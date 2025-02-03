@@ -88,6 +88,7 @@ class ProductsController extends ApiController
     public function updatePriceAndQty(Request $req){
         try{
             $rules = [
+                'controller'=>'required|string',
                 'details'=>'required|array',
                 'details.*.product_cost_price' => 'required|numeric',
                 'details.*.product_quantity'=> 'required|numeric',
@@ -96,7 +97,11 @@ class ProductsController extends ApiController
             foreach ($req->details as $key => $value) {
                 $product = Products::findOrFail($value['id']);
                 $product->product_cost_price = $value['product_cost_price'];
-                $product->product_quantity += intval($value['product_quantity']);
+                if($req->controller == 'purchase'){
+                    $product->product_quantity += intval($value['product_quantity']);
+                }else if($req->controller == 'sales'){
+                    $product->product_quantity -= intval($value['product_quantity']);
+                }
                 $product->save();
             }
             if($req->has('fromController') && $req->fromController == true){

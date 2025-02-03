@@ -50,6 +50,7 @@ class PurchaseStoreController extends ApiController {
             
             $product_data = new Request([
                 'fromController' => true,
+                'controller'=>'purchase',
                 'details' => collect($request->purchase_details)->map(function ($item) {
                     return [
                         'id' => $item['product_id'],

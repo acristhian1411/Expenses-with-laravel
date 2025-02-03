@@ -37,11 +37,8 @@ class SalesController extends ApiController
         try{
             $reglas = [
                 'person_id' => 'required',
-                'sale_desc' => 'required',
                 'sale_date' => 'required',
-                'sale_number' => 'required',
-                'sale_status' => 'required',
-                'sale_type' => 'required'
+                'sale_number' => 'required'
             ];
             $request->validate( $reglas);
             $data = $request->all();

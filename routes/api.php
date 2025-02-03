@@ -19,6 +19,7 @@ use App\Http\Controllers\TillDetailProofPayments\TillDetailProofPaymentsControll
 use App\Http\Controllers\ProofPaypments\ProofPaymentsController;
 use App\Http\Controllers\Sales\SalesController;
 use App\Http\Controllers\SalesDetails\SalesDetailsController;
+use App\Http\Controllers\Sales\SaleStoreController;
 use App\Http\Controllers\Purchases\PurchasesController;
 use App\Http\Controllers\PurchasesDetails\PurchasesDetailsController;
 use App\Http\Controllers\Auth\AuthController;
@@ -182,6 +183,7 @@ Route::delete('proofpaypments/{id}', [ProofPaymentsController::class, 'destroy']
 //routes for sales
 Route::get('sales', [SalesController::class, 'index']);
 Route::post('sales', [SalesController::class, 'store']);
+Route::post('storesale', [SaleStoreController::class, 'store']);
 Route::put('sales/{id}', [SalesController::class, 'update']);
 Route::get('sales/{id}', [SalesController::class, 'show']);
 Route::delete('sales/{id}', [SalesController::class, 'destroy']);
