@@ -113,8 +113,11 @@
         <div class="flex justify-between">
           <span class="font-semibold">Caja actual</span>
           {#if cierreCaja}
-            {#if cierreCaja.expenses.length > 0}
-              <span>Gs. {formatNumber(cierreCaja.incomes.reduce((acc,curr)=>acc+curr.total_amount,0) - cierreCaja.expenses.reduce((acc, curr) => acc + curr.total_amount, 0))}</span>
+            {#if cierreCaja}
+              <span>Gs. {formatNumber(
+                cierreCaja.incomes.reduce((acc,curr)=>acc+curr.total_amount,0) - 
+                cierreCaja.expenses.reduce((acc, curr) => acc + curr.total_amount, 0)
+                )}</span>
             {:else}
               <span>Gs. {formatNumber(0)}</span>
             {/if}
@@ -123,6 +126,6 @@
     
     </div>
   </div>
-  <button class="btn btn-primary mt-4">Cerrar caja</button>
+  <button class="btn btn-primary mt-4" on:click={handleSubmit}>Cerrar caja</button>
   <button class="btn btn-info mt-4">Imprimir</button>
   <button class="btn btn-secondary mt-4">Cancelar</button>

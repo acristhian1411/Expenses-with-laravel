@@ -139,7 +139,7 @@ class TillDetailsController extends ApiController
             $latestOpeningDate = TillDetails::where('till_id', $tillId)
             ->where('td_desc', 'Apertura de Caja')
             ->whereNull('deleted_at')
-            ->select('td_date')
+            ->select('created_at')
             ->orderByDesc('created_at')
             ->first();
             
@@ -150,7 +150,7 @@ class TillDetailsController extends ApiController
                 ->join('payment_types as pt', 'pt.id', '=', 'pp.payment_type_id')
                 ->where('till_details.till_id', $tillId)
                 ->where('till_details.td_type', true)
-                ->where('till_details.td_date', '>=', $latestOpeningDate->td_date)
+                ->where('till_details.created_at', '>=', $latestOpeningDate->created_at)
                 ->whereNull('till_details.deleted_at')
                 ->groupBy('pt.id')
                 ->get();
@@ -162,8 +162,8 @@ class TillDetailsController extends ApiController
             ->join('payment_types as pt', 'pt.id', '=', 'pp.payment_type_id')
             ->where('till_details.till_id', $tillId)
             ->where('till_details.td_type', false)
-            ->where('till_details.td_date', '>=', $latestOpeningDate->td_date)
-            ->where('till_details.td_date', '<=', DB::raw('now()::date'))
+            ->where('till_details.created_at', '>=', $latestOpeningDate->created_at)
+            ->where('till_details.created_at', '<=', DB::raw('now()'))
             ->groupBy('pt.id')
             ->get();
             $tillCloseData = [
