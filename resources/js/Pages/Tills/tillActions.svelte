@@ -4,6 +4,8 @@
     import { createEventDispatcher } from 'svelte';
     import {Textfield} from '@components/FormComponents';
     import { Alert } from '@components/Alerts';
+    import TillCloseReport from './tillCloseReport.svelte';
+    
 
     const dispatch = createEventDispatcher();
     export let type;
@@ -124,9 +126,9 @@
 
 <h1 class="text-xl font-bold mt-4 text-center">
     {#if type == 'open'}
-        Abrir caja
+        Apertura caja
     {:else if type == 'close'}
-        Cerrar caja
+        Cierre de caja
     {:else if type == 'deposit'}
         Ingresar dinero
     {/if}
@@ -148,20 +150,10 @@
     </form>
 {:else if type == 'close'}
     <!-- //TODO el monto con el que se tiene que cerrar la caja debe estar por defecto y el textfield tiene que estar desabilitado -->
-    <form on:submit|preventDefault={handleSubmit}>
-        <div class="grid grid-cols-12 gap-4 mt-4 mb-4">
-            <div class="col-span-6">
-                <Textfield
-                    label="Monto"
-                    disabled={true}
-                    required={true}
-                    type="number"
-                    bind:value={amount}
-                />
-            </div>
+    
+        <div class="gap-4 mt-4 mb-4">
+            <TillCloseReport tillId={tillId} amount={amount} person_id={person_id} />
         </div>
-        <button class="btn btn-secondary" type="submit">Cerrar caja</button>
-    </form>
 {:else if type == 'deposit'}
     <form on:submit|preventDefault={handleSubmit}>
         <div class="grid grid-cols-12 gap-4 mt-4 mb-4">

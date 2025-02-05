@@ -5,6 +5,7 @@ namespace App\Http\Controllers\TillDetails;
 use App\Models\TillDetails;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\DB;
 
 class TillDetailsController extends ApiController
 {
@@ -132,6 +133,48 @@ class TillDetailsController extends ApiController
         }
     }
 
+    public function closeReport(Request $request, $tillId){
+        try{
+            // query to obtain the latest cash opening 
+            $latestOpeningDate = TillDetails::where('till_id', $tillId)
+            ->where('td_desc', 'Apertura de Caja')
+            ->whereNull('deleted_at')
+            ->select('td_date')
+            ->orderByDesc('created_at')
+            ->first();
+            
+            // query to obtain incomes
+            $incomes = TillDetails::select('pt.payment_type_desc', DB::raw('SUM(till_details.td_amount) as total_amount'))
+                ->join('till_detail_proof_payments as tdpp', 'tdpp.till_detail_id', '=', 'till_details.id')
+                ->join('proof_payments as pp', 'pp.id', '=', 'tdpp.proof_payment_id')
+                ->join('payment_types as pt', 'pt.id', '=', 'pp.payment_type_id')
+                ->where('till_details.till_id', $tillId)
+                ->where('till_details.td_type', true)
+                ->where('till_details.td_date', '>=', $latestOpeningDate->td_date)
+                ->whereNull('till_details.deleted_at')
+                ->groupBy('pt.id')
+                ->get();
+    
+            // query to obtain expenses
+            $expenses = TillDetails::select('pt.payment_type_desc', DB::raw('SUM(till_details.td_amount) as total_amount'))
+            ->join('till_detail_proof_payments as tdpp', 'tdpp.till_detail_id', '=', 'till_details.id')
+            ->join('proof_payments as pp', 'pp.id', '=', 'tdpp.proof_payment_id')
+            ->join('payment_types as pt', 'pt.id', '=', 'pp.payment_type_id')
+            ->where('till_details.till_id', $tillId)
+            ->where('till_details.td_type', false)
+            ->where('till_details.td_date', '>=', $latestOpeningDate->td_date)
+            ->where('till_details.td_date', '<=', DB::raw('now()::date'))
+            ->groupBy('pt.id')
+            ->get();
+            $tillCloseData = [
+                'incomes' => $incomes,
+                'expenses' => $expenses,
+            ];
+            return response()->json($tillCloseData,200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
+        }
+    }
 
     /**
      * Update the specified resource in storage.

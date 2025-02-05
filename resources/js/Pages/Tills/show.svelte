@@ -11,12 +11,19 @@
     import TillsHistory from './TillsHistory.svelte';
     import Transfers from '@pages/Transfers/transfers.svelte';
     import TillActions from './tillActions.svelte';
+    import TillCloseReport from './tillCloseReport.svelte';
 
 	export let user
     export let appUrl
     export let id = 0;
     let till = {};
-    let tabs = ['Acciones','Historial','Transferencias','Detalles'];
+    let tabs = [
+        'Acciones',
+        'Historial',
+        'Transferencias',
+        'Detalles',
+        // 'Cierres de caja'
+    ];
     let audits = [];
     let till_amount
     let error = null;
@@ -134,4 +141,7 @@
         origin_amount={till_amount}
         person_id={user.person_id} 
         />
+{:else if active == 'Cierres de caja'}
+    <TillCloseReport />
+    
 {/if}

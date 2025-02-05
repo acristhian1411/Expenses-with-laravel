@@ -148,6 +148,7 @@ Route::get('tills/{id}/byPerson',[TillsController::class, 'showTillsByUser']);
 Route::get('tills_tilltype/{id}', [TillsController::class, 'getByTypeId']);
 Route::post('tills/{id}/open', [TillsProcessController::class, 'cashOpening']);
 Route::post('tills/{id}/close', [TillsProcessController::class, 'close']);
+Route::get('tills/{id}/closeReport', [TillDetailsController::class, 'closeReport']);
 Route::post('tills/{id}/deposit', [TillsProcessController::class, 'deposit']);
 Route::post('tills/{id}/transfer', [TillsProcessController::class, 'transfer']);
 Route::delete('tills/{id}', [TillsController::class, 'destroy']);
