@@ -236,7 +236,7 @@
             const res = await axios.post(`/api/storePurchase`, { 
                 user_id: user.id,
                 till_id: tillsSelected.value,
-                person_id: providersSelected.value, 
+                person_id: providersSelected, 
                 purchase_date, 
                 purchase_number,
                 purchase_details: purchaseDetails.map(x => ({product_id: x.id, pd_qty: x.quantity, pd_amount: x.product_selling_price})),
