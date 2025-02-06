@@ -11,7 +11,7 @@
     export let person_id;
 
     function getTillData(){
-      axios.get(`/api/tills/${tillId}/closeReport`).then((response) => {
+      axios.get(`/api/tills/${tillId}/closeReportResume`).then((response) => {
         cierreCaja = response.data;
       }).catch((err) => {
         errors = err.response.data.details ? err.response.data.details : null;

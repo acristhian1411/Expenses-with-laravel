@@ -133,7 +133,52 @@ class TillDetailsController extends ApiController
         }
     }
 
-    public function closeReport(Request $request, $tillId){
+    public function closeReportDetailed(Request $request, $tillId){
+        try{
+            // query to obtain the latest cash opening 
+            $latestOpeningDate = TillDetails::where('till_id', $tillId)
+            ->where('td_desc', 'Apertura de Caja')
+            ->whereNull('deleted_at')
+            ->select('created_at')
+            ->orderByDesc('created_at')
+            ->first();
+            
+            // query to obtain incomes
+            $incomes = TillDetails::select('pt.payment_type_desc', 'till_details.*')
+                ->join('till_detail_proof_payments as tdpp', 'tdpp.till_detail_id', '=', 'till_details.id')
+                ->join('proof_payments as pp', 'pp.id', '=', 'tdpp.proof_payment_id')
+                ->join('payment_types as pt', 'pt.id', '=', 'pp.payment_type_id')
+                ->where('till_details.till_id', $tillId)
+                ->where('till_details.td_type', true)
+                ->where('till_details.created_at', '>=', $latestOpeningDate->created_at)
+                ->where('till_details.td_desc','!=','Apertura de Caja')
+                ->where('till_details.td_desc','!=','Cierre de Caja')
+                ->whereNull('till_details.deleted_at')
+                ->get();
+    
+            // query to obtain expenses
+            $expenses = TillDetails::select('pt.payment_type_desc', 'till_details.*')
+            ->join('till_detail_proof_payments as tdpp', 'tdpp.till_detail_id', '=', 'till_details.id')
+            ->join('proof_payments as pp', 'pp.id', '=', 'tdpp.proof_payment_id')
+            ->join('payment_types as pt', 'pt.id', '=', 'pp.payment_type_id')
+            ->where('till_details.till_id', $tillId)
+            ->where('till_details.td_type', false)
+            ->where('till_details.created_at', '>=', $latestOpeningDate->created_at)
+            ->where('till_details.created_at', '<=', DB::raw('now()'))
+            ->where('till_details.td_desc','!=','Apertura de Caja')
+            ->where('till_details.td_desc','!=','Cierre de Caja')
+            ->get();
+            $tillCloseData = [
+                'incomes' => $incomes,
+                'expenses' => $expenses,
+            ];
+            return response()->json($tillCloseData,200);
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
+        }
+    }
+
+    public function closeReportResume(Request $request, $tillId){
         try{
             // query to obtain the latest cash opening 
             $latestOpeningDate = TillDetails::where('till_id', $tillId)

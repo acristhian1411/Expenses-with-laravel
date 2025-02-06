@@ -70,6 +70,10 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('Tills/show', ['id' => $id]);
     })->middleware('permission:tills.show');
 
+    Route::get('/tills/{id}/closeDetailed', function ($id) {
+        return Inertia::render('Tills/tillsCloseReportDetailed', ['id' => $id]);
+    })->middleware('permission:tills.show');
+
     Route::get('/tilltypes', function () {
         return Inertia::render('TillTypes/index');
     })->middleware('permission:tilltypes.index');
