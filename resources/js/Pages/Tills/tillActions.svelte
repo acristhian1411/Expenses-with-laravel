@@ -18,8 +18,11 @@
     let openAlert = false;
 
     function OpenAlertMessage(event) {
-        alertMessage = event.detail.message;
-        alertType = event.detail.type;
+        let detail = event
+        dispatch('showAlert', detail);
+        // alertMessage = event.detail.message;
+        // alertType = event.detail.type;
+        // openAlert = true;
     }
 
     function updateData(){
@@ -50,8 +53,10 @@
                         message: res.data.message
                     }
                 };
-                updateData();
+                // alert(detail);
+                dispatch('showAlert', detail);
                 OpenAlertMessage(detail);
+                updateData();
                 close();
             }).catch((err) => {
                 errors = err.response.data.details ? err.response.data.details : null;
@@ -123,6 +128,10 @@
 {#if openAlert}
     <Alert {alertMessage} {alertType} on:close={closeAlert} />
 {/if}
+{#if openAlert}
+    <p>hola</p>
+    <p>{alertMessage}</p>
+{/if}
 
 <h1 class="text-xl font-bold mt-4 text-center">
     {#if type == 'open'}
@@ -152,7 +161,15 @@
     <!-- //TODO el monto con el que se tiene que cerrar la caja debe estar por defecto y el textfield tiene que estar desabilitado -->
     
         <div class="gap-4 mt-4 mb-4">
-            <TillCloseReport tillId={tillId} amount={amount} person_id={person_id} />
+            <TillCloseReport 
+                tillId={tillId} 
+                amount={amount} 
+                alert={OpenAlertMessage}
+                person_id={person_id}
+                on:updateData={() => updateData()}
+                on:close={() => close()}
+                on:showAlert={() => OpenAlertMessage()}
+            />
         </div>
 {:else if type == 'deposit'}
     <form on:submit|preventDefault={handleSubmit}>

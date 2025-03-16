@@ -1,15 +1,28 @@
 <script>
+    import { createEventDispatcher } from 'svelte';
     import { formatNumber } from '@components/utilities/NumberFormat.js';
     import axios from 'axios';
     import { onMount } from 'svelte';
     // Datos de ejemplo para el reporte de cierre de caja
+    const dispatch = createEventDispatcher();
     let today = new Date();
     let errors = null;
     let cierreCaja ;
     export let tillId;
     export let amount 
     export let person_id;
+    export let alert;
 
+    function close() {
+        dispatch('close');
+    }
+    function updateData(){
+        dispatch('updateData');
+    }
+    function OpenAlertMessage(algo){
+      // console.log('algoo que llega al dispatch',algo)
+        dispatch('showAlert',algo);
+    }
     function getTillData(){
       axios.get(`/api/tills/${tillId}/closeReportResume`).then((response) => {
         cierreCaja = response.data;
@@ -31,7 +44,12 @@
                   message: res.data.message
               }
           };
+          alert(detail);
+          OpenAlertMessage(detail);
+          updateData();
+          close();
       }).catch((err) => {
+        // console.log(err)
           errors = err.response.data.details ? err.response.data.details : null;
           let detail = {
               detail: {
@@ -39,6 +57,7 @@
                   message: err.response.data.message
               }
           };
+          OpenAlertMessage(detail);
       });
     }
 
@@ -53,6 +72,7 @@
       {errors}
     </p>
   {/if}
+  
   
   <div class="p-6 bg-base-200 rounded-lg shadow-md">
     <!-- <h2 class="text-2xl font-bold mb-4">Reporte de Cierre de Caja</h2> -->

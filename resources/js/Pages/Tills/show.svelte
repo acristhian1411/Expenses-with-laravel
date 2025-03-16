@@ -12,6 +12,7 @@
     import Transfers from '@pages/Transfers/transfers.svelte';
     import TillActions from './tillActions.svelte';
     import TillCloseReport from './tillCloseReport.svelte';
+    import { Alert } from '@components/Alerts';
 
 	export let user
     export let appUrl
@@ -31,6 +32,9 @@
     let active = 'Acciones';
     let tillActions = false;
     let acctionType = 'open';
+    let alertMessage = '';
+    let alertType = '';
+    let openAlert = false;
     $: id, getTillAmount(id);
     function handleActiveTab(tab) {
         active = tab.detail;
@@ -53,6 +57,19 @@
         });
     }
 
+
+    function OpenAlertMessage(algo) {
+        alertMessage = '';
+        alertType = 'success';
+        openAlert = true;
+    }
+
+    function closeAlert() {
+        openAlert = false;
+        alertMessage = '';
+        alertType = '';
+    }
+
     function closeModal(){
         tillActions = false;
         acctionType = '';
@@ -70,7 +87,9 @@
         getTillAmount(id);
     });
 </script>
-
+{#if openAlert}
+    <Alert {alertMessage} {alertType} on:close={closeAlert} />
+{/if}
 <div class="breadcrumbs text-md mb-4">
 	<ul>
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -100,6 +119,8 @@
             tillId={till.id} 
             on:updateData={() => fetchData()}
             on:close={() => closeModal()}
+            alert={OpenAlertMessage}
+            on:showAlert={() => OpenAlertMessage()}
         />
     </Modal>
 {/if}
