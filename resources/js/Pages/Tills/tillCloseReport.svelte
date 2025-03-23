@@ -47,7 +47,7 @@
           alert(detail);
           OpenAlertMessage(detail);
           updateData();
-          close();
+          // close();
       }).catch((err) => {
         // console.log(err)
           errors = err.response.data.details ? err.response.data.details : null;
@@ -59,6 +59,10 @@
           };
           OpenAlertMessage(detail);
       });
+    }
+
+    function openReport() {
+      open(`${window.location.origin}/tills/${tillId}/closeDetailed`);
     }
 
     onMount(async () => {
@@ -147,5 +151,5 @@
     </div>
   </div>
   <button class="btn btn-primary mt-4" on:click={handleSubmit}>Cerrar caja</button>
-  <button class="btn btn-info mt-4">Imprimir</button>
-  <button class="btn btn-secondary mt-4">Cancelar</button>
+  <button class="btn btn-info mt-4" on:click={openReport}>Mostrar detalles</button>
+  <button class="btn btn-secondary mt-4" on:click={close}>Cancelar</button>

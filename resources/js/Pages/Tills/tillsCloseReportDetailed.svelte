@@ -9,6 +9,7 @@
     function getTillData(){
         axios.get(`/api/tills/${id}/closeReportDetailed`).then((response) => {
             cierreCaja = response.data;
+            console.log('datos de cierre de caja: ',cierreCaja)
         }).catch((err) => {
             errors = err.response.data.details ? err.response.data.details : null;
         });
@@ -47,12 +48,15 @@
             {#if cierreCaja.incomes.length > 0}
               {#each cierreCaja.incomes as income}
                 <tr>
-                  <td>{income.fecha}</td>
-                  <td>{income.cliente}</td>
-                  <td class="text-green-500">Gs. {formatNumber(income.monto)}</td>
-                  <td>{income.descripcion}</td>
+                  <td>{income.td_date}</td>
+                  <td>{income.person_fname} {income.person_lastname}</td>
+                  <td class="text-green-500">Gs. {formatNumber(income.td_amount)}</td>
+                  <td>{income.td_desc}</td>
                 </tr>
               {/each}
+              <tr>
+                <td colspan="4" class="text-center">Total: Gs. {formatNumber(cierreCaja.incomes.reduce((acc, curr) => acc + curr.td_amount, 0))}</td>
+              </tr>
             {:else}
               <tr>
                 <td colspan="4" class="text-center">No hay ingresos registrados</td>
@@ -80,12 +84,15 @@
             {#if cierreCaja.expenses.length > 0}
               {#each cierreCaja.expenses as expense}
                 <tr>
-                  <td>{expense.fecha}</td>
-                  <td>{expense.proveedor}</td>
-                  <td class="text-red-500">Gs. {formatNumber(expense.monto)}</td>
-                  <td>{expense.descripcion}</td>
+                  <td>{expense.td_date}</td>
+                  <td>{expense.person_fname} {expense.person_lastname}</td>
+                  <td class="text-red-500">Gs. {formatNumber(expense.td_amount)}</td>
+                  <td>{expense.td_desc}</td>
                 </tr>
               {/each}
+              <tr>
+                <td colspan="4" class="text-center">Total: Gs. {formatNumber(cierreCaja.expenses.reduce((acc, curr) => acc + curr.td_amount, 0))}</td>
+              </tr>
             {:else}
               <tr>
                 <td colspan="4" class="text-center">No hay gastos registrados</td>

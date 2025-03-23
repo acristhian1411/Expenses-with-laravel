@@ -148,12 +148,15 @@ class TillDetailsController extends ApiController
                 ->join('till_detail_proof_payments as tdpp', 'tdpp.till_detail_id', '=', 'till_details.id')
                 ->join('proof_payments as pp', 'pp.id', '=', 'tdpp.proof_payment_id')
                 ->join('payment_types as pt', 'pt.id', '=', 'pp.payment_type_id')
+                ->join('sales', 'sales.id', '=', 'till_details.ref_id')
+                ->join('persons as p', 'p.id', '=', 'sales.person_id')
                 ->where('till_details.till_id', $tillId)
                 ->where('till_details.td_type', true)
                 ->where('till_details.created_at', '>=', $latestOpeningDate->created_at)
                 ->where('till_details.td_desc','!=','Apertura de Caja')
                 ->where('till_details.td_desc','!=','Cierre de Caja')
                 ->whereNull('till_details.deleted_at')
+                ->select('p.person_fname','p.person_lastname','till_details.*')
                 ->get();
     
             // query to obtain expenses
@@ -161,12 +164,15 @@ class TillDetailsController extends ApiController
             ->join('till_detail_proof_payments as tdpp', 'tdpp.till_detail_id', '=', 'till_details.id')
             ->join('proof_payments as pp', 'pp.id', '=', 'tdpp.proof_payment_id')
             ->join('payment_types as pt', 'pt.id', '=', 'pp.payment_type_id')
+            ->join('purchases as pu', 'pu.id', '=', 'till_details.ref_id')
+            ->join('persons as p', 'p.id', '=', 'pu.person_id')
             ->where('till_details.till_id', $tillId)
             ->where('till_details.td_type', false)
             ->where('till_details.created_at', '>=', $latestOpeningDate->created_at)
             ->where('till_details.created_at', '<=', DB::raw('now()'))
             ->where('till_details.td_desc','!=','Apertura de Caja')
             ->where('till_details.td_desc','!=','Cierre de Caja')
+            ->select('p.person_fname','p.person_lastname','till_details.*')
             ->get();
             $tillCloseData = [
                 'incomes' => $incomes,
