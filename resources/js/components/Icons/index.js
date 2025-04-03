@@ -14,3 +14,4 @@ export {default as PeopleIcon} from './PeopleIcon.svelte';
 export {default as CartIcon} from './CartIcon.svelte';
 export {default as MoneyIcon} from './MoneyIcon.svelte';
 export {default as BarsIcon} from './BarsIcon.svelte';
+export {default as DevolutionIcon} from './Devolution.svelte';

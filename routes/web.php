@@ -173,6 +173,14 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/create-sales', function () {
         return Inertia::render('Sales/form');
     })->middleware('permission:sales.create');
+
+    Route::get(`/refunds`,function(){
+        return Inertia::render(`Refunds/index`);
+    })->middleware('permission:sales.index');
+
+    Route::get('/create-refunds', function () {
+        return Inertia::render('Refunds/form');
+    })->middleware('permission:sales.create');
 });
 
 

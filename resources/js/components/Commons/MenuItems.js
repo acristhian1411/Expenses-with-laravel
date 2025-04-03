@@ -111,6 +111,12 @@ export const adminItems =(user)=> [
         route: '/sales',
         icon: BoxesIcon,
         permission: user != undefined && user.permissions != undefined && user.permissions.includes('sales.index')
+    },
+    {
+        label: 'Devoluciones',
+        route: '/refunds',
+        icon: BoxesIcon,
+        permission: user != undefined && user.permissions != undefined && user.permissions.includes('sales.index')
     }
 ];
 export const reportsItems =(user)=> [

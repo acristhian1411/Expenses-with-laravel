@@ -31,6 +31,8 @@ use App\Http\Controllers\ContactTypes\ContactTypesController;
 use App\Http\Controllers\Purchases\PurchaseStoreController;
 use App\Http\Controllers\TillsProcess\TillsProcessController;
 use App\Http\Controllers\TillsTransfers\TillsTransfersController;
+use App\Http\Controllers\Refunds\RefundsController;
+use App\Http\Controllers\RefundDetails\RefundDetailsController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -211,6 +213,19 @@ Route::get('purchasesdetails/{id}', [PurchasesDetailsController::class, 'show'])
 Route::delete('purchasesdetails/{id}', [PurchasesDetailsController::class, 'destroy']);
 // routes for purchaseStore
 Route::post('storePurchase', [PurchaseStoreController::class, 'store']);
+// routes for Refunds
+Route::get('refunds', [RefundsController::class, 'index']);
+Route::post('refunds', [RefundsController::class, 'store']);
+Route::put('refunds/{id}', [RefundsController::class, 'update']);
+Route::get('refunds/{id}', [RefundsController::class, 'show']);
+Route::delete('refunds/{id}', [RefundsController::class, 'destroy']);
+// routes for RefundDetails
+Route::get('refunddetails', [RefundDetailsController::class, 'index']);
+Route::post('refunddetails', [RefundDetailsController::class, 'store']);
+Route::post('refunddetailsMany', [RefundDetailsController::class, 'storeMany']);
+Route::put('refunddetails/{id}', [RefundDetailsController::class, 'update']);
+Route::get('refunddetails/{id}', [RefundDetailsController::class, 'show']);
+Route::delete('refunddetails/{id}', [RefundDetailsController::class, 'destroy']);
 // routes for ContactTypes
 Route::get('contacttypes', [ContactTypesController::class, 'index']);
 Route::post('contacttypes', [ContactTypesController::class, 'store']);
