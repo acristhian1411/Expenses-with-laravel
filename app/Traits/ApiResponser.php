@@ -66,6 +66,9 @@ trait ApiResponser
 		}
 		$act = $action == 'update' ? 'actualizado' : 'creado';
 		$message = "Registro {$act} con exito"; 
+		if($action == 'show'){
+		return response()->json(['data'=>$instance], $code);
+		}
 		return response()->json(['message'=>$message, 'data'=>$instance], $code);
 	}
 

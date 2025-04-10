@@ -22,4 +22,14 @@ class SalesDetails extends Model implements AuditableContract
         'sd_amount'
     ];
 
+    public function sale()
+    {
+        return $this->belongsTo(Sales::class, 'sale_id', 'id');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Products::class, 'product_id', 'id');
+    }
+
 }

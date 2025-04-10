@@ -39,4 +39,14 @@ class TillDetails extends Model implements AuditableContract
     {
         return $this->belongsTo(AccountPlan::class, 'account_p_id');
     }
+
+    public function sale()
+    {
+        return $this->belongsTo(Sales::class, 'sale_id');
+    }
+    public function tillproofPayments()
+    {
+        return $this->hasMany(TillDetailProofPayments::class, 'till_detail_id');
+    }
+  
 }

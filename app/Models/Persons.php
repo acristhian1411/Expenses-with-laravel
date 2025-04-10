@@ -45,4 +45,7 @@ class Persons extends Model implements AuditableContract
     {
         return $this->belongsTo(Cities::class, 'city_id');
     }
+    public function sales(){
+        return $this->hasMany(Sales::class, 'person_id');
+    }
 }

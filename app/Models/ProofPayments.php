@@ -18,6 +18,10 @@ class ProofPayments extends Model implements AuditableContract
 
     public function paymentType()
     {
-        return $this->belongsTo(PaymentTypes::class,'id','payment_type_id');
+        return $this->belongsTo(PaymentTypes::class,'payment_type_id','id');
+    }
+    public function tillDetailProofPayments()
+    {
+        return $this->hasMany(TillDetailProofPayments::class,'id', 'proof_payment_id');
     }
 }

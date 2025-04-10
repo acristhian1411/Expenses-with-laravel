@@ -31,6 +31,7 @@
     let proofPaymentTypesSelected;
     let ClientsSelected = [];
     let searchTermClients = '';
+    let observation = '';
     let showDropdownClients = false;
     let showPersonSearchForm = false;
     let loading = false;
@@ -47,6 +48,7 @@
     let openAlert = false;
     let alertMessage = '';
 	let alertType = '';
+    let sale = null;
     $: saleDetails ;
     $: paymentTypesSelected, filterProofPaymentTypes();
     let date = new Date();
@@ -205,6 +207,32 @@
         showPersonSearchForm = true;
     }
 
+    function searchSale() {
+        if(sale_number == ''){
+            return;
+        }
+        axios.get(`/api/salesByNumber/${sale_number}`).then((response) => {
+            sale = response.data.data;
+            saleDetails = sale.sales_details;
+            console.log('saleDetails: ',saleDetails);
+            // saleDetails = saleDetails.map(x => ({
+            //     id: x.product_id,
+            //     quantity: x.sd_qty,
+            //     product_name: x.product.product_name,
+            //     iva_type_percent: x.product.iva_type.iva_type_percent,
+            //     product_selling_price: x.sd_amount,
+            //     product_quantity: x.sd_qty
+            // }));
+        }).catch((err) => {
+            let detail = {
+                detail: {
+                    type: 'delete',
+                    message: err.response.data.message
+                }
+            };
+        });
+    }
+
     function ClosePersonSearchForm() {
         showPersonSearchForm = false;
     }
@@ -276,6 +304,10 @@
         saleDetails = details;
     }
 
+    /**
+     * Remove a detail from the sale.
+     * @param {Object} item The detail to remove.
+     */
     function removeDetail(item) {
         let newItem = saleDetails
         let itemIdx = newItem.findIndex(x => x.id === item.id);
@@ -319,163 +351,120 @@
 {/if}
 <h3 class="mb-4 text-center text-2xl">{#if edit == true}Actualizar Devolución{:else}Nueva Devolución{/if}</h3>
 <form on:submit|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>
-    <div class="grid grid-cols-12 ">
-        <div class="col-span-3 pr-2">
-            <Textfield
-                errors={errors?.client ? errors.client[0] : []}
-                label="Cliente"
-                type="text"
-                bind:value={searchTermClients}
-                required={true}
-            />
-        </div>
-        <div class="col-span-2 flex gap-3 items-center mb-2">
-            <div class="tooltip " data-tip="Buscar cliente">
-                <button  class="btn btn-primary" type="button" on:click={OpenPersonSearchForm}>
-                    <SearchIcon/>
-                </button>
+        <div class="grid grid-cols-12 ">
+            <div class="col-span-3 pr-2">
+                <Textfield
+                    label="Num. Factura"
+                    required={true}
+                    type="text"
+                    mask="999-999-9999999"
+                    bind:value={sale_number}
+                    errors={errors?.sale_number ? {message:errors.sale_number[0]} : null}
+                />
             </div>
-            <div class="tooltip " data-tip="Agregar cliente">
-                <button class="btn btn-primary" type="button" on:click={OpenClientForm}>
-                    +
-                </button>
+            <div class="col-span-2 flex gap-3 items-center mb-2">
+                <div class="tooltip " data-tip="Buscar factura">
+                    <button  class="btn btn-primary" type="button" on:click={searchSale}>
+                        <SearchIcon/>
+                    </button>
+                </div>
             </div>
-        </div>
-        <div class="col-span-3 mr-4">
-            <Textfield
-                label="Num. Factura"
-                required={true}
-                type="text"
-                mask="999-999-9999999"
-                bind:value={sale_number}
-                errors={errors?.sale_number ? {message:errors.sale_number[0]} : null}
-            />
-        </div>
-        <div class="col-span-4 gap-0">
-            <Textfield
-                label="Fecha"
-                required={true}
-                type="date"
-                bind:value={sale_date}
-                errors={errors?.sale_date ? {message:errors.sale_date[0]} : null}
-            />
-        </div> 
-    </div>
-    <div class="grid grid-cols-12 mt-4 gap-4">
-        <div class="col-span-4">
-            <Autocomplete
-                errors={errors}
-                label="Caja"
-                bind:item_selected={tillsSelected}
-                items={tills.map(x => ({label: x.till_name, value: x.id}))}
-                searchTerm={tillsSearchTerm}
-                showDropdown={showDropdownPaymentTypes}
-                loading={loadingPaymentTypes}
-                filterdItem={tills}
-            />
-
-        </div>
-        <div class="col-span-4">
-            <Autocomplete
-                errors={errors}
-                label="Tipo de Pago"
-                bind:item_selected={paymentTypesSelected}
-                items={paymentTypes.map(x => ({label: x.payment_type_desc, value: x.id}))}
-                searchTerm={searchTermPaymentTypes}
-                showDropdown={showDropdownPaymentTypes}
-                loading={loadingPaymentTypes}
-                filterdItem={paymentTypes}
-            />
-        </div>
-        {#if paymentTypesSelected && paymentTypesSelected.value != 1 } 
-            {#each proofPaymentTypes as item}
-                <div class="col-span-4">
+            {#if sale}
+                <div class="col-span-2 flex gap-3 items-center mb-2">
+                    {sale.person.person_fname} {sale.person.person_lastname}
+                </div>
+            {/if}
+            <div class="col-span-4 gap-0">
+                <Textfield
+                    label="Fecha"
+                    disabled={true}
+                    required={true}
+                    type="date"
+                    value={sale != null ? sale.sale_date : null}
+                    errors={errors?.sale_date ? {message:errors.sale_date[0]} : null}
+                />
+            </div> 
+            </div>
+            <div class="grid grid-cols-12 mt-4 gap-4">
+                <div class="col-span-12">
                     <Textfield
-                        label={item.label}
-                        bind:value={item.td_pr_desc}
-                        errors={errors?.td_pr_desc ? {message:errors.td_pr_desc[0]} : null}
+                        label="Observacion"
+                        required={true}
+                        type="text"
+                        bind:value={observation}
+                        errors={errors?.observation ? {message:errors.observation[0]} : null}
                     />
                 </div>
-            {/each}
-        {/if}
-    </div>
-    <table class="table w-full">
-        <thead>
-            <tr>
-                <th class="text-center text-lg">
-                    <div class="flex items-center justify-center">
-                        Cant
-                    </div>
-                </th>
-                <th class="text-center text-lg">
-                    <div class="flex items-center justify-center">
-                        Producto
-                    </div>
-                </th>
-                <th class="text-center text-lg">
-                    <div class="flex items-center justify-center">
-                        Iva
-                    </div>
-                </th>
-                <th class="text-center text-lg">
-                    <div class="flex items-center justify-center">P. Unitario</div>
-                </th>
-                <th class="text-center text-lg">
-                    <div class="flex items-center justify-center">
-                        Total
-                    </div>
-                </th>
-                <th class="text-center text-lg">
-                    <div class="flex items-center justify-center">
-                        <div class="tooltip " data-tip="Agregar productos al carrito">
-                            <button type="button" class="btn btn-primary" on:click={() => (
-                                OpenModal()
-                            )}>Agregar</button>
-                        </div>
-                    </div>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            {#each saleDetails as item, i (item.id)}
-                <tr class="hover">
-                    <td>
-                        <Textfield
-                            label=''
-                            type='number'
-                            bind:value={item.quantity}
-                            errors={errors?.quantity ? {message:errors.quantity[0]} : null}
-                        />
-
-                    </td>
-                    <td class="text-center">{item.product_name}</td>
-                    <td class="text-center">{item.iva_type_percent}</td>
-                    <td class="text-center">
-                        <Textfield
-                            label=''
-                            type='number'
-                            bind:value={item.product_selling_price}
-                            errors={errors?.product_selling_price ? {message:errors.product_selling_price[0]} : null}
-                        />
-                    </td>
-                    <td class="text-center">{formatNumber((parseInt(item.product_selling_price)*item.quantity))}</td>
-                </tr>
-            {/each}
-            {#if saleDetails.length > 0}
-                <tr>
-                    <td colspan="4">Total</td>
-                    
-                    <td  class="text-center">
-                        <span>
-                            {formatNumber(saleDetails.reduce((acc, curr) => acc + (curr.product_selling_price * curr.quantity), 0).toFixed(2))}
-                        </span>
-                    </td>
-                </tr>
+            </div>
+            {#if sale}
+                <table class="table w-full">
+                    <thead>
+                        <tr>
+                            <th class="text-center text-lg">
+                                <div class="flex items-center justify-center">
+                                    Cant
+                                </div>
+                            </th>
+                            <th class="text-center text-lg">
+                                <div class="flex items-center justify-center">
+                                    Producto
+                                </div>
+                            </th>
+                            <th class="text-center text-lg">
+                                <div class="flex items-center justify-center">
+                                    Iva
+                                </div>
+                            </th>
+                            <th class="text-center text-lg">
+                                <div class="flex items-center justify-center">P. Unitario</div>
+                            </th>
+                            <th class="text-center text-lg">
+                                <div class="flex items-center justify-center">
+                                    Total
+                                </div>
+                            </th>
+                            <th class="text-center text-lg">
+                                <!-- <div class="flex items-center justify-center">
+                                    <div class="tooltip " data-tip="Agregar productos al carrito">
+                                        <button type="button" class="btn btn-primary" on:click={() => (
+                                            OpenModal()
+                                        )}>Agregar</button>
+                                    </div>
+                                </div> -->
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each saleDetails as item, i (item.id)}
+                            <tr class="hover">
+                                <td>
+                                    {item.sd_qty}
+                                </td>
+                                <td class="text-center">{item.product.product_name}</td>
+                                <td class="text-center">{item.product.iva_type.iva_type_percent}</td>
+                                <td class="text-center">
+                                    {item.product.product_selling_price}
+                                </td>
+                                <td class="text-center">{formatNumber((parseInt(item.product.product_selling_price)*item.sd_qty))}</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-secondary" >Devolver</button>
+                                </td>
+                            </tr>
+                        {/each}
+                        {#if saleDetails.length > 0}
+                            <tr>
+                                <td colspan="4">Total</td>
+                                
+                                <td  class="text-center">
+                                    <span>
+                                        {formatNumber(saleDetails.reduce((acc, curr) => acc + (curr.product.product_selling_price * curr.sd_qty), 0).toFixed(2))}
+                                    </span>
+                                </td>
+                            </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            <button class="btn btn-primary" type="submit">Guardar</button>
+            <button class="btn btn-secondary" type="reset" on:click={close}>Cancelar</button>
             {/if}
-        </tbody>
-    </table>
-
-
-    <button class="btn btn-primary" type="submit">Guardar</button>
-    <button class="btn btn-secondary" on:click={close}>Cancelar</button>
-</form>
+    </form>

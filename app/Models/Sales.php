@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use OwenIt\Auditing\Auditable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\SalesDetails;
+use App\Models\Persons;
+use App\Models\TillDetails;
 
 class Sales extends Model implements AuditableContract
 {
@@ -24,6 +27,17 @@ class Sales extends Model implements AuditableContract
 
     public function person()
     {
-        return $this->belongsTo(Persons::class);
+        return $this->belongsTo(Persons::class, 'person_id', 'id');
     }
+
+    public function sales_details()
+    {
+        return $this->hasMany(SalesDetails::class, 'sale_id', 'id');
+    }
+
+    public function tills_details()
+    {
+        return $this->hasMany(TillDetails::class, 'ref_id', 'id');
+    }
+
 }

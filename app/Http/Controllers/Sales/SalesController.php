@@ -122,4 +122,36 @@ class SalesController extends ApiController
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo eliminar el registro'],500);
         }
     }
+
+    /**
+     * Search for a sale by its number.
+     * this consult return the sale with all the details, the client, the tills and the payment types.
+     * and each details with its product and iva type.
+     *
+     * @param string $searchTerm
+     * @return \Illuminate\Http\Response
+     */
+    public function searchByNumber($searchTerm)
+    {
+        try{
+            $sales = Sales::where('sale_number', $searchTerm)
+            ->with('person')
+            ->with(['tills_details' => function ($query) {
+                $query->with('till');
+                $query->with('tillproofPayments')->with('tillproofPayments.proofPayments')->with('tillproofPayments.proofPayments.paymentType');
+            }])
+            ->with(['sales_details' => function ($query) {
+                $query->withTrashed()->with('product')->with('product.ivaType');
+            }])
+            ->first();
+            if (!$sales) {
+                return response()->json(['message'=>'No se encontro el registro','data'=>[]], 404);
+            }
+            return $this->showAfterAction($sales, 'show', 200);
+        }catch(\Exception $e){
+            dd($e);
+            return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'], 500);
+        }
+    }
+    
 }

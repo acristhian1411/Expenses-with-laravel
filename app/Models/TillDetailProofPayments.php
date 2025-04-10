@@ -22,11 +22,11 @@ class TillDetailProofPayments extends Model implements AuditableContract
 
     public function proofPayments()
     {
-        return $this->belongsTo(ProofPayments::class);
+        return $this->belongsTo(ProofPayments::class, 'proof_payment_id');
     }
 
     public function tillDetail()
     {
-        return $this->belongsTo(TillDetails::class);
+        return $this->belongsTo(TillDetails::class, 'till_detail_id');
     }
 }
