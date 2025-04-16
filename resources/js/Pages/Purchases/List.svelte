@@ -177,7 +177,7 @@
                     <th class="text-center text-lg">#</th>
                     <th class="text-center text-lg">
                         <div class="flex items-center justify-center">
-                            person_id
+                            Proveedor
                             <button on:click={() => sortData('person_id')}>
                                 <SortIcon />
                             </button>
@@ -185,7 +185,7 @@
                     </th>
                     <th class="text-center text-lg">
                         <div class="flex items-center justify-center">
-                            purchase_date
+                            Fecha
                             <button on:click={() => sortData('purchase_date')}>
                                 <SortIcon />
                             </button>
@@ -193,7 +193,7 @@
                     </th>
                     <th class="text-center text-lg">
                         <div class="flex items-center justify-center">
-                            purchase_status
+                            Estado
                             <button on:click={() => sortData('purchase_status')}>
                                 <SortIcon />
                             </button>
@@ -208,9 +208,9 @@
                 {#each data as item, i (item.id)}
                     <tr class="hover">
                         <td>{i+1}</td>
-                        <td class="text-center">{item.person_id}</td>
+                        <td class="text-center">{item.person.person_fname + ' ' + item.person.person_lastname}</td>
                         <td class="text-center">{item.purchase_date}</td>
-                        <td class="text-center">{item.purchase_status}</td>
+                        <td class="text-center">{item.purchase_status == true ? 'Procesado' : 'Pendiente'}</td>
                         {#if user.permissions != undefined && user.permissions.includes('purchases.show')}
                             <td><button class="btn btn-info" use:inertia={{ href: `/purchases/${item.id}` }}>Mostrar</button></td>
                         {/if}

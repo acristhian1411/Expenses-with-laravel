@@ -91,7 +91,7 @@
 							<!-- svelte-ignore a11y-img-redundant-alt -->
 							<img
 								class="h-8 w-8 rounded-full"
-								src={person_photo}
+								src="/img/default-avatar.jpg"
 								alt="user photo"
 							/>
 						</button>

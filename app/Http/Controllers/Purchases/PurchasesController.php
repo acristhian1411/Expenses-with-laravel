@@ -19,7 +19,9 @@ class PurchasesController extends ApiController
             $t = Purchases::query()->first();
             $query = Purchases::query();
             $query = $this->filterData($query, $t);
-            $datos = $query->get();
+            $datos = $query
+            ->with('person')
+            ->get();
             return $this->showAll($datos, 200);
         }catch(\Exception $e){   
             return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se obtenían los datos'],500);

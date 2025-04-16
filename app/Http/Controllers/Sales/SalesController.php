@@ -19,7 +19,9 @@ class SalesController extends ApiController
             $t = Sales::query()->first();
             $query = Sales::query();
             $query = $this->filterData($query, $t);
-            $datos = $query->get();
+            $datos = $query
+            ->with("person")
+            ->get();
             return $this->showAll($datos, 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'], 500);
