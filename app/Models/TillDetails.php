@@ -27,7 +27,7 @@ class TillDetails extends Model implements AuditableContract
 
     public function till()
     {
-        return $this->belongsTo(Tills::class, 'till_id');
+        return $this->belongsTo(Tills::class, 'till_id','id');
     }
 
     public function person()

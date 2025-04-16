@@ -66,7 +66,13 @@ class SalesController extends ApiController
     public function show($id)
     {
         try{
-            $sales = Sales::findOrFail($id);
+            $sales = Sales::findOrFail($id)->with('person')->with('tills_details', function ($query) {
+                $query->with('till');
+                $query->with('tillproofPayments')->with('tillproofPayments.proofPayments')->with('tillproofPayments.proofPayments.paymentType');
+            })->with('sales_details', function ($query) {
+                $query->with('product')->with('product.ivaType');
+            })->with('audits')
+            ->first();
             $audits = $sales->audits;
             return $this->showOne($sales,$audits, 200);
         }catch(\Exception $e){

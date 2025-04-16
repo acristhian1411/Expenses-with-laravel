@@ -170,6 +170,10 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('Sales/index');
     })->middleware('permission:sales.index');
 
+    Route::get('sales/{id}',function($id){
+        return Inertia::render('Sales/Show',['id'=> $id]);
+    })->middleware('permission:sales.show');
+
     Route::get('/create-sales', function () {
         return Inertia::render('Sales/form');
     })->middleware('permission:sales.create');

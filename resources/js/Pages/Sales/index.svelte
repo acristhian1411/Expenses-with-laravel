@@ -75,7 +75,7 @@
                 authorization: `token: ${token}`,
             },
         };
-        axios.delete(`${appUrl}/api/purchases/${id}`, config).then((res) => {
+        axios.delete(`${appUrl}/api/sales/${id}`, config).then((res) => {
             let detail = {
                 detail: {
                     type: 'delete',
@@ -132,7 +132,7 @@
 
     function search(event) {
         search_param = event.target.value;
-        url = search_param === '' ? `${appUrl}/api/purchases?` : `${appUrl}/api/purchases?person_id=${search_param}&`;
+        url = search_param === '' ? `${appUrl}/api/sales?` : `${appUrl}/api/sales?person_id=${search_param}&`;
         fetchData(1, items_per_page);
     }
 
@@ -199,7 +199,7 @@
                             </button>
                         </div>
                     </th>
-                    {#if user.permissions != undefined && user.permissions.includes('purchases.create')}
+                    {#if user.permissions != undefined && user.permissions.includes('sales.create')}
                         <th><button class="btn btn-primary" on:click={() => (_new = true)}>Agregar</button></th>
                     {/if}
                 </tr>
@@ -211,13 +211,13 @@
                         <td class="text-center">{item.person.person_fname + ' ' + item.person.person_lastname}</td>
                         <td class="text-center">{item.sale_date}</td>
                         <td class="text-center">{item.sale_status || 'Pendiente'}</td>
-                        {#if user.permissions != undefined && user.permissions.includes('purchases.show')}
-                            <td><button class="btn btn-info" use:inertia={{ href: `/purchases/${item.id}` }}>Mostrar</button></td>
+                        {#if user.permissions != undefined && user.permissions.includes('sales.show')}
+                            <td><button class="btn btn-info" use:inertia={{ href: `/sales/${item.id}` }}>Mostrar</button></td>
                         {/if}
-                        {#if user.permissions != undefined && user.permissions.includes('purchases.update')}
+                        {#if user.permissions != undefined && user.permissions.includes('sales.update')}
                             <td><button class="btn btn-warning" on:click={() => openEditModal(item)}>Editar</button></td>
                         {/if}
-                        {#if user.permissions != undefined && user.permissions.includes('purchases.destroy')}
+                        {#if user.permissions != undefined && user.permissions.includes('sales.destroy')}
                             <td><button class="btn btn-secondary" on:click={() => OpenDeleteModal(item.id)}>Eliminar</button></td>
                         {/if}
                     </tr>
