@@ -179,7 +179,7 @@ Route::group(['middleware' => ['auth']],function(){
     })->middleware('permission:sales.create');
 
     Route::get(`/refunds`,function(){
-        return Inertia::render(`Refunds/index`);
+        return Inertia::render(`Refunds`);
     })->middleware('permission:sales.index');
 
     Route::get('/create-refunds', function () {

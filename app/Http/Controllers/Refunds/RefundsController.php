@@ -6,6 +6,7 @@ use App\Models\Refunds;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\RefundDetails\RefundDetailsController;
 
 class RefundsController extends ApiController
 {
@@ -42,17 +43,34 @@ class RefundsController extends ApiController
     public function store(Request $request)
     {
         try{
+            DB::beginTransaction();
             $rules = [
                 'sale_id' => 'required',
                 'refund_date' => 'required',
                 'refund_obs' => 'nullable',
-                'refund_status' => 'required',
+                'refund_details' => 'required|array',
             ];
             $request->validate($rules);
             $refunds = Refunds::create($request->all());
+            $det = new RefundDetailsController();
+            $req_details = new Request();
+                foreach($request->refund_details as $detail){
+                    $req_details->merge([
+                        'details' => [
+                        'refund_id' => $refunds->id,
+                        'product_id'=>$detail['product_id'],
+                        'quantity'=>$detail['sd_qty_devuelto'],
+                        'created_at'=>now(),
+                        'updated_at'=>now(),
+                    ]
+                ]);
+            }
+            $detMessage = $det->storeMany($req_details);
+            DB::commit();
             return response()->json(['message'=>'Registro creado con exito','data'=>$refunds],201);
         }
         catch(\Illuminate\Validation\ValidationException $e){
+            DB::rollBack();
             return response()->json([
                 'error'=>$e->getMessage(),
                 'message'=>'Los datos no son correctos',
@@ -60,6 +78,7 @@ class RefundsController extends ApiController
             ],422);
         }
         catch(\Exception $e){
+            DB::rollBack();
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo crear el registro']);
         }
     }

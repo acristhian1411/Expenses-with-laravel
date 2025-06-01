@@ -29,6 +29,7 @@
     let loadingPaymentTypes = false;
     let proofPaymentTypes = [];
     let proofPaymentTypesSelected;
+    let refund_number = '';
     let ClientsSelected = [];
     let searchTermClients = '';
     let observation = '';
@@ -161,6 +162,15 @@
         dispatch('close');
     }
 
+    function resetForm(){
+        saleDetails = saleDetails.map(item => ({
+            ...item,
+            devuelto: false,
+            sd_qty: item.sd_qty+item.sd_qty_devuelto,
+            sd_qty_devuelto: 0
+        }));
+    }
+
     function closeAlert() {
         openAlert = false;
     }
@@ -249,16 +259,18 @@
 
     async function handleCreateObject() {
         try {
-            const res = await axios.post(`/api/storesale`, { 
+            const res = await axios.post(`/api/refunds`, {
                 user_id: user.id,
                 till_id: tillsSelected.value,
+                sale_id: sale.id,
                 person_id: ClientsSelected, 
-                sale_date, 
-                sale_number,
-                sale_details: saleDetails.map(x => ({product_id: x.id, sd_qty: x.quantity, sd_amount: x.product_selling_price})),
+                refund_date: sale.sale_date,
+                refund_obs: observation, 
+                refund_number: refund_number,
+                refund_details: saleDetails,
                 proofPayments: proofPaymentTypes
             });
-            openAlerts(res.data.message,'success');
+            openAlerts(res.data.message,'success');            
         } catch (err) {
             errors = err.response.data.details ? err.response.data.details : null;
             
@@ -268,7 +280,15 @@
 
     async function handleUpdateObject() {
         try {
-            const res = await axios.put(`/api/sales/${id}`, { person_id, sale_date, sale_status }, config);
+            const res = await axios.put(`/api/refunds/${id}`, { 
+                user_id: user.id,
+                till_id: tillsSelected.value,
+                person_id: ClientsSelected, 
+                sale_date, 
+                sale_number,
+                refund_details: saleDetails,
+                proofPayments: proofPaymentTypes
+            });
             let detail = {
                 detail: {
                     type: 'success',
@@ -309,9 +329,13 @@
      * @param {Object} item The detail to remove.
      */
     function removeDetail(item) {
+        console.log('cosas que llegan por parametro: ',item)
         let newItem = saleDetails
         let itemIdx = newItem.findIndex(x => x.id === item.id);
-        newItem.splice(itemIdx, 1);
+        let cant_devuelto = 1
+        newItem[itemIdx].sd_qty = parseInt(newItem[itemIdx].sd_qty) - 1;
+        newItem[itemIdx].devuelto = true;
+        newItem[itemIdx].sd_qty_devuelto = parseInt(newItem[itemIdx].sd_qty_devuelto || 0) + cant_devuelto;
         saleDetails = newItem;
     }
 
@@ -386,13 +410,23 @@
             </div> 
             </div>
             <div class="grid grid-cols-12 mt-4 gap-4">
-                <div class="col-span-12">
+                <div class="col-span-6">
                     <Textfield
                         label="Observacion"
                         required={true}
                         type="text"
                         bind:value={observation}
                         errors={errors?.observation ? {message:errors.observation[0]} : null}
+                    />
+                </div>
+                <div class="col-span-6 pr-2">
+                    <Textfield
+                        label="Num. devolucion"
+                        required={true}
+                        type="text"
+                        mask="999-999-9999999"
+                        bind:value={refund_number}
+                        errors={errors?.refund_number ? {message:errors.refund_number[0]} : null}
                     />
                 </div>
             </div>
@@ -424,13 +458,7 @@
                                 </div>
                             </th>
                             <th class="text-center text-lg">
-                                <!-- <div class="flex items-center justify-center">
-                                    <div class="tooltip " data-tip="Agregar productos al carrito">
-                                        <button type="button" class="btn btn-primary" on:click={() => (
-                                            OpenModal()
-                                        )}>Agregar</button>
-                                    </div>
-                                </div> -->
+                                
                             </th>
                         </tr>
                     </thead>
@@ -446,9 +474,13 @@
                                     {item.product.product_selling_price}
                                 </td>
                                 <td class="text-center">{formatNumber((parseInt(item.product.product_selling_price)*item.sd_qty))}</td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-secondary" >Devolver</button>
-                                </td>
+                                {#if item.sd_qty > 0}
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-secondary" on:click={()=>{
+                                            removeDetail(item);
+                                        }} >Devolver</button>
+                                    </td>
+                                {/if}
                             </tr>
                         {/each}
                         {#if saleDetails.length > 0}
@@ -465,6 +497,6 @@
                     </tbody>
                 </table>
             <button class="btn btn-primary" type="submit">Guardar</button>
-            <button class="btn btn-secondary" type="reset" on:click={close}>Cancelar</button>
+            <button class="btn btn-secondary" type="reset" on:click={resetForm}>Cancelar</button>
             {/if}
     </form>
