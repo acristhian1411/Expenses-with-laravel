@@ -108,6 +108,7 @@
 	});
 	function handleCreateObject(event) {
 		event.preventDefault();
+		console.log(iva_type_selected)
 		axios
 			.post(`/api/products`, {
 				product_name,
@@ -117,9 +118,9 @@
 				product_image,
 				product_barcode,
 				product_selling_price,
-				category_id: category_selected?.value? category_selected.value : null,
-				iva_type_id: iva_type_selected?.value? iva_type_selected.value : null,
-				brand_id: brand_selected?.value? brand_selected.value : null
+				category_id: category_selected?.value ?? null,
+				iva_type_id: iva_type_selected?.value ?? null,
+				brand_id: brand_selected?.value ?? null
 			})
 			.then((res) => {
 				let detail = {
