@@ -40,9 +40,9 @@ Route::get('/user', function (Request $request) {
 
 
 
-Route::get('/roles', [RolesController::class, 'index'])->description('Get list of roles with pagination.');
+Route::get('/roles', [RolesController::class, 'index'])->summary('Get list of roles with pagination.');
 Route::get('/roles/{id}', [RolesController::class, 'show'])->description('Show a role.');
-Route::post('/roles', [RolesController::class, 'store'])->description('Store a new role.');
+Route::post('/roles', [RolesController::class, 'store']);
 Route::put('/roles/{id}', [RolesController::class, 'update'])->description('Update a role.');
 Route::delete('/roles/{id}', [RolesController::class, 'destroy'])->description('Delete a role.');
 Route::post('/roles/{roleId}/permissions', [RolesController::class, 'assignPermissionsToRole']);

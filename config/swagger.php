@@ -21,6 +21,16 @@ return [
     */
     "description" => env("SWAGGER_DESCRIPTION", "Something"),
 
+    'auto_generate' => [
+        'from_validation' => true, // debe estar en true
+        'form_request' => true,    // para extraer de Form Request
+    ],
+    "routes"=>[
+        'enable'=>true,
+        'directories'=>[
+            app_path('Http/Controllers'),
+        ]
+    ],
     /*
     |--------------------------------------------------------------------------
     | API Email

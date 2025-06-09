@@ -6,7 +6,9 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use Spatie\Permission\Models\Permission;
-
+use G4T\Swagger\Attributes\SwaggerSection;
+use App\Http\Requests\StoreRoleRequest;
+#[SwaggerSection('Roles')]
 class RolesController extends ApiController
 {
     /**
@@ -94,20 +96,18 @@ class RolesController extends ApiController
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+   /**
+ * Store a newly created role in storage.
+ *
+ * @bodyParam name string required The name of the role. Max 255 characters.
+ * 
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\JsonResponse
+ */
+    public function store(StoreRoleRequest $request)
     {
         try{
-            $rules=[
-                'name' => 'required|string|max:255',
-            ];
-            $request->validate($rules);
-            $role = Role::create($request->all());
+            $role = Role::create($request->validated());
             return response()->json(['message'=>'Registro creado con exito','data'=>$role]);
         }catch(\Illuminate\Validation\ValidationException $e){
             // dd($e);
