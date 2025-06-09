@@ -12,6 +12,9 @@
 	});
 
 </script>
+<svelte:head>
+    <title>Inicio</title>
+</svelte:head>
 {#if user}
     <Headers user={user}/>
 	<Sidebar user={user}/>
