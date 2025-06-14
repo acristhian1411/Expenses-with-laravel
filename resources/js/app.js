@@ -14,6 +14,7 @@ import Layout from './components/Commons/Layout.svelte';
 // });
 
 createInertiaApp({
+    title: (title) => `Company Name - ${title}`,
     resolve: name => {
         const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
         let page = pages[`./Pages/${name}.svelte`]

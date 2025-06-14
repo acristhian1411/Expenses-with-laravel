@@ -5,14 +5,14 @@
     import {Inertia} from '@inertiajs/inertia';
     export let appUrl
     export let id = 0;
-    let tilltype = {};
-    let audits = [];
+    export let country = {};
+    export let audits = [];
     let error = null;
     let url = `${appUrl}/api/countries/`;
 
     async function fetchData() {
         axios.get(`${url}${id}`).then((response) => {
-            tilltype = response.data.data;
+            country = response.data.data;
             audits = response.data.audits;
         }).catch((err) => {
             error = err.request.response;
@@ -20,9 +20,12 @@
     }
 
     onMount(async () => {
-        fetchData();
+        // fetchData();
     });
 </script>
+<svelte:head>
+    <title>Paises</title>
+</svelte:head>
 {#if error}
 	<p>{error}</p>
 {/if}
@@ -34,11 +37,11 @@
         <li><span class="cursor-pointer" on:click={()=>Inertia.visit("/countries")}>Paises</span></li>
 	</ul>
 </div>
-{#if tilltype}
+{#if country}
     <div transition:blur>
         <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{tilltype.country_name}</p>
-        <p class="text-1xl">{tilltype.country_code}</p>
+        <p class="text-1xl">{country.country_name}</p>
+        <p class="text-1xl">{country.country_code}</p>
     </div>
 {/if}
 {#if audits}

@@ -2,7 +2,7 @@
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
-	import { inertia } from '@inertiajs/inertia-svelte';
+	import { inertia, page,router } from '@inertiajs/svelte';
 	// import { isLoggedIn, getToken} from '../../services/authservice'
 	// import {goto} from '$app/navigation';
 	import axios from 'axios';
@@ -13,7 +13,8 @@
 	// import { appUrl } from '$env/static/public';
 	export let user
     export let appUrl
-	let data = [];
+	export let data;
+	let countries = [];
 	let error = null;
 	let openAlert = false;
 	let _new = false;
@@ -37,25 +38,11 @@
 		closeModal();
 	}
 
-	async function fetchData(page = current_page, rows = items_per_page) {
-		let token = '';
-		let config = {
-			headers: {
-				authorization: `token: ${token}`,
-			},
-		}
-		axios
-			// .get('/api/countries')
-			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
-			.then((response) => {
-				data = response.data.data;
-				current_page = response.data.currentPage;
-				total_items = response.data.per_page;
-				total_pages = response.data.last_page;
-			})
-			.catch((err) => {
-				error = err.request.response;
-			});
+	function fetchData(page = current_page, rows = items_per_page) {
+		current_page = data.currentPage;
+		total_items = data.per_page;
+		total_pages = data.last_page;
+		countries = data.data;
 	}
 
 	function closeAlert() {
@@ -80,7 +67,7 @@
 				authorization: `token: ${token}`,
 			},
 		}
-		axios.delete(`${appUrl}/api/countries/${id}`, config).then((res) => {
+		axios.delete(`/countries/${id}`).then((res) => {
 			let detail = {
 				detail: {
 					type: 'delete',
@@ -116,7 +103,19 @@
 		} else {
 			order = 'asc';
 		}
-		fetchData(current_page, items_per_page);
+		axios.get('/countries?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&order_by='+orderBy).then((response) => {
+			countries = response.data.data;
+			current_page = response.data.currentPage;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		})
 	}
 	function OpenDeleteModal(data) {
 		id = data;
@@ -124,20 +123,56 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		fetchData(current_page, event.detail.value);
+		axios.get('/countries?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&order_by='+orderBy).then((response) => {
+			countries = response.data.data;
+			current_page = response.data.currentPage;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		fetchData(event.detail.value, items_per_page);
+		axios.get('/countries?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&order_by='+orderBy).then((response) => {
+			countries = response.data.data;
+			current_page = response.data.currentPage;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
 	}
 	function search(event) {
 		search_param = event.target.value;
 		if (search_param == '') {
-			url = `${appUrl}/api/countries?`;
+			url = `${appUrl}/api/countries?page=${current_page}&per_page=${items_per_page}&order=${order}&order_by=${orderBy}`;
 		} else {
-			url = `${appUrl}/api/countries?country_name=${search_param}&country_code=${search_param}&`;
+			url = `${appUrl}/api/countries?country_name=${search_param}&country_code=${search_param}&page=${current_page}&per_page=${items_per_page}&order=${order}&order_by=${orderBy}`;
 		}
-		fetchData(1, items_per_page);
+		axios.get(url).then((response) => {
+			countries = response.data.data;
+			current_page = response.data.currentPage;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
 	}
 	onMount(async () => {
 		// if(!isLoggedIn()){
@@ -213,31 +248,31 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as person, i (person.id)}
+				{#each countries as country, i (country.id)}
 					<tr class="hover">
-						<td>{person.id}</td>
-						<td class="text-center">{person.country_name}</td>
-						<td class="text-center">{person.country_code}</td>
+						<td>{country.id}</td>
+						<td class="text-center">{country.country_name}</td>
+						<td class="text-center">{country.country_code}</td>
 						{#if user.permissions != undefined && user.permissions.includes('countries.show')}
 							<td>
-								<button class="btn btn-info" use:inertia={{ href: `/countries/${person.id}` }}>Mostrar</button>
+								<button class="btn btn-info" use:inertia={{ href: `/countries/${country.id}` }}>Mostrar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('countries.update')}
 							<td>
-								<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>
+								<button class="btn btn-warning" on:click={() => openEditModal(country)}>Editar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('countries.destroy')}
 							<td>
-								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}
+								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(country.id)}
 									>Eliminar</button
 								>
 							</td>
 						{/if}
 					</tr>
 				{/each}
-			</tbody>
+			</tbody> 
 		</table>
 		<Pagination
 			current_page={current_page?current_page:1}

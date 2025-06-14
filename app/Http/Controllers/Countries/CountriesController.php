@@ -6,6 +6,7 @@ use App\Models\Countries;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use Iluminate\Validation\ValidationException;
+use Inertia\Inertia;
 class CountriesController extends ApiController
 {
     /**
@@ -21,7 +22,9 @@ class CountriesController extends ApiController
             $query = $this->filterData($query, $t);
             $datos = $query
             ->get();
-            return $this->showAll($datos, 200);
+            $from = request()->wantsJson() ? 'api' : 'web';
+            // dd($from);
+            return $this->showAll($datos, $from, 'Countries/index', 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
         }
@@ -67,9 +70,10 @@ class CountriesController extends ApiController
         try{
             $dato = Countries::findOrFail($id);
             $audits = $dato->audits;
-            // dd($audits);
-
-            return $this->showOne($dato,$audits, 200);
+            if(request()->wantsJson()){
+                return $this->showOne($dato,$audits,200);
+            }
+            return Inertia::render('Countries/show', ['country' => $dato,'audits'=>$audits]);
         }
         catch(\Exception $e){
             return response()->json([
@@ -96,7 +100,9 @@ class CountriesController extends ApiController
             $request->validate($reglas);
             $dato = Countries::findOrFail($id);
             $dato->update($request->all());
-            return response()->json(['message'=>'Registro Actualizado con exito','data'=>$dato],200);
+            if(request()->wantsJson()){
+                return response()->json(['message'=>'Registro Actualizado con exito','data'=>$dato],200);
+            }
         }catch(\Illuminate\Validation\ValidationException $e){
             // dd($e);
             return response()->json([

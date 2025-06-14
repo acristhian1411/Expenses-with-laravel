@@ -14,6 +14,7 @@
 	export let edit;
 	export let item;
 	let errors = null;
+
 	let token = '';
 	let config = {
 		headers: {
@@ -38,12 +39,10 @@
 	});
 	// http://127.0.0.1:5173/tilltypes
 	function handleCreateObject() {
-		
-		axios
-			.post(`/api/countries`, {
-				country_name,
-				country_code
-			},config)
+		axios.post('/countries',{
+			country_name: country_name,
+			country_code: country_code,	
+		})
 			.then((res) => {
 				let detail = {
 					detail: {
@@ -65,11 +64,10 @@
 			});
 	}
 	function handleUpdateObject() {
-		axios
-			.put(`/api/countries/${id}`, {
-				country_name,
-				country_code
-			},config)
+		axios.put(`/countries/${id}`, {
+			country_name: country_name,
+			country_code: country_code,
+		})
 			.then((res) => {
 				let detail = {
 					detail: {
@@ -112,7 +110,7 @@
 	</Grid>
 	<button
 		class="btn btn-primary"
-		on:click={edit == true ? handleUpdateObject() : handleCreateObject()}>Guardar</button
+		on:click|preventDefault={edit == true ? handleUpdateObject() : handleCreateObject()}>Guardar</button
 	>
 	<button class="btn btn-secondary" on:click={close}>Cancelar</button>
 <!-- </form> -->

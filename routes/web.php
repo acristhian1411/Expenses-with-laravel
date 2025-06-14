@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\AuthController;
-
+use App\Http\Controllers\Countries\CountriesController;
 
 Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -38,13 +38,20 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('PersonTypes/show', ['id' => $id]);
     })->middleware('permission:persontypes.show');
     
-    Route::get('/countries', function () {
-        return Inertia::render('Countries/index');
-    })->middleware('permission:countries.index');
+    // Route::get('/countries', function () {
+    //     return Inertia::render('Countries/index');
+    // })->middleware('permission:countries.index');
     
-    Route::get('/countries/{id}', function ($id) {
-        return Inertia::render('Countries/show', ['id' => $id]);
-    })->middleware('permission:countries.show');
+    Route::get('/countries', [CountriesController::class,'index'])->name('countries')->middleware('permission:countries.index');
+    Route::get('/countries/{id}',[CountriesController::class,'show'])->name('countries.show')->middleware('permission:countries.show');
+    Route::put('/countries/{id}',[CountriesController::class,'update'])->name('countries:update')->middleware('permission:countries.update');
+    Route::post('/countries',[CountriesController::class,'store'])->name('countries:create')->middleware('permission:countries.create');
+    Route::delete('/countries',[CountriesController::class,'destroy'])->name('countries:destroy')->middleware('permission:countries.destroy');
+    
+
+    // Route::get('/countries/{id}', function ($id) {
+        // return Inertia::render('Countries/show', ['id' => $id]);
+    // })->middleware('permission:countries.show');
     
     Route::get('/states', function () {
         return Inertia::render('States/index');
@@ -179,7 +186,7 @@ Route::group(['middleware' => ['auth']],function(){
     })->middleware('permission:sales.create');
 
     Route::get(`/refunds`,function(){
-        return Inertia::render(`Refunds`);
+        return Inertia::render(`Refunds/index`);
     })->middleware('permission:sales.index');
 
     Route::get('/create-refunds', function () {

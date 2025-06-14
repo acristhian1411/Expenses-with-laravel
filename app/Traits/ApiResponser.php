@@ -8,13 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-
+use Inertia\Inertia;
 trait ApiResponser
 {
 
-	private function successResponse($data, $code)
+	private function successResponse($data,$from = 'api',$name = 'Home', $code)
 	{
-		return response()->json($data, $code);
+		if($from == 'api'){
+			return response()->json($data, $code);
+		}else{			return Inertia::render("$name", ['data' => $data]);
+			
+		}
 	}
 
 	protected function errorResponse($message, $code)
@@ -23,7 +27,7 @@ trait ApiResponser
 	}
 
 
-	protected function showAll(Collection $collection, $code = 200)
+	protected function showAll(Collection $collection,$from = 'api',$name = 'Home', $code = 200)
 	{
 		if ($collection->isEmpty()) {
 			return $this->successResponse(['data' => $collection], $code);
@@ -36,7 +40,7 @@ trait ApiResponser
 		$collection = $this->transformData($collection, $transformer);
 		$collection = $this->cacheResponse($collection);
 
-		return $this->successResponse($collection, $code);
+		return $this->successResponse($collection, $from, $name, $code);
 	}
 
 
@@ -83,7 +87,7 @@ trait ApiResponser
 	}
 	protected function showMessage($message, $code = 200)
 	{
-		return $this->successResponse(['data' => $message], $code);
+		return $this->successResponse(['data' => $message],'api','', $code);
 	}
 
 	public function filterData(Builder $collection, $transformer)
