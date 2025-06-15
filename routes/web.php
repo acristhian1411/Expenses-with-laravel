@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\States\StatesController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\AuthController;
@@ -53,9 +54,11 @@ Route::group(['middleware' => ['auth']],function(){
         // return Inertia::render('Countries/show', ['id' => $id]);
     // })->middleware('permission:countries.show');
     
-    Route::get('/states', function () {
-        return Inertia::render('States/index');
-    })->middleware('permission:states.index');
+    // Route::get('/states', function () {
+    //     return Inertia::render('States/index');
+    // })->middleware('permission:states.index');
+
+    Route::get('/states', [StatesController::class,'index'])->name('states')->middleware('permission:states.index');
     
     Route::get('/states/{id}', function ($id) {
         return Inertia::render('States/show', ['id' => $id]);

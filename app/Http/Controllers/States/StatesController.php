@@ -22,7 +22,8 @@ class StatesController extends ApiController
             ->join('countries','states.country_id','=','countries.id')
             ->select('states.*','countries.country_name');
             $datos = $query->get();
-            return $this->showAll($datos, 200);
+            $from = request()->wantsJson() ? 'api':'web';
+            return $this->showAll($datos,$from,'States/index', 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
         }

@@ -30,7 +30,7 @@ trait ApiResponser
 	protected function showAll(Collection $collection,$from = 'api',$name = 'Home', $code = 200)
 	{
 		if ($collection->isEmpty()) {
-			return $this->successResponse(['data' => $collection], $code);
+			return $this->successResponse(['data' => $collection], $from, $name, $code);
 		}
 		$transformer = "";
 		/* 		$transformer = $collection->first()->transformer;*/
@@ -47,7 +47,7 @@ trait ApiResponser
 	protected function showForSelect(Collection $collection, $code = 200)
 	{
 		if ($collection->isEmpty()) {
-			return $this->successResponse(['data' => $collection], $code);
+			return $this->successResponse(['data' => $collection], 'api', '', $code);
 		}
 		$transformer = "";
 		/* 		$transformer = $collection->first()->transformer;*/
@@ -56,7 +56,7 @@ trait ApiResponser
 		$collection = $this->transformData($collection, $transformer);
 		$collection = $this->cacheResponse($collection);
 
-		return $this->successResponse($collection, $code);
+		return $this->successResponse($collection,'api', '', $code);
 	}
 
 	/**
@@ -83,7 +83,7 @@ trait ApiResponser
 		$transformer = "";
 		$instance = $this->transformData($instance, $transformer);
 
-		return $this->successResponse(['data' => $instance, 'audits' => $audit], $code);
+		return $this->successResponse(['data' => $instance, 'audits' => $audit],'api', '', $code);
 	}
 	protected function showMessage($message, $code = 200)
 	{
@@ -194,7 +194,7 @@ trait ApiResponser
 
 		$page = LengthAwarePaginator::resolveCurrentPage();
 
-		$perPage = 40;
+		$perPage = 10;
 		if (request()->has('per_page')) {
 			$perPage = (int) request()->per_page;
 		}
