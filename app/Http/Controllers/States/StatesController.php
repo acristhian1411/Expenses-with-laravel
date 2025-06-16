@@ -5,6 +5,8 @@ namespace App\Http\Controllers\States;
 use App\Models\States;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Inertia\Inertia;
+
 
 class StatesController extends ApiController
 {
@@ -71,7 +73,10 @@ class StatesController extends ApiController
             ->join('countries', 'states.country_id', '=', 'countries.id')
             ->first();
             $audits = $states->audits;
-            return $this->showOne($states, $audits, 200);
+            if(request()->wantsJson()){
+                return $this->showOne($states, $audits, 200);
+            }
+            return Inertia::render('States/show', ['state' => $states, 'audits'=>$audits]);
         }
         catch(\Exception $e){
             return response()->json([

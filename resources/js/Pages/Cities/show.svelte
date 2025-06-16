@@ -4,23 +4,23 @@
     import axios from 'axios';
     import { Inertia } from '@inertiajs/inertia';
     export let appUrl
-    export let id = 0;
-    let tilltype = {};
-    let audits = [];
+    export const id = 0;
+    export let city = {};
+    export let audits = [];
     let error = null;
-    let url = `${appUrl}/api/cities/`;
+    let url = `${appUrl}/cities/`;
 
-    async function fetchData() {
-        axios.get(`${url}${id}`).then((response) => {
-            tilltype = response.data.data;
-            audits = response.data.audits;
-        }).catch((err) => {
-            error = err.request.response;
-        });
-    }
+    // async function fetchData() {
+    //     axios.get(`${url}${id}`).then((response) => {
+    //         city = response.data.data;
+    //         audits = response.data.audits;
+    //     }).catch((err) => {
+    //         error = err.request.response;
+    //     });
+    // }
 
     onMount(async () => {
-        fetchData();
+        // fetchData();
     });
     function goTo(route){
         Inertia.visit(route);
@@ -37,16 +37,16 @@
 		<li><span class="cursor-pointer" on:click={()=>goTo("/cities")}>Ciudades</span></li>
 	</ul>
 </div>
-{#if tilltype}
+{#if city}
     <div transition:blur>
         <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{tilltype.city_name}</p>
+        <p class="text-1xl">{city.city_name}</p>
         <h1 class="text-xl font-bold">Código:</h1>
-        <p class="text-1xl">{tilltype.city_code}</p>
+        <p class="text-1xl">{city.city_code}</p>
         <h1 class="text-xl font-bold">Departamento:</h1>
-        <p class="text-1xl">{tilltype.state_name}</p>
+        <p class="text-1xl">{city.state_name}</p>
         <h1 class="text-xl font-bold">Pais:</h1>
-        <p class="text-1xl">{tilltype.country_name}</p>
+        <p class="text-1xl">{city.country_name}</p>
     </div>
 {/if}
 {#if audits}

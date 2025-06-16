@@ -2,7 +2,7 @@
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
-	import { inertia,page,router } from '@inertiajs/svelte';
+	import { inertia} from '@inertiajs/inertia-svelte';
 	// import { isLoggedIn, getToken} from '../../services/authservice'
 	// import {goto} from '$app/navigation';
 	import axios from 'axios';
@@ -96,8 +96,8 @@
 		} else {
 			order = 'asc';
 		}
-		axios.get('/states?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&order_by='+orderBy).then((response) => {
-			countries = response.data.data;
+		axios.get('/states?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
+			states = response.data.data;
 			current_page = response.data.currentPage;
 			total_items = response.data.per_page;
 			total_pages = response.data.last_page;
@@ -116,8 +116,8 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		axios.get('/states?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&order_by='+orderBy).then((response) => {
-			countries = response.data.data;
+		axios.get('/states?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
+			states = response.data.data;
 			current_page = response.data.currentPage;
 			total_items = response.data.per_page;
 			total_pages = response.data.last_page;
@@ -132,8 +132,8 @@
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		axios.get('/states?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&order_by='+orderBy).then((response) => {
-			countries = response.data.data;
+		axios.get('/states?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
+			states = response.data.data;
 			current_page = response.data.currentPage;
 			total_items = response.data.per_page;
 			total_pages = response.data.last_page;
@@ -149,22 +149,24 @@
 	function search(event) {
 		search_param = event.target.value;
 		if (search_param == '') {
-			url = `${appUrl}/api/states?`;
+			url = `${appUrl}/states?`;
 		} else {
-			url = `${appUrl}/api/states?state_name=${search_param}&`;
+			url = `${appUrl}/states?state_name=${search_param}&`;
 		}
 		axios.get(url).then((response) => {
-			countries = response.data.data;
+			states = response.data.data;
 			current_page = response.data.currentPage;
 			total_items = response.data.per_page;
 			total_pages = response.data.last_page;
 		}).catch((err) => {
-			let detail = {
-				detail: {
-					type: 'delete',
-					message: err.response.data.message
-				}
-			};
+			if(err.response.data.message){
+				let detail = {
+					detail: {
+						type: 'delete',
+						message: err.response.data.message
+					}
+				};
+			}
 		});
 	}
 	onMount(async () => {

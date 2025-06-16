@@ -76,7 +76,7 @@
 	// http://127.0.0.1:5173/tilltypes
 	function handleCreateObject() {
 		axios
-			.post(`/api/states`, {
+			.post(`/states`, {
 				state_name,
 				country_id: country_selected.value
 			},config)
@@ -102,7 +102,7 @@
 	}
 	function handleUpdateObject() {
 		axios
-			.put(`/api/states/${id}`, {
+			.put(`/states/${id}`, {
 				state_name,
 				country_id: country_selected.value
 			},config)

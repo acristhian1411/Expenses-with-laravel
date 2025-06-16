@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cities;
 use App\Models\Cities;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Inertia\Inertia;
 class CitiesController extends ApiController
 {
     /**
@@ -22,7 +23,8 @@ class CitiesController extends ApiController
             ->join('countries','states.country_id','=','countries.id')
             ->select('cities.*','states.state_name', 'countries.country_name');
             $datos = $query->get();
-            return $this->showAll($datos, 200);
+            $from = request()->wantsJson() ? 'api' : 'web';
+            return $this->showAll($datos,$from,'Cities/index', 200);
         }
         catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
@@ -82,7 +84,10 @@ class CitiesController extends ApiController
             ->select('cities.*','states.state_name', 'countries.country_name')
             ->first();
             $audits = $cities->audits;
-            return $this->showOne($cities, $audits,200);
+            if(request()->wantsJson()){
+                return $this->showOne($cities, $audits, 200);
+            }
+            return Inertia::render('Cities/show', ['city' => $cities, 'audits'=>$audits]);
         }
         catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);

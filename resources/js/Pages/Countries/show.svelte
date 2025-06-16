@@ -4,24 +4,13 @@
     import axios from 'axios';
     import {Inertia} from '@inertiajs/inertia';
     export let appUrl
-    export let id = 0;
+    export const id = 0;
     export let country = {};
     export let audits = [];
     let error = null;
-    let url = `${appUrl}/api/countries/`;
+    let url = `${appUrl}/countries/`;
 
-    async function fetchData() {
-        axios.get(`${url}${id}`).then((response) => {
-            country = response.data.data;
-            audits = response.data.audits;
-        }).catch((err) => {
-            error = err.request.response;
-        });
-    }
-
-    onMount(async () => {
-        // fetchData();
-    });
+    
 </script>
 <svelte:head>
     <title>Paises</title>

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Countries\CountriesController;
+use App\Http\Controllers\Cities\CitiesController;
 
 Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -39,39 +40,28 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('PersonTypes/show', ['id' => $id]);
     })->middleware('permission:persontypes.show');
     
-    // Route::get('/countries', function () {
-    //     return Inertia::render('Countries/index');
-    // })->middleware('permission:countries.index');
-    
+
+    // routes for countries
     Route::get('/countries', [CountriesController::class,'index'])->name('countries')->middleware('permission:countries.index');
     Route::get('/countries/{id}',[CountriesController::class,'show'])->name('countries.show')->middleware('permission:countries.show');
     Route::put('/countries/{id}',[CountriesController::class,'update'])->name('countries:update')->middleware('permission:countries.update');
     Route::post('/countries',[CountriesController::class,'store'])->name('countries:create')->middleware('permission:countries.create');
     Route::delete('/countries',[CountriesController::class,'destroy'])->name('countries:destroy')->middleware('permission:countries.destroy');
-    
 
-    // Route::get('/countries/{id}', function ($id) {
-        // return Inertia::render('Countries/show', ['id' => $id]);
-    // })->middleware('permission:countries.show');
-    
-    // Route::get('/states', function () {
-    //     return Inertia::render('States/index');
-    // })->middleware('permission:states.index');
-
+    // routes for states
     Route::get('/states', [StatesController::class,'index'])->name('states')->middleware('permission:states.index');
-    
-    Route::get('/states/{id}', function ($id) {
-        return Inertia::render('States/show', ['id' => $id]);
-    })->middleware('permission:states.show');
-    
-    Route::get('/cities', function () {
-        return Inertia::render('Cities/index');
-    })->middleware('permission:cities.index');
-    
-    Route::get('/cities/{id}', function ($id) {
-        return Inertia::render('Cities/show', ['id' => $id]);
-    })->middleware('permission:cities.show');
-    
+    Route::get('/states/{id}',[StatesController::class,'show'])->name('states.show')->middleware('permission:states.show');
+    Route::post('/states',[StatesController::class,'store'])->name('states:create')->middleware('permission:states.create');
+    Route::put('/states/{id}',[StatesController::class,'update'])->name('states:update')->middleware('permission:states.update');
+    Route::delete('/states/{id}',[StatesController::class,'destroy'])->name('states:destroy')->middleware('permission:states.destroy');
+
+    // routes for cities
+    Route::get('/cities', [CitiesController::class,'index'])->name('cities')->middleware('permission:cities.index');
+    Route::get('/cities/{id}',[CitiesController::class,'show'])->name('cities.show')->middleware('permission:cities.show');
+    Route::post('/cities',[CitiesController::class,'store'])->name('cities:create')->middleware('permission:cities.create');
+    Route::put('/cities/{id}',[CitiesController::class,'update'])->name('cities:update')->middleware('permission:cities.update');
+    Route::delete('/cities/{id}',[CitiesController::class,'destroy'])->name('cities:destroy')->middleware('permission:cities.destroy');
+
     Route::get('/tills',function(){
         return Inertia::render('Tills/index');
     })->middleware('permission:tills.index');

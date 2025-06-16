@@ -60,7 +60,7 @@
 	function handleCreateObject() {
 		
 		axios
-			.post(`/api/cities`, {
+			.post(`/cities`, {
 				city_name,
 				city_code,
 				state_id: state_selected?.id? state_selected.id : null
@@ -87,7 +87,7 @@
 	}
 	function handleUpdateObject() {
 		axios
-			.put(`/api/cities/${id}`, {
+			.put(`/cities/${id}`, {
 				city_name,
 				city_code,
 				state_id: state_selected?.id? state_selected.id : null

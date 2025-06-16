@@ -2,7 +2,7 @@
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
-	import { inertia, page,router } from '@inertiajs/svelte';
+	import { inertia} from '@inertiajs/inertia-svelte';
 	// import { isLoggedIn, getToken} from '../../services/authservice'
 	// import {goto} from '$app/navigation';
 	import axios from 'axios';
@@ -103,7 +103,7 @@
 		} else {
 			order = 'asc';
 		}
-		axios.get('/countries?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&order_by='+orderBy).then((response) => {
+		axios.get('/countries?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
 			countries = response.data.data;
 			current_page = response.data.currentPage;
 			total_items = response.data.per_page;
@@ -123,7 +123,7 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		axios.get('/countries?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&order_by='+orderBy).then((response) => {
+		axios.get('/countries?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
 			countries = response.data.data;
 			current_page = response.data.currentPage;
 			total_items = response.data.per_page;
@@ -139,7 +139,7 @@
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		axios.get('/countries?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&order_by='+orderBy).then((response) => {
+		axios.get('/countries?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
 			countries = response.data.data;
 			current_page = response.data.currentPage;
 			total_items = response.data.per_page;
@@ -156,9 +156,9 @@
 	function search(event) {
 		search_param = event.target.value;
 		if (search_param == '') {
-			url = `${appUrl}/api/countries?page=${current_page}&per_page=${items_per_page}&order=${order}&order_by=${orderBy}`;
+			url = `${appUrl}/countries?page=${current_page}&per_page=${items_per_page}&order=${order}&sort_by=${orderBy}`;
 		} else {
-			url = `${appUrl}/api/countries?country_name=${search_param}&country_code=${search_param}&page=${current_page}&per_page=${items_per_page}&order=${order}&order_by=${orderBy}`;
+			url = `${appUrl}/countries?country_name=${search_param}&country_code=${search_param}&page=${current_page}&per_page=${items_per_page}&order=${order}&sort_by=${orderBy}`;
 		}
 		axios.get(url).then((response) => {
 			countries = response.data.data;

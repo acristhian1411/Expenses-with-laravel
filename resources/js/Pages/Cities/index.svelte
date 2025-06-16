@@ -13,7 +13,8 @@
 	// import { appUrl } from '$env/static/public';
 	export let user
     export let appUrl
-	let data = [];
+	export let data = [];
+	let cities = [];
 	let error = null;
 	let openAlert = false;
 	let _new = false;
@@ -30,7 +31,7 @@
 	let total_items;
 	let current_page = 1;
 	let items_per_page = '10';
-	let url = `${appUrl}/api/cities?`;
+	let url = `${appUrl}/cities?`;
 
 	function updateData() {
 		fetchData();
@@ -38,24 +39,10 @@
 	}
 
 	async function fetchData(page = current_page, rows = items_per_page) {
-		let token = '';
-		let config = {
-			headers: {
-				authorization: `token: ${token}`,
-			},
-		}
-		axios
-			// .get('/api/cities')
-			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
-			.then((response) => {
-				data = response.data.data;
-				current_page = response.data.current_page;
-				total_items = response.data.per_page;
-				total_pages = response.data.last_page;
-			})
-			.catch((err) => {
-				error = err.request.response;
-			});
+				cities = data.data;
+				current_page = data.current_page;
+				total_items = data.per_page;
+				total_pages = data.last_page;
 	}
 
 	function closeAlert() {
@@ -79,7 +66,7 @@
 				authorization: `token: ${token}`,
 			},
 		}
-		axios.delete(`${appUrl}/api/cities/${id}`, config).then((res) => {
+		axios.delete(`${appUrl}/cities/${id}`, config).then((res) => {
 			let detail = {
 				detail: {
 					type: 'delete',
@@ -115,7 +102,19 @@
 		} else {
 			order = 'asc';
 		}
-		fetchData(current_page, items_per_page);
+		axios.get('/cities?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
+			cities = response.data.data;
+			current_page = response.data.current_page;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		})
 	}
 	function OpenDeleteModal(data) {
 		id = data;
@@ -123,20 +122,58 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		fetchData(current_page, event.detail.value);
+		axios.get('/cities?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
+			cities = response.data.data;
+			current_page = response.data.current_page;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		fetchData(event.detail.value, items_per_page);
+		axios.get('/cities?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
+			cities = response.data.data;
+			current_page = response.data.current_page;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
 	}
 	function search(event) {
 		search_param = event.target.value;
 		if (search_param == '') {
-			url = `${appUrl}/api/cities?`;
+			url = `${appUrl}/cities?`;
 		} else {
-			url = `${appUrl}/api/cities?city_name=${search_param}&`;
+			url = `${appUrl}/cities?city_name=${search_param}&`;
 		}
-		fetchData(1, items_per_page);
+		axios.get(url).then((response) => {
+			cities = response.data.data;
+			current_page = response.data.current_page;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			if(err.response.data.message){
+				let detail = {
+					detail: {
+						type: 'delete',
+						message: err.response.data.message
+					}
+				};
+			}
+		});
 	}
 	onMount(async () => {
 		fetchData();
@@ -215,25 +252,25 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as person, i (person.id)}
+				{#each cities as city, i (city.id)}
 					<tr class="hover">
-						<td>{person.id}</td>
-						<td class="text-center">{person.city_name}</td>
-						<td class="text-center">{person.state_name}</td>
-						<td class="text-center">{person.country_name}</td>
+						<td>{city.id}</td>
+						<td class="text-center">{city.city_name}</td>
+						<td class="text-center">{city.state_name}</td>
+						<td class="text-center">{city.country_name}</td>
 						{#if user.permissions != undefined && user.permissions.includes('cities.show')}
 							<td>
-								<button class="btn btn-info" use:inertia={{ href: `/cities/${person.id}` }}>Mostrar</button>
+								<button class="btn btn-info" use:inertia={{ href: `/cities/${city.id}` }}>Mostrar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('cities.update')}
 							<td>
-								<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>
+								<button class="btn btn-warning" on:click={() => openEditModal(city)}>Editar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('cities.destroy')}
 							<td>
-								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}
+								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(city.id)}
 									>Eliminar</button
 								>
 							</td>

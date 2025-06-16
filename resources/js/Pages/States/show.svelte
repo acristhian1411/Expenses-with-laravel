@@ -4,23 +4,14 @@
     import axios from 'axios';
     import { Inertia } from '@inertiajs/inertia';
     export let appUrl
-    export let id = 0;
-    let tilltype = {};
-    let audits = [];
+    export const id = 0;
+    export let state = {};
+    export let audits = [];
     let error = null;
     let url = `${appUrl}/api/states/`;
 
-    async function fetchData() {
-        axios.get(`${url}${id}`).then((response) => {
-            tilltype = response.data.data;
-            audits = response.data.audits;
-        }).catch((err) => {
-            error = err.request.response;
-        });
-    }
-
     onMount(async () => {
-        fetchData();
+        console.log('state',state);
     });
 </script>
 {#if error}
@@ -34,12 +25,12 @@
         <li><span class="cursor-pointer" on:click={()=>Inertia.visit("/states")}>Departamentos</span></li>
 	</ul>
 </div>
-{#if tilltype}
+{#if state}
     <div transition:blur>
         <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{tilltype.state_name}</p>
+        <p class="text-1xl">{state.state_name}</p>
         <h1 class="text-xl font-bold">Pais:</h1>
-        <p class="text-1xl">{tilltype.country_name}</p>
+        <p class="text-1xl">{state.country_name}</p>
     </div>
 {/if}
 {#if audits}
