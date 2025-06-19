@@ -5,6 +5,9 @@ namespace App\Http\Controllers\TillTypes;
 use App\Models\TillType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use App\Http\Requests\IndexRequest;
+use App\Http\Requests\TillTypesRequest;
+use Inertia\Inertia;
 
 class TillTypeController extends ApiController
 {
@@ -14,14 +17,16 @@ class TillTypeController extends ApiController
      * @return \Illuminate\Http\Response
      */
    
-    public function index()
+    public function index(IndexRequest $request)
     {
         try{
             $t = TillType::query()->first();
             $query = TillType::query();
             $query = $this->filterData($query, $t);
             $datos = $query->get();
-            return $this->showAll($datos, 200);
+            $from = request()->wantsJson() ? 'api' : 'web';
+            // dd($datos);
+            return $this->showAll($datos, $from, 'TillTypes/index', 200);
         }catch(\Exception $e){
             return response()->json([
                 'error'=>$e->getMessage(),
@@ -36,13 +41,11 @@ class TillTypeController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TillTypesRequest $request)
     {
         try{
-            $rules = [
-                'till_type_desc' => 'required|string|max:255',
-            ];
-            $validatedData = $request->validate($rules);
+            
+            $validatedData = $request->validated();
             $tillType = TillType::create($validatedData);
             return response()->json([
                 'message'=>'Registro creado con exito',
@@ -70,7 +73,10 @@ class TillTypeController extends ApiController
         try{
             $tillType = TillType::find($id);
             $audits = $tillType->audits;
-            return $this->showOne($tillType, $audits,200);
+            if(request()->wantsJson()){
+                return $this->showOne($tillType,$audits,200);
+            }
+            return Inertia::render('TillTypes/show', ['tilltype' => $tillType,'audits'=>$audits]);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'mesage'=>'No se pudo obtener los datos']);
         }

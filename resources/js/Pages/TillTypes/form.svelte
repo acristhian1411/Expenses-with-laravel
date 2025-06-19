@@ -16,32 +16,11 @@
 	let errors = null;
 	let states = [];
 	let state_selected ;
-	let token = '';
-	let config = {
-		headers: {
-			authorization: `token: ${token}`,
-		},
-	}
+
 	function close() {
 		dispatch('close');
 	}
 
-	function getCountries() {
-		axios.get(`/api/states`).then((response) => {
-			states = response.data.data;
-			if (edit == true) {
-				state_selected = states.find(state => state.id === item.state_id);
-			}
-		}).catch((err) => {
-			// errors = err.response.data.details ? err.response.data.details : null;
-			let detail = {
-				detail: {
-					type: 'delete',
-					message: err.response.data.message
-				}
-			};
-		});
-	}
 
 	function OpenAlertMessage(event) {
 		dispatch('message', event.detail);
@@ -57,9 +36,9 @@
 	function handleCreateObject() {
 		
 		axios
-			.post(`/api/tilltypes`, {
+			.post(`/tilltypes`, {
 				till_type_desc
-			},config)
+			})
 			.then((res) => {
 				let detail = {
 					detail: {
@@ -82,9 +61,9 @@
 	}
 	function handleUpdateObject() {
 		axios
-			.put(`/api/tilltypes/${id}`, {
+			.put(`/tilltypes/${id}`, {
 				till_type_desc
-			},config)
+			})
 			.then((res) => {
 				let detail = {
 					detail: {

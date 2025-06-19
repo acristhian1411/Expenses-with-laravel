@@ -3,17 +3,15 @@
 	// @ts-nocheck
 	import { onMount } from 'svelte';
 	import { inertia } from '@inertiajs/inertia-svelte';
-	// import { isLoggedIn, getToken} from '../../services/authservice'
-	// import {goto} from '$app/navigation';
 	import axios from 'axios';
 	import {Pagination, DeleteModal, Modal} from '@components/utilities/';
 	import {Alert, ErrorAlert} from '@components/Alerts/';
 	import {SearchIcon, SortIcon} from '@components/Icons/';
 	import Form from './form.svelte';
-	// import { appUrl } from '$env/static/public';
 	export let user
     export let appUrl
-	let data = [];
+	export let data = [];
+	let tilltypes = [];
 	let error = null;
 	let openAlert = false;
 	let _new = false;
@@ -30,31 +28,17 @@
 	let total_items;
 	let current_page = 1;
 	let items_per_page = '10';
-	let url = `${appUrl}/api/tilltypes?`;
+	let url = `${appUrl}/tilltypes?`;
 	function updateData() {
 		fetchData();
 		closeModal();
 	}
 
 	async function fetchData(page = current_page, rows = items_per_page) {
-		let token = '';
-		let config = {
-			headers: {
-				authorization: `token: ${token}`,
-			},
-		}
-		axios
-			// .get('/api/tilltypes')
-			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
-			.then((response) => {
-				data = response.data.data;
-				current_page = response.data.currentPage;
-				total_items = response.data.per_page;
-				total_pages = response.data.last_page;
-			})
-			.catch((err) => {
-				error = err.request.response;
-			});
+		tilltypes = data.data;
+		current_page = data.current_page;
+		total_items = data.per_page;
+		total_pages = data.last_page;
 	}
 
 	function closeAlert() {
@@ -78,7 +62,7 @@
 				authorization: `token: ${token}`,
 			},
 		}
-		axios.delete(`${appUrl}/api/tilltypes/${id}`, config).then((res) => {
+		axios.delete(`${appUrl}/tilltypes/${id}`, config).then((res) => {
 			let detail = {
 				detail: {
 					type: 'delete',
@@ -114,7 +98,19 @@
 		} else {
 			order = 'asc';
 		}
-		fetchData(current_page, items_per_page);
+		axios.get('/tilltypes?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
+			tilltypes = response.data.data;
+			current_page = response.data.current_page;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		})
 	}
 	function OpenDeleteModal(data) {
 		id = data;
@@ -122,20 +118,58 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		fetchData(current_page, event.detail.value);
+		axios.get('/tilltypes?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
+			tilltypes = response.data.data;
+			current_page = response.data.current_page;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		fetchData(event.detail.value, items_per_page);
+		axios.get('/tilltypes?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
+			tilltypes = response.data.data;
+			current_page = response.data.current_page;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
 	}
 	function search(event) {
 		search_param = event.target.value;
 		if (search_param == '') {
-			url = `${appUrl}/api/tilltypes?`;
+			url = `${appUrl}/tilltypes?`;
 		} else {
-			url = `${appUrl}/api/tilltypes?till_type_desc=${search_param}&`;
+			url = `${appUrl}/tilltypes?till_type_desc=${search_param}&`;
 		}
-		fetchData(1, items_per_page);
+		axios.get(url).then((response) => {
+			tilltypes = response.data.data;
+			current_page = response.data.current_page;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			if(err.response.data.message){
+				let detail = {
+					detail: {
+						type: 'delete',
+						message: err.response.data.message
+					}
+				};
+			}
+		});
 	}
 	onMount(async () => {
 		// if(!isLoggedIn()){
@@ -201,27 +235,27 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as person, i (person.id)}
+				{#each tilltypes as tilltype, i (tilltype.id)}
 					<tr class="hover">
-						<td>{person.id}</td>
-						<td class="text-center">{person.till_type_desc}</td>
+						<td>{tilltype.id}</td>
+						<td class="text-center">{tilltype.till_type_desc}</td>
 						{#if user.permissions != undefined && user.permissions.includes('tilltypes.show')}
 							<td>
-								<button class="btn btn-info" use:inertia={{ href: `/tilltypes/${person.id}` }}>
+								<button class="btn btn-info" use:inertia={{ href: `/tilltypes/${tilltype.id}` }}>
 									Mostrar
 								</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('tilltypes.update')}
 							<td>
-								<button class="btn btn-warning" on:click={() => openEditModal(person)}>
+								<button class="btn btn-warning" on:click={() => openEditModal(tilltype)}>
 									Editar
 								</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('tilltypes.destroy')}
 							<td>
-								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}>
+								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(tilltype.id)}>
 									Eliminar
 								</button>
 							</td>	

@@ -2,33 +2,27 @@
     import { onMount } from 'svelte';
     import {blur} from 'svelte/transition';
     import axios from 'axios';
+    import {Inertia} from '@inertiajs/inertia';
     export let appUrl
-    export let id = 0;
-    let tilltype = {};
-    let audits = [];
+    export const id = 0;
+    export let tilltype = {};
+    export let audits = [];
     let error = null;
-    let url = `${appUrl}/api/tilltypes/`;
+    let url = `${appUrl}/tilltypes/`;
 
-    async function fetchData() {
-        axios.get(`${url}${id}`).then((response) => {
-            tilltype = response.data.data;
-            audits = response.data.audits;
-        }).catch((err) => {
-            error = err.request.response;
-        });
-    }
-
-    onMount(async () => {
-        fetchData();
-    });
 </script>
 {#if error}
 	<p>{error}</p>
 {/if}
+<svelte:head>
+    <title>Tipos de cajas</title>
+</svelte:head>
 <div class="breadcrumbs text-md mb-4">
 	<ul>
-		<li><a href="/">Inicio</a></li>
-		<li><a href="/tilltypes">Tipos de cajas</a></li>
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<li><span class="cursor-pointer" on:click={()=>Inertia.visit("/")}>Inicio</span></li>
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<li><span class="cursor-pointer" on:click={()=>Inertia.visit("/tilltypes")}>Tipos de cajas</span></li>
 	</ul>
 </div>
 {#if tilltype}
