@@ -13,7 +13,7 @@
     
 </script>
 <svelte:head>
-    <title>Paises</title>
+    <title>{country?.country_name}</title>
 </svelte:head>
 {#if error}
 	<p>{error}</p>

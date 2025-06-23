@@ -178,7 +178,9 @@
 		fetchData();
 	});
 </script>
-
+<svelte:head>
+	<title>Tipos de cajas</title>
+</svelte:head>
 {#if error}
 	<ErrorAlert message={error} on:clearError={ClearError} />
 {/if}

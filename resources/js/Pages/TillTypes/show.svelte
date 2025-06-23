@@ -15,7 +15,7 @@
 	<p>{error}</p>
 {/if}
 <svelte:head>
-    <title>Tipos de cajas</title>
+    <title>{tilltype?.till_type_desc}</title>
 </svelte:head>
 <div class="breadcrumbs text-md mb-4">
 	<ul>
