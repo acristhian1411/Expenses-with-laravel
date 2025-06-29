@@ -4,28 +4,19 @@
     import axios from 'axios';
     import { Inertia } from '@inertiajs/inertia';
     export let appUrl
-    export let id = 0;
-    let tilltype = {};
-    let audits = [];
+    export const id = 0;
+    export let ivaType = {};
+    export let audits = [];
     let error = null;
-    let url = `${appUrl}/api/ivatypes/`;
+    let url = `${appUrl}/api/ivaTypes/`;
 
-    async function fetchData() {
-        axios.get(`${url}${id}`).then((response) => {
-            tilltype = response.data.data;
-            audits = response.data.audits;
-        }).catch((err) => {
-            error = err.request.response;
-        });
-    }
-
-    onMount(async () => {
-        fetchData();
-    });
     function goTo(route){
         Inertia.visit(route);
     }
 </script>
+<svelte:head>
+    <title>{ivaType?.iva_type_desc}</title>
+</svelte:head>
 {#if error}
 	<p>{error}</p>
 {/if}
@@ -37,12 +28,12 @@
          <li><span class="cursor-pointer" on:click={()=>goTo("/ivatypes")}>Tipos de IVA</span></li>
 	</ul>
 </div>
-{#if tilltype}
+{#if ivaType}
     <div transition:blur>
         <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{tilltype.iva_type_desc}</p>
+        <p class="text-1xl">{ivaType.iva_type_desc}</p>
         <p class="text-1xl font-bold">Porcentaje:</p>
-        <p class="text-1xl">{tilltype.iva_type_percent}</p>
+        <p class="text-1xl">{ivaType.iva_type_percent}</p>
     </div>
 {/if}
 {#if audits}

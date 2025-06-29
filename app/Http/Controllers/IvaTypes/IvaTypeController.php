@@ -5,7 +5,8 @@ namespace App\Http\Controllers\IvaTypes;
 use App\Models\IvaType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
-
+use App\Http\Requests\IndexRequest;
+use Inertia\Inertia;
 class IvaTypeController extends ApiController
 {
     /**
@@ -13,14 +14,15 @@ class IvaTypeController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(IndexRequest $req)
     {
         try{
             $t = IvaType::query()->first();
             $query = IvaType::query();
             $query = $this->filterData($query, $t);
             $datos = $query->get();
-            return $this->showAll($datos, 200);
+            $from = request()->wantsJson() ? 'api' : 'web';
+            return $this->showAll($datos,$from,'IvaTypes/index', 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
         }
@@ -66,7 +68,11 @@ class IvaTypeController extends ApiController
         try{
             $ivaType = IvaType::find($id);
             $audits = $ivaType->audits;
-            return $this->showOne($ivaType,$audits, 200);
+            if(request()->wantsJson()){
+                return $this->showOne($ivaType,$audits, 200);
+            }else{
+                return Inertia::render('IvaTypes/show', ['ivaType' => $ivaType,'audits'=>$audits]);
+            }
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
         }

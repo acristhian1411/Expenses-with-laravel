@@ -16,8 +16,8 @@ trait ApiResponser
 	{
 		if($from == 'api'){
 			return response()->json($data, $code);
-		}else{			return Inertia::render("$name", ['data' => $data]);
-			
+		}else{			
+			return Inertia::render("$name", ['data' => $data]);
 		}
 	}
 

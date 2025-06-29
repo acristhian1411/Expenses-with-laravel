@@ -6,6 +6,8 @@ use Inertia\Inertia;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Countries\CountriesController;
 use App\Http\Controllers\Cities\CitiesController;
+use App\Http\Controllers\TillTypes\TillTypeController;
+use App\Http\Controllers\IvaTypes\IvaTypeController;
 
 Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -74,22 +76,18 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('Tills/tillsCloseReportDetailed', ['id' => $id]);
     })->middleware('permission:tills.show');
 
-    Route::get('/tilltypes', function () {
-        return Inertia::render('TillTypes/index');
-    })->middleware('permission:tilltypes.index');
-    
-    Route::get('/tilltypes/{id}', function ($id) {
-        return Inertia::render('TillTypes/show', ['id' => $id]);
-    })->middleware('permission:tilltypes.show');
-    
-    Route::get('/ivatypes', function () {
-        return Inertia::render('IvaTypes/index');
-    })->middleware('permission:ivatypes.index');
-    
-    Route::get('/ivatypes/{id}', function ($id) {
-        return Inertia::render('IvaTypes/show', ['id' => $id]);
-    })->middleware('permission:ivatypes.show');
-    
+    Route::get('/tilltypes',[TillTypeController::class,'index'])->name('tilltypes')->middleware('permission:tilltypes.index');
+    Route::get('/tilltypes/{id}',[TillTypeController::class,'show'])->name('tilltypes.show')->middleware('permission:tilltypes.show');
+    Route::put('/tilltypes/{id}',[TillTypeController::class,'update'])->name('tilltypes:update')->middleware('permission:tilltypes.update');
+    Route::post('/tilltypes',[TillTypeController::class,'store'])->name('tilltypes:create')->middleware('permission:tilltypes.create');
+    Route::delete('/tilltypes/{id}',[TillTypeController::class,'destroy'])->name('tilltypes:destroy')->middleware('permission:tilltypes.destroy');
+
+    Route::get('/ivatypes',[IvaTypeController::class,'index'])->name('ivatypes')->middleware('permission:ivatypes.index');
+    Route::get('/ivatypes/{id}',[IvaTypeController::class,'show'])->name('ivatypes.show')->middleware('permission:ivatypes.show');
+    Route::put('/ivatypes/{id}',[IvaTypeController::class,'update'])->name('ivatypes:update')->middleware('permission:ivatypes.update');
+    Route::post('/ivatypes',[IvaTypeController::class,'store'])->name('ivatypes:create')->middleware('permission:ivatypes.create');
+    Route::delete('/ivatypes/{id}',[IvaTypeController::class,'destroy'])->name('ivatypes:destroy')->middleware('permission:ivatypes.destroy');
+
     Route::get('/categories', function () {
         return Inertia::render('Categories/index');
     })->middleware('permission:categories.index');

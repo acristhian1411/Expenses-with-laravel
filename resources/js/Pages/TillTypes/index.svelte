@@ -151,9 +151,9 @@
 	function search(event) {
 		search_param = event.target.value;
 		if (search_param == '') {
-			url = `${appUrl}/tilltypes?`;
+			url = `/tilltypes?`;
 		} else {
-			url = `${appUrl}/tilltypes?till_type_desc=${search_param}&`;
+			url = `/tilltypes?till_type_desc=${search_param}&`;
 		}
 		axios.get(url).then((response) => {
 			tilltypes = response.data.data;

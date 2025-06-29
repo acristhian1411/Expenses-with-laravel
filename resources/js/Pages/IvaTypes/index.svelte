@@ -13,7 +13,8 @@
 	// import { appUrl } from '$env/static/public';
 	export let user
     export let appUrl
-	let data = [];
+	export let data = [];
+	let ivatypes = [];
 	let error = null;
 	let openAlert = false;
 	let _new = false;
@@ -30,7 +31,7 @@
 	let total_items;
 	let current_page = 1;
 	let items_per_page = '10';
-	let url = `${appUrl}/api/ivatypes?`;
+	let url = `${appUrl}/ivatypes?`;
 
 	function updateData() {
 		fetchData();
@@ -38,24 +39,11 @@
 	}
 
 	async function fetchData(page = current_page, rows = items_per_page) {
-		let token = '';
-		let config = {
-			headers: {
-				authorization: `token: ${token}`,
-			},
-		}
-		axios
-			// .get('/api/ivatypes')
-			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
-			.then((response) => {
-				data = response.data.data;
-				current_page = response.data.currentPage;
-				total_items = response.data.per_page;
-				total_pages = response.data.last_page;
-			})
-			.catch((err) => {
-				error = err.request.response;
-			});
+		ivatypes = data.data;
+		current_page = data.currentPage;
+		total_items = data.per_page;
+		total_pages = data.last_page;
+		
 	}
 
 	function closeAlert() {
@@ -80,7 +68,7 @@
 				authorization: `token: ${token}`,
 			},
 		}
-		axios.delete(`${appUrl}/api/ivatypes/${id}`, config).then((res) => {
+		axios.delete(`${appUrl}/ivatypes/${id}`, config).then((res) => {
 			let detail = {
 				detail: {
 					type: 'delete',
@@ -116,7 +104,19 @@
 		} else {
 			order = 'asc';
 		}
-		fetchData(current_page, items_per_page);
+		axios.get('/ivatypes?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
+			ivatypes = response.data.data;
+			current_page = response.data.currentPage;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		})
 	}
 	function OpenDeleteModal(data) {
 		id = data;
@@ -124,20 +124,56 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		fetchData(current_page, event.detail.value);
+		axios.get('/ivatypes?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
+			ivatypes = response.data.data;
+			current_page = response.data.currentPage;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		fetchData(event.detail.value, items_per_page);
+		axios.get('/ivatypes?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
+			ivatypes = response.data.data;
+			current_page = response.data.currentPage;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
 	}
 	function search(event) {
 		search_param = event.target.value;
 		if (search_param == '') {
-			url = `${appUrl}/api/ivatypes?`;
+			url = `/ivatypes?`;
 		} else {
-			url = `${appUrl}/api/ivatypes?iva_type_desc=${search_param}&iva_type_percent=${search_param}&`;
+			url = `/ivatypes?iva_type_desc=${search_param}&iva_type_percent=${search_param}&`;
 		}
-		fetchData(1, items_per_page);
+		axios.get(url).then((response) => {
+			ivatypes = response.data.data;
+			current_page = response.data.currentPage;
+			total_items = response.data.per_page;
+			total_pages = response.data.last_page;
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
 	}
 	onMount(async () => {
 		// if(!isLoggedIn()){
@@ -213,24 +249,24 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as person, i (person.id)}
+				{#each ivatypes as ivatype, i (ivatype.id)}
 					<tr class="hover">
-						<td>{person.id}</td>
-						<td class="text-center">{person.iva_type_desc}</td>
-						<td class="text-center">{person.iva_type_percent}</td>
+						<td>{ivatype.id}</td>
+						<td class="text-center">{ivatype.iva_type_desc}</td>
+						<td class="text-center">{ivatype.iva_type_percent}</td>
 						{#if user.permissions != undefined && user.permissions.includes('ivatypes.show')}
 							<td>
-								<button class="btn btn-info" use:inertia={{ href: `/ivatypes/${person.id}` }}>Mostrar</button>
+								<button class="btn btn-info" use:inertia={{ href: `/ivatypes/${ivatype.id}` }}>Mostrar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('ivatypes.update')}
 							<td>
-								<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>
+								<button class="btn btn-warning" on:click={() => openEditModal(ivatype)}>Editar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('ivatypes.destroy')}
 							<td>
-								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}
+								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(ivatype.id)}
 									>Eliminar</button
 								>
 							</td>
