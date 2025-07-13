@@ -3,14 +3,11 @@
 	// @ts-nocheck
 	import { onMount } from 'svelte';
 	import { inertia} from '@inertiajs/inertia-svelte';
-	// import { isLoggedIn, getToken} from '../../services/authservice'
-	// import {goto} from '$app/navigation';
 	import axios from 'axios';
 	import {Pagination, DeleteModal, Modal} from '@components/utilities/';
 	import {Alert, ErrorAlert} from '@components/Alerts/';
 	import {SearchIcon, SortIcon} from '@components/Icons/';
 	import Form from './form.svelte';
-	// import { appUrl } from '$env/static/public';
 	export let user
     export let appUrl
 	export let data;

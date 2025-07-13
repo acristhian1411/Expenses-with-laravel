@@ -3,17 +3,15 @@
 	// @ts-nocheck
 	import { onMount } from 'svelte';
 	import { inertia } from '@inertiajs/inertia-svelte';
-	// import { isLoggedIn, getToken} from '../../services/authservice'
-	// import {goto} from '$app/navigation';
 	import axios from 'axios';
 	import {Pagination, DeleteModal, Modal} from '@components/utilities/';
 	import {Alert, ErrorAlert} from '@components/Alerts/';
 	import {SearchIcon, SortIcon} from '@components/Icons/';
 	import Form from './form.svelte';
-	// import { appUrl } from '$env/static/public';
 	export let user;
     export let appUrl
-	let data = [];
+	export let data;
+	let persontypes	= [];
 	let error = null;
 	let openAlert = false;
 	let _new = false;
@@ -30,32 +28,28 @@
 	let total_items;
 	let current_page = 1;
 	let items_per_page = '10';
-	let url = `${appUrl}/api/persontypes?`;
+	let url = `/persontypes`;
 
 	function updateData() {
-		fetchData();
+		fetchData(current_page, items_per_page, orderBy, order);
 		closeModal();
 	}
 
-	async function fetchData(page = current_page, rows = items_per_page) {
-		let token = '';
-		let config = {
-			headers: {
-				authorization: `token: ${token}`,
-			},
-		}
-		axios
-			// .get('/api/persontypes')
-			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
-			.then((response) => {
-				data = response.data.data;
-				current_page = response.data.currentPage;
-				total_items = response.data.per_page;
-				total_pages = response.data.last_page;
-			})
-			.catch((err) => {
-				error = err.request.response;
-			});
+	async function assignData(data) {
+		console.log('data', data);
+				persontypes = data.data;
+				current_page = data.currentPage;
+				total_items = data.per_page;
+				total_pages = data.last_page;	
+	}
+
+	async function fetchData(page = current_page, rows = items_per_page, sort = orderBy, order = order) {
+		console.log('url', url);
+		let ur = `${url}?page=${page}&per_page=${rows}&sort=${sort}&order=${order}`;
+		
+		axios.get(ur).then((res) => {
+			assignData(res.data);
+		});
 	}
 
 	function closeAlert() {
@@ -73,13 +67,7 @@
 	}
 
 	function deleteRecord() {
-		let token = '';
-		let config = {
-			headers: {
-				authorization: `token: ${token}`,
-			},
-		}
-		axios.delete(`${appUrl}/api/persontypes/${id}`, config).then((res) => {
+		axios.delete(`/persontypes/${id}`).then((res) => {
 			let detail = {
 				detail: {
 					type: 'delete',
@@ -88,6 +76,7 @@
 			};
 			OpenAlertMessage(detail);
 			closeDeleteModal();
+			updateData();
 		});
 	}
 	function openEditModal(data) {
@@ -115,7 +104,7 @@
 		} else {
 			order = 'asc';
 		}
-		fetchData(current_page, items_per_page);
+		fetchData(current_page, items_per_page, orderBy, order);
 	}
 	function OpenDeleteModal(data) {
 		id = data;
@@ -123,11 +112,11 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		fetchData(current_page, event.detail.value);
+		fetchData(current_page, event.detail.value, orderBy, order);
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		fetchData(event.detail.value, items_per_page);
+		fetchData(event.detail.value, items_per_page, orderBy, order);
 	}
 	function search(event) {
 		search_param = event.target.value;
@@ -136,13 +125,10 @@
 		} else {
 			url = `${appUrl}/api/persontypes?p_type_desc=${search_param}&`;
 		}
-		fetchData(1, items_per_page);
+		fetchData(1, items_per_page, orderBy, order);
 	}
 	onMount(async () => {
-		// if(!isLoggedIn()){
-		// 	goto('/login');
-		// }
-		fetchData();
+		assignData(data);
 	});
 </script>
 
@@ -209,24 +195,24 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as person, i (person.id)}
+				{#each persontypes as person_type, i (person_type.id)}
 					<tr class="hover">
 						<td>{i+1}</td>
-						<td>{person.id}</td>
-						<td class="text-center">{person.p_type_desc}</td>
+						<td>{person_type.id}</td>
+						<td class="text-center">{person_type.p_type_desc}</td>
 						{#if user.permissions != undefined && user.permissions.includes('persontypes.show')}
 							<td>
-								<button class="btn btn-info" use:inertia={{ href: `/persontypes/${person.id}` }}>Mostrar</button>
+								<button class="btn btn-info" use:inertia={{ href: `/persontypes/${person_type.id}` }}>Mostrar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('persontypes.update')}
 							<td>
-								<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>
+								<button class="btn btn-warning" on:click={() => openEditModal(person_type)}>Editar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('persontypes.destroy')}
 						<td>
-							<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}
+							<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person_type.id)}
 								>Eliminar</button
 							>
 						</td>

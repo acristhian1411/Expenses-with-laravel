@@ -6,7 +6,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import {Textfield} from '@components/FormComponents';
 
-	export let appUrl
+	// export const appUrl
 	const dispatch = createEventDispatcher();
 	let id = 0;
 	let p_type_desc = '';
@@ -37,7 +37,7 @@
 	function handleCreateObject() {
 		
 		axios
-			.post(`/api/persontypes`, {
+			.post(`/persontypes`, {
 				p_type_desc
 			},config)
 			.then((res) => {
@@ -62,7 +62,7 @@
 	}
 	function handleUpdateObject() {
 		axios
-			.put(`/api/persontypes/${id}`, {
+			.put(`/persontypes/${id}`, {
 				p_type_desc
 			},config)
 			.then((res) => {

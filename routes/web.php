@@ -8,6 +8,7 @@ use App\Http\Controllers\Countries\CountriesController;
 use App\Http\Controllers\Cities\CitiesController;
 use App\Http\Controllers\TillTypes\TillTypeController;
 use App\Http\Controllers\IvaTypes\IvaTypeController;
+use App\Http\Controllers\PersonTypes\PersonTypesController;
 
 Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -34,14 +35,10 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('Users/show', ['id' => $id]);
     })->middleware('permission:users.show');
 
-    Route::get('/persontypes', function () {
-        return Inertia::render('PersonTypes/index');
-    })->middleware('permission:persontypes.index');
-    
-    Route::get('/persontypes/{id}', function ($id) {
-        return Inertia::render('PersonTypes/show', ['id' => $id]);
-    })->middleware('permission:persontypes.show');
-    
+    Route::get('/persontypes', [PersonTypesController::class,'index'])->name('persontypes')->middleware('permission:persontypes.index');
+    Route::get('/persontypes/{id}',[PersonTypesController::class,'show'])->name('persontypes.show')->middleware('permission:persontypes.show');
+    Route::put('/persontypes/{id}',[PersonTypesController::class,'update'])->name('persontypes.update')->middleware('permission:persontypes.update');
+    Route::delete('/persontypes/{id}',[PersonTypesController::class,'destroy'])->name('persontypes.destroy')->middleware('permission:persontypes.destroy');
 
     // routes for countries
     Route::get('/countries', [CountriesController::class,'index'])->name('countries')->middleware('permission:countries.index');

@@ -4,24 +4,12 @@
     import {blur} from 'svelte/transition';
     import { Inertia } from '@inertiajs/inertia';
     export let appUrl
-    export let id = 0;
-    let tilltype = {};
-    let audits = [];
+    export const id = 0;
+    export let person_type = {};
+    export let audits = [];
     let error = null;
     let url = `${appUrl}/api/persontypes/`;
 
-    async function fetchData() {
-        axios.get(`${url}${id}`).then((response) => {
-            tilltype = response.data.data;
-            audits = response.data.audits;
-        }).catch((err) => {
-            error = err.request.response;
-        });
-    }
-
-    onMount(async () => {
-        fetchData();
-    });
     function goTo(route){
         Inertia.visit(route);
     }
@@ -37,10 +25,10 @@
 		<li><span class="cursor-pointer" on:click={()=>goTo("/persontypes")}>Tipos de personas</span></li>
 	</ul>
 </div>
-{#if tilltype}
+{#if person_type}
     <div transition:blur>
         <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{tilltype.p_type_desc}</p>
+        <p class="text-1xl">{person_type.p_type_desc}</p>
     </div>
 {/if}
 {#if audits}
