@@ -28,18 +28,31 @@
 	let total_items;
 	let current_page = 1;
 	let items_per_page = '10';
-	let url = `${appUrl}/api/countries?`;
+	let url = `/countries?`;
 
 	function updateData() {
-		fetchData();
+		fetchData(current_page, items_per_page, orderBy, order);
 		closeModal();
 	}
 
-	function fetchData(page = current_page, rows = items_per_page) {
+	function assignData(data) {
 		current_page = data.currentPage;
 		total_items = data.per_page;
 		total_pages = data.last_page;
 		countries = data.data;
+	}
+	async function fetchData(page = current_page, rows = items_per_page, sort = orderBy, order = order) {
+		let url = `/countries?page=${page}&per_page=${rows}&order=${order}&sort_by=${orderBy}`;
+		axios.get(url).then((response) => {
+			assignData(response.data);
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
 	}
 
 	function closeAlert() {
@@ -100,19 +113,7 @@
 		} else {
 			order = 'asc';
 		}
-		axios.get('/countries?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
-			countries = response.data.data;
-			current_page = response.data.currentPage;
-			total_items = response.data.per_page;
-			total_pages = response.data.last_page;
-		}).catch((err) => {
-			let detail = {
-				detail: {
-					type: 'delete',
-					message: err.response.data.message
-				}
-			};
-		})
+		fetchData(current_page, items_per_page, orderBy, order);
 	}
 	function OpenDeleteModal(data) {
 		id = data;
@@ -120,35 +121,11 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		axios.get('/countries?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
-			countries = response.data.data;
-			current_page = response.data.currentPage;
-			total_items = response.data.per_page;
-			total_pages = response.data.last_page;
-		}).catch((err) => {
-			let detail = {
-				detail: {
-					type: 'delete',
-					message: err.response.data.message
-				}
-			};
-		});
+		fetchData(current_page, items_per_page, orderBy, order);
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		axios.get('/countries?page='+current_page+'&per_page='+items_per_page+'&order='+order+'&sort_by='+orderBy).then((response) => {
-			countries = response.data.data;
-			current_page = response.data.currentPage;
-			total_items = response.data.per_page;
-			total_pages = response.data.last_page;
-		}).catch((err) => {
-			let detail = {
-				detail: {
-					type: 'delete',
-					message: err.response.data.message
-				}
-			};
-		});
+		fetchData(current_page, items_per_page, orderBy, order);
 	}
 	function search(event) {
 		search_param = event.target.value;
@@ -157,25 +134,13 @@
 		} else {
 			url = `${appUrl}/countries?country_name=${search_param}&country_code=${search_param}&page=${current_page}&per_page=${items_per_page}&order=${order}&sort_by=${orderBy}`;
 		}
-		axios.get(url).then((response) => {
-			countries = response.data.data;
-			current_page = response.data.currentPage;
-			total_items = response.data.per_page;
-			total_pages = response.data.last_page;
-		}).catch((err) => {
-			let detail = {
-				detail: {
-					type: 'delete',
-					message: err.response.data.message
-				}
-			};
-		});
+		fetchData(current_page, items_per_page, orderBy, order);
 	}
 	onMount(async () => {
 		// if(!isLoggedIn()){
 		// 	goto('/login');
 		// }
-		fetchData();
+		assignData();
 	});
 </script>
 

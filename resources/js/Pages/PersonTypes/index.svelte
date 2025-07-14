@@ -36,19 +36,23 @@
 	}
 
 	async function assignData(data) {
-		console.log('data', data);
-				persontypes = data.data;
-				current_page = data.currentPage;
-				total_items = data.per_page;
-				total_pages = data.last_page;	
+		persontypes = data.data;
+		current_page = data.currentPage;
+		total_items = data.per_page;
+		total_pages = data.last_page;	
 	}
 
 	async function fetchData(page = current_page, rows = items_per_page, sort = orderBy, order = order) {
-		console.log('url', url);
 		let ur = `${url}?page=${page}&per_page=${rows}&sort=${sort}&order=${order}`;
-		
 		axios.get(ur).then((res) => {
 			assignData(res.data);
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
 		});
 	}
 
