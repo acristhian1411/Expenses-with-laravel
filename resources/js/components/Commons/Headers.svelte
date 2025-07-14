@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import { sidebarOpen } from './sidebar.js';
 	import {Link} from '@inertiajs/inertia-svelte';
+	const company_name = import.meta.env.VITE_COMPANY_NAME;
 
 	export let appUrl
 	export let user;
@@ -75,7 +76,7 @@
 					<img src="/img/logo.webp" class="mr-2 h-10 w-10 rounded-full" alt="Company Logo" />
 					<span
 						class="self-center whitespace-nowrap text-xl font-semibold dark:text-white sm:text-2xl"
-						>Company Name</span>
+						>{company_name}</span>
 				</Link>
 			</div>
 			<div class="flex items-center">

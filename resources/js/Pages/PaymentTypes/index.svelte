@@ -141,7 +141,9 @@
 		assignData(data);
 	});
 </script>
-
+<svelte:head>
+	<title>Tipos de pago</title>
+</svelte:head>
 {#if error}
 	<ErrorAlert message={error} on:clearError={ClearError} />
 {/if}
