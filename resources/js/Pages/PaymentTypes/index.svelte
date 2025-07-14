@@ -3,7 +3,6 @@
 	// @ts-nocheck
 	import { onMount } from 'svelte';
 	import { inertia } from '@inertiajs/inertia-svelte';
-	// import { isLoggedIn, getToken} from '../../services/authservice'
 	import axios from 'axios';
 	import {Pagination, DeleteModal, Modal} from '@components/utilities/';
 	import {Alert, ErrorAlert} from '@components/Alerts/';
@@ -11,7 +10,8 @@
 	import Form from './form.svelte';
 	export let user
     export let appUrl
-	let data = [];
+	export let data;
+	let payment_types = [];
 	let error = null;
 	let openAlert = false;
 	let _new = false;
@@ -28,31 +28,32 @@
 	let total_items;
 	let current_page = 1;
 	let items_per_page = '10';
-	let url = `${appUrl}/api/paymenttypes?`;
+	let url = `/paymenttypes`;
 
 	function updateData() {
-		fetchData();
+		fetchData(current_page, items_per_page, orderBy, order);
 		closeModal();
 	}
 
-	async function fetchData(page = current_page, rows = items_per_page) {
-		let token = '';
-		let config = {
-			headers: {
-				authorization: `token: ${token}`,
-			},
-		}
-		axios
-			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
-			.then((response) => {
-				data = response.data.data;
-				current_page = response.data.currentPage;
-				total_items = response.data.per_page;
-				total_pages = response.data.last_page;
-			})
-			.catch((err) => {
-				error = err.request.response;
-			});
+	function assignData(data) {
+		payment_types = data.data;
+		current_page = data.currentPage;
+		total_items = data.per_page;
+		total_pages = data.last_page;
+	}
+
+	async function fetchData(page = current_page, rows = items_per_page, sort = orderBy, order = order){
+		let ur = `${url}?page=${page}&per_page=${rows}&sort=${sort}&order=${order}`;
+		axios.get(url).then((response) => {
+			assignData(response.data);
+		}).catch((err) => {
+			let detail = {
+				detail: {
+					type: 'delete',
+					message: err.response.data.message
+				}
+			};
+		});
 	}
 
 	function closeAlert() {
@@ -77,7 +78,7 @@
 				authorization: `token: ${token}`,
 			},
 		}
-		axios.delete(`${appUrl}/api/paymenttypes/${id}`, config).then((res) => {
+		axios.delete(`/paymenttypes/${id}`, config).then((res) => {
 			let detail = {
 				detail: {
 					type: 'delete',
@@ -113,7 +114,7 @@
 		} else {
 			order = 'asc';
 		}
-		fetchData(current_page, items_per_page);
+		fetchData(current_page, items_per_page,orderBy,order);
 	}
 	function OpenDeleteModal(data) {
 		id = data;
@@ -121,11 +122,11 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		fetchData(current_page, event.detail.value);
+		fetchData(current_page, event.detail.value,orderBy,order);
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		fetchData(event.detail.value, items_per_page);
+		fetchData(event.detail.value, items_per_page,orderBy,order);
 	}
 	function search(event) {
 		search_param = event.target.value;
@@ -134,13 +135,10 @@
 		} else {
 			url = `${appUrl}/api/paymenttypes?payment_type_desc=${search_param}&`;
 		}
-		fetchData(1, items_per_page);
+		fetchData(1, items_per_page,orderBy,order);
 	}
 	onMount(async () => {
-		// if(!isLoggedIn()){
-		// 	goto('/login');
-		// }
-		fetchData();
+		assignData(data);
 	});
 </script>
 
@@ -202,23 +200,23 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as person, i (person.id)}
+				{#each payment_types as payment_type, i (payment_type.id)}
 					<tr class="hover">
-						<td>{person.id}</td>
-						<td class="text-center">{person.payment_type_desc}</td>
+						<td>{payment_type.id}</td>
+						<td class="text-center">{payment_type.payment_type_desc}</td>
 						{#if user.permissions != undefined && user.permissions.includes('paymenttypes.show')}
 							<td>
-								<button class="btn btn-info" use:inertia={{ href: `/paymenttypes/${person.id}` }}>Mostrar</button>
+								<button class="btn btn-info" use:inertia={{ href: `/paymenttypes/${payment_type.id}` }}>Mostrar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('paymenttypes.update')}
 							<td>
-								<button class="btn btn-warning" on:click={() => openEditModal(person)}>Editar</button>
+								<button class="btn btn-warning" on:click={() => openEditModal(payment_type)}>Editar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('paymenttypes.destroy')}
 							<td>
-								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}
+								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(payment_type.id)}
 									>Eliminar</button
 								>
 							</td>

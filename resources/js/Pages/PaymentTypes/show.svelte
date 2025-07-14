@@ -4,28 +4,19 @@
     import axios from 'axios';
     import {Inertia} from '@inertiajs/inertia';
     export let appUrl
-    export let id = 0;
-    let tilltype = {};
-    let audits = [];
+    export const id = 0;
+    export let paymentTypes;
+    export let audits;
     let error = null;
     let url = `${appUrl}/api/paymenttypes/`;
 
-    async function fetchData() {
-        axios.get(`${url}${id}`).then((response) => {
-            tilltype = response.data.data;
-            audits = response.data.audits;
-        }).catch((err) => {
-            error = err.request.response;
-        });
-    }
-
-    onMount(async () => {
-        fetchData();
-    });
     function goTo(route){
         Inertia.visit(route);
     }
 </script>
+<svelte:head>
+    <title>{paymentTypes?.payment_type_desc}</title>
+</svelte:head>
 {#if error}
 	<p>{error}</p>
 {/if}
@@ -37,10 +28,10 @@
         <li><span class="cursor-pointer" on:click={()=>goTo("/paymenttypes")}>Tipos de pago</span></li>
 	</ul>
 </div>
-{#if tilltype}
+{#if paymentTypes}
     <div transition:blur>
         <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{tilltype.payment_type_desc}</p>
+        <p class="text-1xl">{paymentTypes.payment_type_desc}</p>
     </div>
 {/if}
 {#if audits}

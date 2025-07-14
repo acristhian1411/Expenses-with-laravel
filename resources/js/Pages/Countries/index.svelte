@@ -42,8 +42,8 @@
 		countries = data.data;
 	}
 	async function fetchData(page = current_page, rows = items_per_page, sort = orderBy, order = order) {
-		let url = `/countries?page=${page}&per_page=${rows}&order=${order}&sort_by=${orderBy}`;
-		axios.get(url).then((response) => {
+		let ur = `${url}page=${page}&per_page=${rows}&order=${order}&sort_by=${orderBy}`;
+		axios.get(ur).then((response) => {
 			assignData(response.data);
 		}).catch((err) => {
 			let detail = {
@@ -137,10 +137,7 @@
 		fetchData(current_page, items_per_page, orderBy, order);
 	}
 	onMount(async () => {
-		// if(!isLoggedIn()){
-		// 	goto('/login');
-		// }
-		assignData();
+		assignData(data);
 	});
 </script>
 

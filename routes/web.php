@@ -9,6 +9,7 @@ use App\Http\Controllers\Cities\CitiesController;
 use App\Http\Controllers\TillTypes\TillTypeController;
 use App\Http\Controllers\IvaTypes\IvaTypeController;
 use App\Http\Controllers\PersonTypes\PersonTypesController;
+use App\Http\Controllers\PaymentTypes\PaymentTypesController;
 
 Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -93,14 +94,12 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('Categories/show', ['id' => $id]);
     })->middleware('permission:categories.show');
     
-    Route::get('/paymenttypes', function () {
-        return Inertia::render('PaymentTypes/index');
-    })->middleware('permission:paymenttypes.index');
+    Route::get('/paymenttypes',[PaymentTypesController::class,'index'])->name('persontypes.index')->middleware('permission:persontypes.index');
+    Route::post('/paymenttypes',[PaymentTypesController::class,'store'])->name('persontypes.create')->middleware('permission:persontypes.create');
+    Route::get('/paymenttypes/{id}',[PaymentTypesController::class,'show'])->name('paymenttypes.show')->middleware('permission:paymenttypes.show');
+    Route::put('/paymenttypes/{id}',[PaymentTypesController::class,'update'])->name('paymenttypes.update')->middleware('permission:paymenttypes.update');
+    Route::delete('/paymenttypes/{id}',[PaymentTypesController::class,'destroy'])->name('paymenttypes.destroy')->middleware('permission:paymenttypes.destroy');
     
-    Route::get('/paymenttypes/{id}', function ($id) {
-        return Inertia::render('PaymentTypes/show', ['id' => $id]);
-    })->middleware('permission:paymenttypes.show');
-
     Route::get('/brands', function () {
         return Inertia::render('Brands/index');
     })->middleware('permission:brands.index');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\PaymentTypes;
 use App\Models\PaymentTypes;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Inertia\Inertia;
 
 class PaymentTypesController extends ApiController
 {
@@ -21,7 +22,8 @@ class PaymentTypesController extends ApiController
             $query = $this->filterData($query, $t);
             $datos = $query->with('proofPayments')
             ->get();
-            return $this->showAll($datos, 200);
+            $from = request()->wantsJson() ? 'api' : 'web';
+            return $this->showAll($datos, $from, 'PaymentTypes/index', 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
         }
@@ -65,7 +67,10 @@ class PaymentTypesController extends ApiController
         try{
             $paymentTypes = PaymentTypes::findOrFail($id);
             $audits = $paymentTypes->audits;
-            return $this->showOne($paymentTypes,$audits, 200);
+            if(request()->wantsJson()){
+                return $this->showOne($paymentTypes,$audits, 200);
+            }
+            return Inertia::render('PaymentTypes/show', ['paymentTypes' => $paymentTypes,'audits'=>$audits]);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
         }
@@ -87,7 +92,9 @@ class PaymentTypesController extends ApiController
             $request->validate($reglas);
             $paymentTypes = PaymentTypes::findOrFail($id);
             $paymentTypes->update($request->all());
-            return response()->json(['message'=>'Registro Actualizado con exito','data'=>$paymentTypes],200);
+            if(request()->wantsJson()){
+                return response()->json(['message'=>'Registro Actualizado con exito','data'=>$paymentTypes],200);
+            }
         }catch(\Illuminate\Validation\ValidationException $e){
             return response()->json([
                 'error'=>$e->getMessage(),

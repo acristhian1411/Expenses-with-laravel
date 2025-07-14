@@ -36,7 +36,7 @@
 	function handleCreateObject(event) {
 		event.preventDefault();
 		axios
-			.post(`/api/paymenttypes`, {
+			.post(`/paymenttypes`, {
 				payment_type_desc,
 			})
 			.then((res) => {
@@ -66,7 +66,7 @@
 		// Envía el formulario del padre
 		// parentFormRef?.requestSubmit();
 		axios
-			.put(`/api/paymenttypes/${id}`, {
+			.put(`/paymenttypes/${id}`, {
 				payment_type_desc,
 			})
 			.then((res) => {
