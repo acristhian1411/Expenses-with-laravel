@@ -5,7 +5,7 @@ namespace App\Http\Controllers\ContactTypes;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Models\ContactType;
-
+use Inertia\Inertia;
 class ContactTypesController extends ApiController
 {
     /**
@@ -20,7 +20,8 @@ class ContactTypesController extends ApiController
             $query = ContactType::query();
             $query = $this->filterData($query, $t);
             $datos = $query->get();
-            return $this->showAll($datos, 200);
+            $from = request()->wantsJson() ? 'api' : 'web';
+            return $this->showAll($datos,$from, 'ContactTypes/List',200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
         }
@@ -65,7 +66,10 @@ class ContactTypesController extends ApiController
         try{
             $ContactType = ContactType::findOrFail($id);
             $audits = $ContactType->audits;
-            return $this->showOne($ContactType,$audits,200);
+            if(request()->wantsJson()){
+                return $this->showOne($ContactType,$audits,200);
+            }
+            return Inertia::render('ContactTypes/Show', ['contacttype' => $ContactType,'audits'=>$audits]);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
         }
@@ -87,7 +91,9 @@ class ContactTypesController extends ApiController
             $request->validate($rules);
             $ContactType = ContactType::findOrFail($id);
             $ContactType->update($request->all());
-            return response()->json(['message'=>'Registro Actualizado con exito','data'=>$ContactType],200);
+            if(request()->wantsJson()){
+                return response()->json(['message'=>'Registro Actualizado con exito','data'=>$ContactType],200);
+            }
         }catch(\Illuminate\Validation\ValidationException $e){
             return response()->json([
                 'error'=>$e->getMessage(),

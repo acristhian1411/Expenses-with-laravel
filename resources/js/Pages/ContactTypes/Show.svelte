@@ -6,25 +6,12 @@
     import { Inertia } from '@inertiajs/inertia';
 
     export let appUrl;
-    export let id = 0;
+    export const id = 0;
     
-    let item = {};
-    let audits = [];
+    export let contacttype;
+    export let audits;
     let error = null;
     let url = `${appUrl}/api/contacttypes/`;
-
-    async function fetchData() {
-        axios.get(`${url}${id}`).then((response) => {
-            item = response.data.data;
-            audits = response.data.audits;
-        }).catch((err) => {
-            error = err.request.response;
-        });
-    }
-
-    onMount(async () => {
-        fetchData();
-    });
 
     function goTo(route){
         Inertia.visit(route);
@@ -35,6 +22,9 @@
     <p>{error}</p>
 {/if}
 
+<svelte:head>
+    <title>{contacttype?.cont_type_desc}</title>
+</svelte:head>
 <div class="breadcrumbs text-md mb-4">
     <ul>
         <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -44,10 +34,10 @@
     </ul>
 </div>
 
-{#if item}
+{#if contacttype}
     <div transition:blur>
         <h1 class="text-xl font-bold">Descripción:</h1>
-        <p class="text-1xl">{item.cont_type_desc}</p>
+        <p class="text-1xl">{contacttype.cont_type_desc}</p>
     </div>
 {/if}
 

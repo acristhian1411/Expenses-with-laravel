@@ -10,6 +10,7 @@ use App\Http\Controllers\TillTypes\TillTypeController;
 use App\Http\Controllers\IvaTypes\IvaTypeController;
 use App\Http\Controllers\PersonTypes\PersonTypesController;
 use App\Http\Controllers\PaymentTypes\PaymentTypesController;
+use App\Http\Controllers\ContactTypes\ContactTypesController;
 
 Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -140,13 +141,11 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('Clients/show', ['id' => $id]);
     })->middleware('permission:clients.show');
 
-    Route::get('/contacttypes',function(){
-        return Inertia::render('ContactTypes/List');
-    })->middleware('permission:contacttypes.index');
-
-    Route::get('/contacttypes/{id}', function ($id) {
-        return Inertia::render('ContactTypes/Show', ['id' => $id]);
-    })->middleware('permission:contacttypes.show');
+    Route::get('/contacttypes',[ContactTypesController::class,'index'])->name('contacttypes.index')->middleware('permission:contacttypes.index');
+    Route::get('/contacttypes/{id}', [ContactTypesController::class,'show'])->middleware('permission:contacttypes.show');
+    Route::put('/contacttypes/{id}', [ContactTypesController::class,'update'])->middleware('permission:contacttypes.update');
+    Route::post('/contacttypes', [ContactTypesController::class,'store'])->middleware('permission:contacttypes.create');
+    Route::delete('/contacttypes/{id}', [ContactTypesController::class,'destroy'])->middleware('permission:contacttypes.destroy');
 
     Route::get('/purchases',function(){
         return Inertia::render('Purchases/List');

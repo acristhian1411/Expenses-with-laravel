@@ -38,7 +38,7 @@
 
     async function handleCreateObject() {
         try {
-            const res = await axios.post(`/api/contacttypes`, { cont_type_desc }, config);
+            const res = await axios.post(`/contacttypes`, { cont_type_desc }, config);
 
             let detail = {
                 detail: {
@@ -62,7 +62,7 @@
 
     async function handleUpdateObject() {
         try {
-            const res = await axios.put(`/api/contacttypes/${id}`, { cont_type_desc }, config);
+            const res = await axios.put(`/contacttypes/${id}`, { cont_type_desc }, config);
 
             let detail = {
                 detail: {

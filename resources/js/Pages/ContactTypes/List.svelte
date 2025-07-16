@@ -10,7 +10,8 @@
     
     export let user;
     export let appUrl;
-    let data = [];
+    export let data;
+    let contacttypes = [];
     let error = null;
     let openAlert = false;
     let _new = false;
@@ -27,31 +28,26 @@
     let total_items;
     let current_page = 1;
     let items_per_page = '10';
-    let url = `${appUrl}/api/contacttypes?`;
+    let url = `${appUrl}/contacttypes?`;
 
     function updateData() {
-        fetchData();
+        fetchData(current_page, items_per_page, orderBy, order);
         closeModal();
     }
 
-    async function fetchData(page = current_page, rows = items_per_page) {
-        let token = '';
-        let config = {
-            headers: {
-                authorization: `token: ${token}`,
-            },
-        };
-        axios
-            .get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`, config)
-            .then((response) => {
-                data = response.data.data;
-                current_page = response.data.currentPage;
-                total_items = response.data.per_page;
-                total_pages = response.data.last_page;
-            })
-            .catch((err) => {
-                error = err.request.response;
-            });
+    async function assignData(data) {
+        contacttypes = data.data;
+        current_page = data.currentPage;
+        total_items = data.per_page;
+        total_pages = data.last_page;
+    }
+
+    async function fetchData(page = current_page, rows = items_per_page, sort_by = orderBy, order = order) {
+        axios.get(`${url}sort_by=${sort_by}&order=${order}&page=${page}&per_page=${rows}`).then((response) => {
+            assignData(response.data);
+        }).catch((err) => {
+            error = err.request.response.message;
+        });
     }
 
     function closeAlert() {
@@ -75,7 +71,7 @@
                 authorization: `token: ${token}`,
             },
         };
-        axios.delete(`${appUrl}/api/contacttypes/${id}`, config).then((res) => {
+        axios.delete(`${appUrl}/contacttypes/${id}`, config).then((res) => {
             let detail = {
                 detail: {
                     type: 'delete',
@@ -112,7 +108,7 @@
     function sortData(param) {
         orderBy = param;
         order = (order == 'asc') ? 'desc' : 'asc';
-        fetchData(current_page, items_per_page);
+        fetchData(current_page, items_per_page, orderBy, order);
     }
 
     function OpenDeleteModal(data) {
@@ -122,25 +118,27 @@
 
     function handleRowsPerPage(event) {
         items_per_page = event.detail.value;
-        fetchData(current_page, event.detail.value);
+        fetchData(current_page, event.detail.value, orderBy, order);
     }
 
     function handlePage(event) {
         current_page = event.detail.value;
-        fetchData(event.detail.value, items_per_page);
+        fetchData(event.detail.value, items_per_page, orderBy, order);
     }
 
     function search(event) {
         search_param = event.target.value;
-        url = search_param === '' ? `${appUrl}/api/contacttypes?` : `${appUrl}/api/contacttypes?cont_type_desc=${search_param}&`;
-        fetchData(1, items_per_page);
+        url = search_param === '' ? `/contacttypes?` : `/contacttypes?cont_type_desc=${search_param}&`;
+        fetchData(1, items_per_page, orderBy, order);
     }
 
     onMount(async () => {
-        fetchData();
+        assignData(data);
     });
 </script>
-
+<svelte:head>
+    <title>Tipos de Contactos</title>
+</svelte:head>
 {#if error}
     <ErrorAlert message={error} on:clearError={ClearError} />
 {/if}
@@ -189,18 +187,18 @@
                 </tr>
             </thead>
             <tbody>
-                {#each data as item, i (item.id)}
+                {#each contacttypes as contacttype, i (contacttype.id)}
                     <tr class="hover">
                         <td>{i+1}</td>
-                        <td class="text-center">{item.cont_type_desc}</td>
+                        <td class="text-center">{contacttype.cont_type_desc}</td>
                         {#if user.permissions != undefined && user.permissions.includes('contacttypes.show')}
-                            <td><button class="btn btn-info" use:inertia={{ href: `/contacttypes/${item.id}` }}>Mostrar</button></td>
+                            <td><button class="btn btn-info" use:inertia={{ href: `/contacttypes/${contacttype.id}` }}>Mostrar</button></td>
                         {/if}
                         {#if user.permissions != undefined && user.permissions.includes('contacttypes.update')}
-                            <td><button class="btn btn-warning" on:click={() => openEditModal(item)}>Editar</button></td>
+                            <td><button class="btn btn-warning" on:click={() => openEditModal(contacttype)}>Editar</button></td>
                         {/if}
                         {#if user.permissions != undefined && user.permissions.includes('contacttypes.destroy')}
-                            <td><button class="btn btn-secondary" on:click={() => OpenDeleteModal(item.id)}>Eliminar</button></td>
+                            <td><button class="btn btn-secondary" on:click={() => OpenDeleteModal(contacttype.id)}>Eliminar</button></td>
                         {/if}
                     </tr>
                 {/each}
