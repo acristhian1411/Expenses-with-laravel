@@ -1,33 +1,20 @@
 <script>
-    import { onMount } from 'svelte';
     import {blur} from 'svelte/transition';
     import { Inertia } from '@inertiajs/inertia';
-    import axios from 'axios';
     export let appUrl
-    export let id = 0;
-    let category = {};
-    let audits = [];
+    export const id = 0;
+    export let category;
+    export let audits;
     let error = null;
     let url = `${appUrl}/api/categories/`;
-
-    async function fetchData() {
-        axios.get(`${url}${id}`).then((response) => {
-            category = response.data.data;
-            audits = response.data.audits;
-        }).catch((err) => {
-            error = err.request.response;
-        });
-    }
 
     function goTo(route){
         Inertia.visit(route);
     }
-
-
-    onMount(async () => {
-        fetchData();
-    });
 </script>
+<svelte:head>
+    <title>{category?.cat_desc}</title>
+</svelte:head>
 {#if error}
 	<p>{error}</p>
 {/if}

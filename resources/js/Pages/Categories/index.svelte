@@ -13,7 +13,8 @@
 	// import { appUrl } from '$env/static/public';
 	export let user
     export let appUrl
-	let data = [];
+	export let data;
+	let categories = [];
 	let error = null;
 	let openAlert = false;
 	let _new = false;
@@ -30,34 +31,27 @@
 	let total_items;
 	let current_page = 1;
 	let items_per_page = '10';
-	let url = `${appUrl}/api/categories?`;
+	let url = `${appUrl}/categories?`;
 
 	function updateData() {
-		fetchData();
+		fetchData(current_page, items_per_page,orderBy,order);
 		closeModal();
 	}
 
-	async function fetchData(page = current_page, rows = items_per_page) {
-		let token = '';
-		let config = {
-			headers: {
-				authorization: `token: ${token}`,
-			},
-		}
-		axios
-			// .get('/api/categories')
-			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
-			.then((response) => {
-				data = response.data.data;
-				current_page = response.data.currentPage;
-				total_items = response.data.per_page;
-				total_pages = response.data.last_page;
-			})
-			.catch((err) => {
-				error = err.request.response;
-			});
+	async function assignData(data) {
+		categories = data.data;
+		current_page = data.currentPage;
+		total_items = data.per_page;
+		total_pages = data.last_page;
 	}
 
+	function fetchData(page = current_page, rows = items_per_page,sort_by = orderBy,order = order) {
+		axios.get(`${url}sort_by=${sort_by}&order=${order}&page=${page}&per_page=${rows}`).then((response) => {
+			assignData(response.data);
+		}).catch((err) => {
+			error = err.request.response;
+		});
+	}
 	function closeAlert() {
 		openAlert = false;
 	}
@@ -74,13 +68,7 @@
 	}
 
 	function deleteRecord() {
-		let token = '';
-		let config = {
-			headers: {
-				authorization: `token: ${token}`,
-			},
-		}
-		axios.delete(`${appUrl}/api/categories/${id}`, config).then((res) => {
+		axios.delete(`${appUrl}/categories/${id}`).then((res) => {
 			let detail = {
 				detail: {
 					type: 'delete',
@@ -107,7 +95,7 @@
 	}
 	function closeDeleteModal() {
 		openDeleteModal = false;
-		fetchData();
+		fetchData(current_page, items_per_page,orderBy,order);
 	}
 	function sortData(param) {
 		orderBy = param;
@@ -116,7 +104,7 @@
 		} else {
 			order = 'asc';
 		}
-		fetchData(current_page, items_per_page);
+		fetchData(current_page, items_per_page,orderBy,order);
 	}
 	function OpenDeleteModal(data) {
 		id = data;
@@ -124,26 +112,23 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		fetchData(current_page, event.detail.value);
+		fetchData(current_page, event.detail.value,orderBy,order);
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		fetchData(event.detail.value, items_per_page);
+		fetchData(event.detail.value, items_per_page,orderBy,order);
 	}
 	function search(event) {
 		search_param = event.target.value;
 		if (search_param == '') {
-			url = `${appUrl}/api/categories?`;
+			url = `${appUrl}/categories?`;
 		} else {
-			url = `${appUrl}/api/categories?cat_desc=${search_param}`;
+			url = `${appUrl}/categories?cat_desc=${search_param}`;
 		}
-		fetchData(1, items_per_page);
+		fetchData(1, items_per_page,orderBy,order);
 	}
 	onMount(async () => {
-		// if(!isLoggedIn()){
-		// 	goto('/login');
-		// }
-		fetchData();
+		assignData(data);
 	});
 </script>
 
@@ -205,7 +190,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as category, i (category.id)}
+				{#each categories as category, i (category.id)}
 					<tr class="hover">
 						<td>{category.id}</td>
 						<td class="text-center">{category.cat_desc}</td>

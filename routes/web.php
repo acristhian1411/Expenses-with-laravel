@@ -11,6 +11,7 @@ use App\Http\Controllers\IvaTypes\IvaTypeController;
 use App\Http\Controllers\PersonTypes\PersonTypesController;
 use App\Http\Controllers\PaymentTypes\PaymentTypesController;
 use App\Http\Controllers\ContactTypes\ContactTypesController;
+use App\Http\Controllers\Categories\CategoriesController;
 
 Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -87,13 +88,12 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('/ivatypes',[IvaTypeController::class,'store'])->name('ivatypes:create')->middleware('permission:ivatypes.create');
     Route::delete('/ivatypes/{id}',[IvaTypeController::class,'destroy'])->name('ivatypes:destroy')->middleware('permission:ivatypes.destroy');
 
-    Route::get('/categories', function () {
-        return Inertia::render('Categories/index');
-    })->middleware('permission:categories.index');
-    
-    Route::get('/categories/{id}', function ($id) {
-        return Inertia::render('Categories/show', ['id' => $id]);
-    })->middleware('permission:categories.show');
+    Route::get('/categories', [CategoriesController::class,'index'])->middleware('permission:categories.index');
+    Route::get('/categories/{id}', [CategoriesController::class,'show'])->middleware('permission:categories.show');
+    Route::put('/categories/{id}', [CategoriesController::class,'update'])->middleware('permission:categories.update');
+    Route::post('/categories',[CategoriesController::class,'store'])->middleware('permission:categories.create');
+    Route::delete('/categories/{id}',[CategoriesController::class,'destroy'])->middleware('permission:categories.destroy');
+
     
     Route::get('/paymenttypes',[PaymentTypesController::class,'index'])->name('persontypes.index')->middleware('permission:persontypes.index');
     Route::post('/paymenttypes',[PaymentTypesController::class,'store'])->name('persontypes.create')->middleware('permission:persontypes.create');

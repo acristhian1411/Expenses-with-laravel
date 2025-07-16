@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Categories;
 use App\Models\Categories;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Inertia\Inertia;
 
 class CategoriesController extends ApiController
 {
@@ -20,7 +21,8 @@ class CategoriesController extends ApiController
             $query = Categories::query();
             $query = $this->filterData($query, $t);
             $datos = $query->get();
-            return $this->showAll($datos, 200);
+            $from = request()->wantsJson() ? 'api' : 'web';
+            return $this->showAll($datos,$from, 'Categories/index', 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
         }
@@ -65,7 +67,10 @@ class CategoriesController extends ApiController
         try{
             $categories = Categories::findOrFail($id);
             $audits = $categories->audits;
-            return $this->showOne($categories,$audits,200);
+            if(request()->wantsJson()){
+                return $this->showOne($categories,$audits,200);
+            }
+            return Inertia::render('Categories/show', ['category' => $categories,'audits'=>$audits]);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
         }

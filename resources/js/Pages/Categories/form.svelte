@@ -37,7 +37,7 @@
 	function handleCreateObject() {
 		
 		axios
-			.post(`/api/categories`, {
+			.post(`/categories`, {
 				cat_desc,
 			},config)
 			.then((res) => {
@@ -62,7 +62,7 @@
 	}
 	function handleUpdateObject() {
 		axios
-			.put(`/api/categories/${id}`, {
+			.put(`/categories/${id}`, {
 				cat_desc,
 			},config)
 			.then((res) => {
