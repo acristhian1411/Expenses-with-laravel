@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Brands;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\Models\Brand;
+use Inertia\Inertia;
 
 class BrandController extends ApiController
 {
@@ -19,7 +20,8 @@ class BrandController extends ApiController
             $query = Brand::query();
             $query = $this->filterData($query, $t);
             $datos = $query->get();
-            return $this->showAll($datos, 200);
+            $from = request()->wantsJson() ? 'api' : 'web';
+            return $this->showAll($datos,$from, 'Brands/index',200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
         }
@@ -64,7 +66,10 @@ class BrandController extends ApiController
         try{
             $brand = Brand::findOrFail($id);
             $audits = $brand->audits;
-            return $this->showOne($brand,$audits,200);
+            if(request()->wantsJson()){
+                return $this->showOne($brand,$audits,200);
+            }
+            return Inertia::render('Brands/show', ['brand' => $brand,'audits'=>$audits]);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);
         }

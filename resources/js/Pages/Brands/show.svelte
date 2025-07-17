@@ -1,33 +1,20 @@
 <script>
-    import { onMount } from 'svelte';
     import {blur} from 'svelte/transition';
     import { Inertia } from '@inertiajs/inertia';
-    import axios from 'axios';
     export let appUrl
-    export let id = 0;
-    let category = {};
-    let audits = [];
+    export const id = 0;
+    export let brand;
+    export let audits;
     let error = null;
-    let url = `${appUrl}/api/categories/`;
-
-    async function fetchData() {
-        axios.get(`${url}${id}`).then((response) => {
-            category = response.data.data;
-            audits = response.data.audits;
-        }).catch((err) => {
-            error = err.request.response;
-        });
-    }
+    let url = `${appUrl}/api/brands/`;
 
     function goTo(route){
         Inertia.visit(route);
     }
-
-
-    onMount(async () => {
-        fetchData();
-    });
 </script>
+<svelte:head>
+    <title>{brand?.brand_name}</title>
+</svelte:head>
 {#if error}
 	<p>{error}</p>
 {/if}
@@ -36,13 +23,15 @@
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<li><span class="cursor-pointer" on:click={()=>goTo("/")}>Inicio</span></li>
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<li><span class="cursor-pointer" on:click={()=>goTo("/categories")}>Categorias</span></li>
+		<li><span class="cursor-pointer" on:click={()=>goTo("/brands")}>Marcas</span></li>
 	</ul>
 </div>
-{#if category}
+{#if brand}
     <div transition:blur>
+        <h1 class="text-xl font-bold">Nombre:</h1>
+        <p class="text-1xl">{brand.brand_name}</p>
         <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{category.cat_desc}</p>
+        <p class="text-1xl">{brand.brand_desc}</p>
     </div>
 {/if}
 {#if audits}

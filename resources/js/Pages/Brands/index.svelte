@@ -13,7 +13,8 @@
 	// import { appUrl } from '$env/static/public';
 	export let user
     export let appUrl
-	let data = [];
+	export let data;
+	let brands = [];
 	let error = null;
 	let openAlert = false;
 	let _new = false;
@@ -30,32 +31,26 @@
 	let total_items;
 	let current_page = 1;
 	let items_per_page = '10';
-	let url = `${appUrl}/api/brands?`;
+	let url = `${appUrl}/brands?`;
 
 	function updateData() {
-		fetchData();
+		fetchData(current_page, items_per_page, orderBy, order);
 		closeModal();
 	}
 
-	async function fetchData(page = current_page, rows = items_per_page) {
-		let token = '';
-		let config = {
-			headers: {
-				authorization: `token: ${token}`,
-			},
-		}
-		axios
-			// .get('/api/brands')
-			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
-			.then((response) => {
-				data = response.data.data;
-				current_page = response.data.currentPage;
-				total_items = response.data.per_page;
-				total_pages = response.data.last_page;
-			})
-			.catch((err) => {
-				error = err.request.response;
-			});
+	async function assignData(data) {
+		brands = data.data;
+		current_page = data.currentPage;
+		total_items = data.per_page;
+		total_pages = data.last_page;
+	}
+
+	function fetchData( page = current_page, rows = items_per_page, sort_by = orderBy, order = order) {
+		axios.get(`${url}sort_by=${sort_by}&order=${order}&page=${page}&per_page=${rows}`).then((response) => {
+			assignData(response.data);
+		}).catch((err) => {
+			error = err.request.response;
+		});
 	}
 
 	function closeAlert() {
@@ -80,7 +75,7 @@
 				authorization: `token: ${token}`,
 			},
 		}
-		axios.delete(`${appUrl}/api/brands/${id}`, config).then((res) => {
+		axios.delete(`${appUrl}/brands/${id}`, config).then((res) => {
 			let detail = {
 				detail: {
 					type: 'delete',
@@ -107,7 +102,7 @@
 	}
 	function closeDeleteModal() {
 		openDeleteModal = false;
-		fetchData();
+		fetchData(current_page,items_per_page,orderBy,order);
 	}
 	function sortData(param) {
 		orderBy = param;
@@ -116,7 +111,7 @@
 		} else {
 			order = 'asc';
 		}
-		fetchData(current_page, items_per_page);
+		fetchData(current_page, items_per_page, orderBy, order);
 	}
 	function OpenDeleteModal(data) {
 		id = data;
@@ -124,26 +119,23 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		fetchData(current_page, event.detail.value);
+		fetchData(current_page, event.detail.value,orderBy,order);
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		fetchData(event.detail.value, items_per_page);
+		fetchData(event.detail.value, items_per_page,orderBy,order);
 	}
 	function search(event) {
 		search_param = event.target.value;
 		if (search_param == '') {
-			url = `${appUrl}/api/brands?`;
+			url = `/brands?`;
 		} else {
-			url = `${appUrl}/api/brands?brand_name=${search_param}&`;
+			url = `/brands?brand_name=${search_param}&`;
 		}
-		fetchData(1, items_per_page);
+		fetchData(1, items_per_page,orderBy,order);
 	}
 	onMount(async () => {
-		// if(!isLoggedIn()){
-		// 	goto('/login');
-		// }
-		fetchData();
+		assignData(data);
 	});
 </script>
 
@@ -213,24 +205,24 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as category, i (category.id)}
+				{#each brands as brand, i (brand.id)}
 					<tr class="hover">
-						<td>{category.id}</td>
-						<td class="text-center">{category.brand_name}</td>
-						<td class="text-center">{category.brand_desc}</td>
+						<td>{brand.id}</td>
+						<td class="text-center">{brand.brand_name}</td>
+						<td class="text-center">{brand.brand_desc}</td>
 						{#if user.permissions != undefined && user.permissions.includes('brands.show')}
 							<td>
-								<button class="btn btn-info" use:inertia={{ href: `/brands/${category.id}` }}>Mostrar</button>
+								<button class="btn btn-info" use:inertia={{ href: `/brands/${brand.id}` }}>Mostrar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('brands.update')}
 							<td>
-								<button class="btn btn-warning" on:click={() => openEditModal(category)}>Editar</button>
+								<button class="btn btn-warning" on:click={() => openEditModal(brand)}>Editar</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('brands.destroy')}
 							<td>
-								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(category.id)}
+								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(brand.id)}
 									>Eliminar</button
 								>
 							</td>

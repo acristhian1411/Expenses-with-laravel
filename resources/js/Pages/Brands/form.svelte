@@ -39,7 +39,7 @@
 	function handleCreateObject() {
 		
 		axios
-			.post(`/api/brands`, {
+			.post(`/brands`, {
 				brand_desc,
 				brand_name
 			},config)
@@ -65,7 +65,7 @@
 	}
 	function handleUpdateObject() {
 		axios
-			.put(`/api/brands/${id}`, {
+			.put(`/brands/${id}`, {
 				brand_desc,
 				brand_name
 			},config)

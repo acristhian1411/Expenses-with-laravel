@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\States\StatesController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\AuthController;
@@ -12,6 +11,8 @@ use App\Http\Controllers\PersonTypes\PersonTypesController;
 use App\Http\Controllers\PaymentTypes\PaymentTypesController;
 use App\Http\Controllers\ContactTypes\ContactTypesController;
 use App\Http\Controllers\Categories\CategoriesController;
+use App\Http\Controllers\States\StatesController;
+use App\Http\Controllers\Brands\BrandController;
 
 Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -101,13 +102,11 @@ Route::group(['middleware' => ['auth']],function(){
     Route::put('/paymenttypes/{id}',[PaymentTypesController::class,'update'])->name('paymenttypes.update')->middleware('permission:paymenttypes.update');
     Route::delete('/paymenttypes/{id}',[PaymentTypesController::class,'destroy'])->name('paymenttypes.destroy')->middleware('permission:paymenttypes.destroy');
     
-    Route::get('/brands', function () {
-        return Inertia::render('Brands/index');
-    })->middleware('permission:brands.index');
-
-    Route::get('/brands/{id}', function ($id) {
-        return Inertia::render('Brands/show', ['id' => $id]);
-    })->middleware('permission:brands.show');
+    Route::get('/brands', [BrandController::class,'index'])->middleware('permission:brands.index');
+    Route::get('/brands/{id}',[BrandController::class,'show'])->middleware('permission:brands.show');
+    Route::put('/brands/{id}',[BrandController::class,'update'])->middleware('permission:brands.update');
+    Route::post('/brands',[BrandController::class,'store'])->middleware('permission:brands.create');
+    Route::delete('/brands/{id}',[BrandController::class,'destroy'])->middleware('permission:brands.destroy');
 
     Route::get('/products', function () {
         return Inertia::render('Products/index');
