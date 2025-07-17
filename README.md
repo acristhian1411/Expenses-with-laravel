@@ -13,8 +13,8 @@ como registro de clientes, proveedores, productos. etc.
 
 ## Instalación
 
-1. Clona el repositorio: `git clone https://github.com/acristhian1411/Expenses-with-laravel.git`
-2. Accede al directorio del proyecto: `cd Expenses-with-laravel`
+1. Clona el repositorio: `git clone https://github.com/acristhian1411/Contalink.git`
+2. Accede al directorio del proyecto: `cd Contalink`
 3. Instala las dependencias: `composer install`
 4. Copia el archivo de configuración: `cp .env.example .env`
 5. Configura la base de datos en el archivo `.env`
