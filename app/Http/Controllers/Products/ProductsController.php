@@ -6,6 +6,7 @@ use App\Models\Products;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
+use Inertia\Inertia;
 
 class ProductsController extends ApiController
 {
@@ -14,7 +15,7 @@ class ProductsController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index():JsonResponse
+    public function index()
     {
         try{
             $t = Products::query()->first();
@@ -25,7 +26,8 @@ class ProductsController extends ApiController
             ->join('brands','products.brand_id','=', 'brands.id')
             ->select('products.*','iva_types.iva_type_desc','iva_types.iva_type_percent','categories.cat_desc', 'brands.brand_name')
             ->get();
-            return $this->showAll($datos, 200);
+            $from = request()->wantsJson() ? 'api' : 'web';
+            return $this->showAll($datos,$from,'Products/index', 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }
@@ -46,9 +48,9 @@ class ProductsController extends ApiController
                 'product_cost_price' => 'required|numeric|min:0',
                 'product_quantity' => 'required|integer|min:0',
                 'product_selling_price' => 'required|numeric|min:0',
-                'category_id' => 'required|integer',
-                'iva_type_id' => 'required|integer',
-                'brand_id' => 'required|integer',
+                'category_id' => 'required',
+                'iva_type_id' => 'required',
+                'brand_id' => 'required',
             ];
             $request->validate($rules);
             $products = Products::create($request->all());
@@ -79,7 +81,10 @@ class ProductsController extends ApiController
             ->join('brands','products.brand_id','=','brands.id')
             ->first();
             $audits = $product->audits;
-            return $this->showOne($product,$audits, 200);
+            if(request()->wantsJson()){
+                return $this->showOne($product,$audits, 200);
+            }
+            return Inertia::render('Products/show',['product'=>$product,'audits'=>$audits]);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }

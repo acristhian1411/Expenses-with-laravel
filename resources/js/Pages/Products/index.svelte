@@ -13,7 +13,8 @@
 	// import { appUrl } from '$env/static/public';
 	export let user
     export let appUrl
-	let data = [];
+	export let data;
+	let products = [];
 	let error = null;
 	let openAlert = false;
 	let _new = false;
@@ -30,28 +31,24 @@
 	let total_items;
 	let current_page = 1;
 	let items_per_page = '10';
-	let url = `${appUrl}/api/products?`;
+	let url = `${appUrl}/products?`;
 
 	function updateData() {
-		fetchData();
+		fetchData(current_page, items_per_page, orderBy, order);
 		closeModal();
 	}
 
-	async function fetchData(page = current_page, rows = items_per_page) {
-		let token = '';
-		let config = {
-			headers: {
-				authorization: `token: ${token}`,
-			},
-		}
-		axios
-			// .get('/api/products')
-			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
+	async function assignData(data) {
+		products = data.data;
+		current_page = data.current_page;
+		total_items = data.per_page;
+		total_pages = data.last_page;
+	}
+
+	function fetchData(page = current_page, rows = items_per_page, orderBy = orderBy, order = order) {
+		axios.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`)
 			.then((response) => {
-				data = response.data.data;
-				current_page = response.data.current_page;
-				total_items = response.data.per_page;
-				total_pages = response.data.last_page;
+				assignData(response.data);
 			})
 			.catch((err) => {
 				error = err.request.response;
@@ -79,7 +76,7 @@
 				authorization: `token: ${token}`,
 			},
 		}
-		axios.delete(`${appUrl}/api/products/${id}`, config).then((res) => {
+		axios.delete(`${appUrl}/products/${id}`, config).then((res) => {
 			let detail = {
 				detail: {
 					type: 'delete',
@@ -106,7 +103,7 @@
 	}
 	function closeDeleteModal() {
 		openDeleteModal = false;
-		fetchData();
+		fetchData(current_page, items_per_page, orderBy, order);
 	}
 	function sortData(param) {
 		orderBy = param;
@@ -123,26 +120,26 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		fetchData(current_page, event.detail.value);
+		fetchData(current_page, event.detail.value, orderBy, order);
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		fetchData(event.detail.value, items_per_page);
+		fetchData(event.detail.value, items_per_page, orderBy, order);
 	}
 	function search(event) {
 		search_param = event.target.value;
 		if (search_param == '') {
-			url = `${appUrl}/api/products?`;
+			url = `${appUrl}/products?`;
 		} else {
-			url = `${appUrl}/api/products?product_name=${search_param}&product_barcode=${search_param}&`;
+			url = `${appUrl}/products?product_name=${search_param}&product_barcode=${search_param}&`;
 		}
-		fetchData(1, items_per_page);
+		fetchData(1, items_per_page, orderBy, order);
 	}
 	onMount(async () => {
 		// if(!isLoggedIn()){
 		// 	goto('/login');
 		// }
-		fetchData();
+		fetchData(current_page, items_per_page, orderBy, order);
 	});
 </script>
 
@@ -234,7 +231,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as product, i (product.id)}
+				{#each products as product, i (product.id)}
 					<tr class="hover">
 						<td>{product.id}</td>
 						<td class="text-center">{product.product_name}</td>

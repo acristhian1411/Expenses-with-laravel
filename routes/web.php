@@ -13,6 +13,7 @@ use App\Http\Controllers\ContactTypes\ContactTypesController;
 use App\Http\Controllers\Categories\CategoriesController;
 use App\Http\Controllers\States\StatesController;
 use App\Http\Controllers\Brands\BrandController;
+use App\Http\Controllers\Products\ProductsController;
 
 Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -108,13 +109,8 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('/brands',[BrandController::class,'store'])->middleware('permission:brands.create');
     Route::delete('/brands/{id}',[BrandController::class,'destroy'])->middleware('permission:brands.destroy');
 
-    Route::get('/products', function () {
-        return Inertia::render('Products/index');
-    })->middleware('permission:products.index');
-
-    Route::get('/products/{id}', function ($id) {
-        return Inertia::render('Products/show', ['id' => $id]);
-    })->middleware('permission:products.show');
+    Route::get('/products', [ProductsController::class,'index'])->middleware('permission:products.index');
+    Route::get('/products/{id}', [ProductsController::class,'show'])->middleware('permission:products.show');
 
     Route::get('/providers', function () {
         return Inertia::render('Providers/index');

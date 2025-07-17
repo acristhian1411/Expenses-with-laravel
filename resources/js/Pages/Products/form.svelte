@@ -203,7 +203,6 @@
 		)
 	}
 	function handleInput(value) {
-		console.log(value);
 		if(value == null || value == undefined || value == ''){
 			product_profit_percent = 0;
 			return;
@@ -211,8 +210,6 @@
 		product_profit_percent = value;
 		// Calcula el precio de venta basado en el precio de costo y el porcentaje de ganancias
 		let porcentaje = parseInt(parseFloat(product_cost_price) + (parseFloat(product_cost_price) * parseFloat(product_profit_percent) / 100))
-		console.log(porcentaje);
-		console.log('porcentaje',porcentaje.toString());
 		product_selling_price = porcentaje.toString();
 	}
 </script>
@@ -223,6 +220,7 @@
 	<h3 class="mb-4 text-center text-2xl">Crear Producto</h3>
 {/if}
 <form on:submit={edit == true ? handleUpdateObject : handleCreateObject}>
+	<div class="grid grid-cols-2 gap-4">
     <Textfield 
 		label="Nombre" 
 		required={true}
@@ -300,6 +298,7 @@
 		loading={loading}
 		filterdItem={IvaTypes()}
 	/>
+	</div>
 	<button
 		type="submit"
 		class="btn btn-primary"
