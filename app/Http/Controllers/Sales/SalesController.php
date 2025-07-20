@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Sales;
 use App\Models\Sales;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
-
+use Inertia\Inertia;
 class SalesController extends ApiController
 {
     /**
@@ -22,7 +22,7 @@ class SalesController extends ApiController
             $datos = $query
             ->with("person")
             ->get();
-            return $this->showAll($datos, 200);
+            return $this->showAll($datos, 'api','',200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'], 500);
         }
@@ -74,7 +74,10 @@ class SalesController extends ApiController
             })->with('audits')
             ->first();
             $audits = $sales->audits;
-            return $this->showOne($sales,$audits, 200);
+            if(request()->wantsJson()){
+                return $this->showOne($sales,$audits, 200);
+            }
+            return Inertia::render('Sales/show', ['sales' => $sales, 'audits' => $audits]);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'], 500);
         }

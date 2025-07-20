@@ -6,6 +6,7 @@ use App\Models\Tills;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 class TillsController extends ApiController
 {
     /**
@@ -22,7 +23,7 @@ class TillsController extends ApiController
             $datos = $query->join('till_types','tills.t_type_id','=','till_types.id')
             ->select('tills.*','till_types.till_type_desc')
             ->get();
-            return $this->showAll($datos, 200);
+            return $this->showAll($datos, 'api','',200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);            
         }
@@ -66,7 +67,10 @@ class TillsController extends ApiController
         try{
             $till = Tills::findOrFail($id);
             $audits = $till->audits;
-            return $this->showOne($till, $audits, 200);
+            if(request()->wantsJson()){
+                return $this->showOne($till, $audits, 200);
+            }
+            return Inertia::render('Tills/show', ['tills' => $till, 'audits' => $audits]);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos']);            
         }

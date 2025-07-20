@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Purchases;
 use App\Models\Purchases;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Inertia\Inertia;
 
 class PurchasesController extends ApiController
 {
@@ -22,7 +23,7 @@ class PurchasesController extends ApiController
             $datos = $query
             ->with('person')
             ->get();
-            return $this->showAll($datos, 200);
+            return $this->showAll($datos, 'api','',200);
         }catch(\Exception $e){   
             return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se obtenían los datos'],500);
         }
@@ -70,7 +71,10 @@ class PurchasesController extends ApiController
         try{
             $purchases = Purchases::find($id);
             $audits = $purchases->audits;
-            return $this->showOne($purchases,$audits, 200);
+            if(request()->wantsJson()){
+                return $this->showOne($purchases,$audits, 200);
+            }
+            return Inertia::render('Purchases/show', ['purchases' => $purchases, 'audits' => $audits]);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage(), 'message'=>'Ocurrió un error mientras se obtenía el registro'],500);
         }
