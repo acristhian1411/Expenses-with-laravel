@@ -8,8 +8,8 @@
 
 	const dispatch = createEventDispatcher();
 	let id = 0;
-	let country_name = '';
-	let country_code = '';
+	let name = '';
+	let email = '';
 	export let edit;
 	export let item;
 	let errors = null;
@@ -31,17 +31,17 @@
 
 		if (edit == true) {
 			id = item.id;
-			country_name = item.country_name;
-			country_code = item.country_code;
+			name = item.name;
+			email = item.email;
 		}
+
 	});
-	// http://127.0.0.1:5173/tilltypes
 	function handleCreateObject() {
 		
 		axios
-			.post(`/api/countries`, {
-				country_name,
-				country_code
+			.post(`/users`, {
+				name,
+				email
 			},config)
 			.then((res) => {
 				let detail = {
@@ -65,9 +65,9 @@
 	}
 	function handleUpdateObject() {
 		axios
-			.put(`/api/countries/${id}`, {
-				country_name,
-				country_code
+			.put(`/users/${id}`, {
+				name,
+				email
 			},config)
 			.then((res) => {
 				let detail = {
@@ -92,20 +92,20 @@
 </script>
 
 {#if edit == true}
-	<h3 class="mb-4 text-center text-2xl">Actualizar Pais</h3>
+	<h3 class="mb-4 text-center text-2xl">Actualizar Usuario</h3>
 {:else}
-	<h3 class="mb-4 text-center text-2xl">Crear Pais</h3>
+	<h3 class="mb-4 text-center text-2xl">Crear Usuario</h3>
 {/if}
 <!-- <form> -->
 	<Textfield 
-		label="Descripción" 
-		bind:value={country_name} 
-		errors={errors?.country_name ? {message:errors.country_name[0]} : null} 
+		label="Nombre" 
+		bind:value={name} 
+		errors={errors?.name ? {message:errors.name[0]} : null} 
 	/>
 	<Textfield 
-		label="Código" 
-		bind:value={country_code} 
-		errors={errors?.country_code ? {message:errors.country_code[0]} : null} 
+		label="Correo" 
+		bind:value={email} 
+		errors={errors?.email ? {message:errors.email[0]} : null} 
 	/>
 	<button
 		class="btn btn-primary"

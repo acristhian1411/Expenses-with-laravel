@@ -3,17 +3,15 @@
 	// @ts-nocheck
 	import { onMount } from 'svelte';
 	import { inertia } from '@inertiajs/inertia-svelte';
-	// import { isLoggedIn, getToken} from '../../services/authservice'
-	// import {goto} from '$app/navigation';
 	import axios from 'axios';
 	import {Pagination, DeleteModal, Modal} from '@components/utilities/';
 	import {Alert, ErrorAlert} from '@components/Alerts/';
 	import {SearchIcon, SortIcon} from '@components/Icons/';
 	import Form from './form.svelte';
-	// import { appUrl } from '$env/static/public';
 	export let user
     export let appUrl
-	let data = [];
+	export let data;
+	let users = [];
 	let error = null;
 	let openAlert = false;
 	let _new = false;
@@ -30,32 +28,26 @@
 	let total_items;
 	let current_page = 1;
 	let items_per_page = '10';
-	let url = `${appUrl}/api/users?`;
+	let url = `/users?`;
 
 	function updateData() {
-		fetchData();
+		fetchData(current_page, items_per_page,orderBy,order);
 		closeModal();
 	}
 
-	async function fetchData(page = current_page, rows = items_per_page) {
-		let token = '';
-		let config = {
-			headers: {
-				authorization: `token: ${token}`,
-			},
-		}
-		axios
-			// .get('/api/users')
-			.get(`${url}sort_by=${orderBy}&order=${order}&page=${page}&per_page=${rows}`,config)
-			.then((response) => {
-				data = response.data.data;
-				current_page = response.data.currentPage;
-				total_items = response.data.per_page;
-				total_pages = response.data.last_page;
-			})
-			.catch((err) => {
-				error = err.request.response;
-			});
+	async function assignData(data) {
+		users = data.data;
+		current_page = data.currentPage;
+		total_items = data.per_page;
+		total_pages = data.last_page;
+	}
+
+	function fetchData(page = current_page, rows = items_per_page,sort_by = orderBy,order = order) {
+		axios.get(`${url}sort_by=${sort_by}&order=${order}&page=${page}&per_page=${rows}`).then((response) => {
+			assignData(response.data);
+		}).catch((err) => {
+			error = err.request.response;
+		});
 	}
 
 	function closeAlert() {
@@ -63,7 +55,6 @@
 	}
 
 	function OpenAlertMessage(event) {
-		console.log('details desde index',event.detail);
 		openAlert = true;
 		alertType = event.detail.type;
 		alertMessage = event.detail.message;
@@ -80,7 +71,7 @@
 				authorization: `token: ${token}`,
 			},
 		}
-		axios.delete(`${appUrl}/api/users/${id}`, config).then((res) => {
+		axios.delete(`/users/${id}`, config).then((res) => {
 			let detail = {
 				detail: {
 					type: 'delete',
@@ -107,7 +98,7 @@
 	}
 	function closeDeleteModal() {
 		openDeleteModal = false;
-		fetchData();
+		fetchData(current_page, items_per_page,orderBy,order);
 	}
 	function sortData(param) {
 		orderBy = param;
@@ -116,7 +107,7 @@
 		} else {
 			order = 'asc';
 		}
-		fetchData(current_page, items_per_page);
+		fetchData(current_page, items_per_page,orderBy,order);
 	}
 	function OpenDeleteModal(data) {
 		id = data;
@@ -124,29 +115,28 @@
 	}
 	function handleRowsPerPage(event) {
 		items_per_page = event.detail.value;
-		fetchData(current_page, event.detail.value);
+		fetchData(current_page, event.detail.value,orderBy,order);
 	}
 	function handlePage(event) {
 		current_page = event.detail.value;
-		fetchData(event.detail.value, items_per_page);
+		fetchData(event.detail.value, items_per_page,orderBy,order);
 	}
 	function search(event) {
 		search_param = event.target.value;
 		if (search_param == '') {
-			url = `${appUrl}/api/users?`;
+			url = `/users?`;
 		} else {
-			url = `${appUrl}/api/users?name=${search_param}&email=${search_param}&`;
+			url = `/users?name=${search_param}&email=${search_param}&`;
 		}
-		fetchData(1, items_per_page);
+		fetchData(1, items_per_page,orderBy,order);
 	}
 	onMount(async () => {
-		// if(!isLoggedIn()){
-		// 	goto('/login');
-		// }
-		fetchData();
+		assignData(data);
 	});
 </script>
-
+<svelte:head>
+    <title>Usuarios</title>
+</svelte:head>
 {#if error}
 	<ErrorAlert message={error} on:clearError={ClearError} />
 {/if}
@@ -215,28 +205,28 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as person, i (person.id)}
+				{#each users as us, i (us.id)}
 					<tr class="hover">
-						<td>{person.id}</td>
-						<td class="text-center">{person.name}</td>
-						<td class="text-center">{person.email}</td>
+						<td>{us.id}</td>
+						<td class="text-center">{us.name}</td>
+						<td class="text-center">{us.email}</td>
 						{#if user.permissions != undefined && user.permissions.includes('users.show')}
 							<td>
-								<button class="btn btn-info" use:inertia={{ href: `/users/${person.id}` }}>
+								<button class="btn btn-info" use:inertia={{ href: `/users/${us.id}` }}>
 									Mostrar
 								</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('users.update')}
 							<td>
-								<button class="btn btn-warning" on:click={() => openEditModal(person)}>
+								<button class="btn btn-warning" on:click={() => openEditModal(us)}>
 									Editar
 								</button>
 							</td>
 						{/if}
 						{#if user.permissions != undefined && user.permissions.includes('users.destroy')}
 							<td>
-								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(person.id)}>
+								<button class="btn btn-secondary" on:click={() => OpenDeleteModal(us.id)}>
 									Eliminar
 								</button>
 							</td>	

@@ -7,24 +7,11 @@
     export let user;
     export let appUrl
     export let id = 0;
-    let data = [];
-    let audits = [];
+    export let users;
+    export let audits;
     let error = null;
     let url = `${appUrl}/api/users/`;
 
-    async function fetchData() {
-        axios.get(`${url}${id}`).then((response) => {
-            data = response.data.data;
-            audits = response.data.audits;
-        }).catch((err) => {
-            error = err.request.response;
-        });
-    }
-
-    onMount(async () => {
-        console.log(user);
-        fetchData();
-    });
     function goTo(route){
         Inertia.visit(route);
     }
@@ -40,12 +27,12 @@
         <li><span class="cursor-pointer" on:click={()=>goTo("/users")}>Usuarios</span></li>
 	</ul>
 </div>
-{#if data}
+{#if users}
     <div transition:blur>
         <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{data.name}</p>
-        <p class="text-1xl">{data.email}</p>
-        <AsingRole userId={data.id} role={user.roles} />
+        <p class="text-1xl">{users.name}</p>
+        <p class="text-1xl">{users.email}</p>
+        <AsingRole userId={users.id} role={users.roles} />
     </div>
 {/if}
 {#if audits}

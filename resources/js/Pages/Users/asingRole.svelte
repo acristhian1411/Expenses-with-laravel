@@ -10,11 +10,10 @@
     let selectedRole = '';
     let message = '';
 
-    // Cargar los roles disponibles
     onMount(async () => {
-        selectedRole = role[0] ? role[0] : '';
+        // selectedRole = role[0] ? role[0] : '';
         try {
-            const response = await axios.get('/api/roles'); // Asegúrate de tener esta ruta en tu API
+            const response = await axios.get('/api/roles');
             roles = response.data.data;
         } catch (error) {
             console.error('Error al cargar roles:', error);
@@ -58,7 +57,3 @@
         <p class="mt-4">{message}</p>
     {/if}
 </div>
-
-<style>
-    /* Puedes agregar estilos adicionales aquí */
-</style>

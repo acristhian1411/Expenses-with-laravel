@@ -23,7 +23,7 @@ class RolesController extends ApiController
             $query = Role::query();
             $query = $this->filterData($query, $t);
             $datos = $query->get();
-            return $this->showAll($datos, 200);
+            return $this->showAll($datos, 'api','',200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }
@@ -32,18 +32,10 @@ class RolesController extends ApiController
     public function assignPermissionsToRole(Request $request, $roleId)
     {
         try {
-            // Validamos que los permisos vengan en un array
-            // $validatedData = $request->validate([
-            //     'permissions' => 'required|array',
-            //     'permissions.*' => 'exists:permissions,name', // Verifica que los permisos existan por nombre
-            // ]);
-
-            // Buscamos el rol por ID
+            
             $role = Role::findOrFail($roleId);
-
-            // Asignamos los permisos al rol
             foreach ($request->permissions as $permission) {
-                $role->givePermissionTo($permission); // syncPermissions asigna los nuevos permisos y elimina los antiguos que no están en la lista
+                $role->givePermissionTo($permission); 
             }
             return response()->json([
                 'message' => 'Permisos asignados correctamente al rol',

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+use Inertia\Inertia;
 class UsersController extends ApiController
 {
     /**
@@ -20,7 +21,9 @@ class UsersController extends ApiController
             $query = User::query();
             $query = $this->filterData($query, $t);
             $datos = $query->get();
-            return $this->showAll($datos, 200);
+            $from = request()->wantsJson() ? 'api' : 'web';
+            // dd($datos);
+            return $this->showAll($datos, $from, 'Users/index', 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }
@@ -100,7 +103,10 @@ class UsersController extends ApiController
         try{
             $user = User::find($id);
             $audits = $user->audits;
-            return $this->showOne($user,$audits,200);
+            if(request()->wantsJson()){
+                return $this->showOne($user,$audits,200);
+            }
+            return Inertia::render('Users/show', ['users' => $user, 'audits' => $audits]);
         } catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }

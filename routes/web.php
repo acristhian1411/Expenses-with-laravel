@@ -14,6 +14,7 @@ use App\Http\Controllers\Categories\CategoriesController;
 use App\Http\Controllers\States\StatesController;
 use App\Http\Controllers\Brands\BrandController;
 use App\Http\Controllers\Products\ProductsController;
+use App\Http\Controllers\Users\UsersController;
 
 Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -32,13 +33,11 @@ Route::group(['middleware' => ['auth']],function(){
         return Inertia::render('Roles/show', ['id' => $id]);
     })->middleware('permission:roles.show');
 
-    Route::get('/users', function () {
-        return Inertia::render('Users/index');
-    })->middleware('permission:users.index');
-
-    Route::get('/users/{id}', function ($id) {
-        return Inertia::render('Users/show', ['id' => $id]);
-    })->middleware('permission:users.show');
+    Route::get('/users', [UsersController::class,'index'])->middleware('permission:users.index');
+    Route::get('/users/{id}', [UsersController::class,'show'])->middleware('permission:users.show');
+    Route::put('/users/{id}',[UsersController::class,'update'])->middleware('permission:users.update');
+    Route::post('/users',[UsersController::class,'store'])->middleware('permission:users.create');
+    Route::delete('/users/{id}',[UsersController::class,'destroy'])->middleware('permission:users.destroy');
 
     Route::get('/persontypes', [PersonTypesController::class,'index'])->name('persontypes')->middleware('permission:persontypes.index');
     Route::get('/persontypes/{id}',[PersonTypesController::class,'show'])->name('persontypes.show')->middleware('permission:persontypes.show');
