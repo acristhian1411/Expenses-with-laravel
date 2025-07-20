@@ -192,6 +192,7 @@
 	<h3 class="mb-4 text-center text-2xl">Crear Proveedor</h3>
 {/if}
 <form on:submit={edit == true ? handleUpdateObject : handleCreateObject}> 
+	<div class="grid grid-cols-2 gap-4">
 	<Textfield 
 		label="Nombre" 
 		bind:value={person_fname} 
@@ -241,6 +242,7 @@
 		loading={loading}
 		filterdItem={Cities()}
 	/>
+</div>
 	<button
 		class="btn btn-primary"
 		type="submit"

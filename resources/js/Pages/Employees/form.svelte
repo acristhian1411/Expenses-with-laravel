@@ -214,7 +214,7 @@
 {:else}
 	<h3 class="mb-4 text-center text-2xl">Crear Empleados</h3>
 {/if}
-<form on:submit={edit == true ? handleUpdateObject : handleCreateObject}> 
+<form on:submit={edit == true ? handleUpdateObject : handleCreateObject} class="grid grid-cols-2 gap-4"> 
 	{#if edit != true}
 		<div class="mb-4 flex items-center justify-center">
 			<ul class="steps cursor-pointer">

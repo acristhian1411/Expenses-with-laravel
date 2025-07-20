@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Persons;
 use App\Models\Persons;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Inertia\Inertia;
 
 class PersonsController extends ApiController
 {
@@ -25,7 +26,7 @@ class PersonsController extends ApiController
             ->join('cities','cities.id','=','persons.city_id')
             ->select('persons.*','person_types.p_type_desc','countries.country_name','cities.city_name')
             ->get();
-            return $this->showAll($datos, 200);
+            return $this->showAll($datos,'api','', 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),
         'message'=>'No se pudo obtener los datos'], 500);
@@ -84,7 +85,10 @@ class PersonsController extends ApiController
             ->select('persons.*','person_types.p_type_desc','countries.country_name','cities.city_name')
             ->first();
             $audit = $persons->audits;
-            return $this->showOne($persons, $audit, 200);
+            if(request()->wantsJson()){
+                return $this->showOne($persons, $audit, 200);
+            }
+            return Inertia::render('Persons/show', ['persons' => $persons, 'audit' => $audit]);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }
@@ -94,7 +98,7 @@ class PersonsController extends ApiController
     public function personByType($id){
         try{
         $persons = Persons::where('p_type_id', $id)->get();
-        return $this->showAll($persons, 200);
+        return $this->showAll($persons,'api','', 200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }
@@ -163,8 +167,7 @@ class PersonsController extends ApiController
                     ->orWhere('person_lastname','ilike', "%$request->search%");
             })
             ->get();
-            // dd($person);
-            return $this->showAll($person, 200);
+            return $this->showAll($person,'api','',200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }
