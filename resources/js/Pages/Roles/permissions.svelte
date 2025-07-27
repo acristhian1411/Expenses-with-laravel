@@ -12,8 +12,10 @@
     let roleId = 1; // ID del rol a manejar
   
     onMount(async () => {
-      assigned  = (await fetchPermissionsForRole(roleId)).assigned;
-      unassigned = (await fetchPermissionsNotContainRole(roleId)).unassigned;
+      assigned  = (await fetchPermissionsForRole(roleId)).assigned || [];
+      console.log('assigned',assigned);
+      unassigned = (await fetchPermissionsNotContainRole(roleId)).unassigned || [];
+      console.log('unassigned',unassigned);
       assignedPermissions = assigned;
       unassignedPermissions = unassigned;
     });
@@ -24,8 +26,8 @@
         assignedPermissions = [...assignedPermissions, ...selectedUnassigned];
         unassignedPermissions = unassignedPermissions.filter(p => !selectedUnassigned.includes(p));
         selectedUnassigned = [];
-          assigned  = (await fetchPermissionsForRole(roleId)).assigned;
-          unassigned  = (await fetchPermissionsNotContainRole(roleId)).unassigned;
+          assigned  = (await fetchPermissionsForRole(roleId)).assigned || [];
+          unassigned  = (await fetchPermissionsNotContainRole(roleId)).unassigned || [];
       }
     };
   

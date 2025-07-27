@@ -21,7 +21,8 @@ class PermissionsController extends ApiController
             $query = Permission::query();
             $query = $this->filterData($query, $t);
             $datos = $query->get();
-            return $this->showAll($datos, 200);
+            $from = request()->wantsJson() ? 'api' : 'web';
+            return $this->showAll($datos, $from ,'',200);
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
         }
@@ -66,6 +67,7 @@ class PermissionsController extends ApiController
         try{
             $permission = Permission::find($id);
             $audits = $permission->audits;
+            $from = request()->wantsJson() ? 'api' : 'web';
             return $this->showOne($permission,$audits,200);
         } catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
@@ -77,12 +79,14 @@ class PermissionsController extends ApiController
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function showPermissionsByRole($id){
+    public function showPermissionsByRole(Request $req,$id){
         try{
             $role = Role::find($id);
             $permissions = $role->permissions;
             // $permissions = Permission::where('role_id',$id)->get();
-            return $this->showAll($permissions, 200);
+            $from = $req->wantsJson ? 'api' : 'web';
+            // dd($from);
+            return $this->showAll($permissions, $from ,'',200);
         }
         catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);
@@ -94,7 +98,7 @@ class PermissionsController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showPermissionsNotContainRole($id){
+    public function showPermissionsNotContainRole(Request $req,$id){
         try{
             $role = Role::findById($id);
 
@@ -103,12 +107,12 @@ class PermissionsController extends ApiController
     
             // Obtiene los permisos que ya están asignados al rol
             $assignedPermissions = $role->permissions->pluck('id')->toArray();
-    
             // Filtra los permisos que no están asignados al rol
             $permissionsNotAssigned = $allPermissions->filter(function ($permission) use ($assignedPermissions) {
                 return !in_array($permission->id, $assignedPermissions);
             });
-            return $this->showAll($permissionsNotAssigned, 200);
+            $from = $req->wantsJson ? 'api' : 'web';
+            return $this->showAll($permissionsNotAssigned, $from ,'',200);
         }
         catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage(),'message'=>'No se pudo obtener los datos'],500);

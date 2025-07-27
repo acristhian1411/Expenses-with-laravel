@@ -6,14 +6,14 @@
     import axios from 'axios';
     export let appUrl
     export let id = 0;
-    let tilltype = {};
+    let role = {};
     let audits = [];
     let error = null;
     let url = `${appUrl}/api/roles/`;
 
     async function fetchData() {
         axios.get(`${url}${id}`).then((response) => {
-            tilltype = response.data.data;
+            role = response.data.data;
             audits = response.data.audits;
         }).catch((err) => {
             error = err.request.response;
@@ -38,11 +38,11 @@
         <li><span class="cursor-pointer" on:click={()=>goTo("/roles")}>Roles</span></li>
 	</ul>
 </div>
-{#if tilltype}
+{#if role}
     <div transition:blur>
         <h1 class="text-xl font-bold">Descripcion:</h1>
-        <p class="text-1xl">{tilltype.name}</p>
-        <p class="text-1xl">{tilltype.guard_name}</p>
+        <p class="text-1xl">{role.name}</p>
+        <p class="text-1xl">{role.guard_name}</p>
     </div>
 {/if}
 {#if audits}
@@ -76,5 +76,5 @@
     </div>
 {/if}
 <div transition:blur>
-    <Permissions roleName={tilltype.name} />
+    <Permissions roleName={role.name} />
 </div>
