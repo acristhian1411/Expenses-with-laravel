@@ -111,6 +111,10 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/products', [ProductsController::class,'index'])->middleware('permission:products.index');
     Route::get('/products/{id}', [ProductsController::class,'show'])->middleware('permission:products.show');
 
+    Route::get('/reports', function () {
+        return Inertia::render('Reports/index');
+    })->middleware('permission:reports.show');
+
     Route::get('/providers', function () {
         return Inertia::render('Providers/index');
     })->middleware('permission:providers.index');
