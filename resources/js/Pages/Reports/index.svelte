@@ -25,16 +25,17 @@
     function getReport(){
         let url = ''
         if(type == 'ventas'){
-            url = '/api/reportes/ventas'
+            url = '/api/sales/report'
         }else{
-            url = '/api/reportes/compras'
+            url = '/api/purchases/report'
         }
         axios.get(url, {
             params: {
                 start_date: startDate,
                 end_date: endDate,
                 type,
-                entity: selectedEntity
+                entity: selectedEntity,
+                from_view: true
             }
         }).then((response) => {
             report = response.data.data;
@@ -44,15 +45,16 @@
     function exportarPDF() {
       let url = '';
       if(type == 'ventas'){
-        url = '/api/reportes/ventas/pdf'
+        url = '/api/sales/report/pdf'
       }else{
-        url = '/api/reportes/compras/pdf'
+        url = '/api/purchases/report/pdf'
       }
       const params = new URLSearchParams({
         start_date: startDate,
         end_date: endDate,
         type,
-        entity: selectedEntity
+        entity: selectedEntity,
+        from_view: false
       });
   
       window.open(`${url}?${params.toString()}`, '_blank');
@@ -66,10 +68,10 @@
   </script>
   
   <svelte:head>
-    <title>Reports</title>
+    <title>Reportes de ventas y compras</title>
   </svelte:head>
   
-  <h1 class="text-2xl font-bold mb-6">Reportes</h1>
+  <h1 align="center" class="text-4xl font-bold mb-8">Reportes</h1>
   
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
     <div>
@@ -109,7 +111,10 @@
     </div>
   </div>
   
-  <div class="flex justify-end mb-4">
+  <div class="flex justify-end mb-4 gap-2">
+    <button on:click={getReport} class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+      Generar Reporte
+    </button>
     <button on:click={exportarPDF} class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
       Exportar PDF
     </button>
@@ -121,8 +126,8 @@
       <thead class="bg-gray-500 text-left">
         <tr>
           <th class="px-4 py-2">Fecha</th>
-          <th class="px-4 py-2">Entidad</th>
-          <th class="px-4 py-2">Detalle</th>
+          <th class="px-4 py-2">Cliente</th>
+          <th class="px-4 py-2">N° de factura</th>
           <th class="px-4 py-2">Monto</th>
         </tr>
       </thead>
@@ -130,9 +135,9 @@
         {#each report as item}
             <tr class="hover:bg-gray-500">
             <td class="px-4 py-2">{item.date}</td>
-            <td class="px-4 py-2">{item.entity}</td>
-            <td class="px-4 py-2">{item.detail}</td>
-            <td class="px-4 py-2 text-right">{formatNumber(item.amount)}</td>
+            <td class="px-4 py-2">{item.person_fname} {item.person_lastname}</td>
+            <td class="px-4 py-2">{item.number}</td>
+            <td class="px-4 py-2 text-right">{formatNumber(item.total)}</td>
             </tr>
         {/each}
 
@@ -143,7 +148,7 @@
         {:else}
             <tr>
                 <td colspan="3" class="px-4 py-2 text-center">Total:</td>
-                <td class="px-4 py-2 text-center">{formatNumber(report.reduce((total, item) => total + item.amount, 0))}</td>
+                <td class="px-4 py-2 text-center">{formatNumber(report.reduce((total, item) => total + item.total, 0))}</td>
             </tr>
         {/if}
       </tbody>

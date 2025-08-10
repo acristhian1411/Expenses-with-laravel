@@ -18,9 +18,11 @@ use App\Http\Controllers\TillDetails\TillDetailsController;
 use App\Http\Controllers\TillDetailProofPayments\TillDetailProofPaymentsController;
 use App\Http\Controllers\ProofPaypments\ProofPaymentsController;
 use App\Http\Controllers\Sales\SalesController;
+use App\Http\Controllers\Sales\SalesReportController;
 use App\Http\Controllers\SalesDetails\SalesDetailsController;
 use App\Http\Controllers\Sales\SaleStoreController;
 use App\Http\Controllers\Purchases\PurchasesController;
+use App\Http\Controllers\Purchases\PurchasesReportController;
 use App\Http\Controllers\PurchasesDetails\PurchasesDetailsController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Roles\RolesController;
@@ -189,9 +191,13 @@ Route::get('sales', [SalesController::class, 'index']);
 Route::post('sales', [SalesController::class, 'store']);
 Route::post('storesale', [SaleStoreController::class, 'store']);
 Route::put('sales/{id}', [SalesController::class, 'update']);
-Route::get('sales/{id}', [SalesController::class, 'show']);
+Route::get('sales/{id}', [SalesController::class, 'show'])->whereNumber('id');
 Route::get('salesByNumber/{searchTerm}', [SalesController::class, 'searchByNumber']);
 Route::delete('sales/{id}', [SalesController::class, 'destroy']);
+// routes for sales reports
+Route::get('sales/report', [SalesReportController::class, 'getSalesReport']);
+Route::get('sales/report/pdf', [SalesReportController::class, 'getSalesReport']);
+
 //routes for salesdetails
 Route::get('salesdetails', [SalesDetailsController::class, 'index']);
 Route::post('salesdetails-many', [SalesDetailsController::class, 'storeMany']);
@@ -203,7 +209,9 @@ Route::delete('salesdetails/{id}', [SalesDetailsController::class, 'destroy']);
 Route::get('purchases', [PurchasesController::class, 'index']);
 Route::post('purchases', [PurchasesController::class, 'store']);
 Route::put('purchases/{id}', [PurchasesController::class, 'update']);
-Route::get('purchases/{id}', [PurchasesController::class, 'show']);
+Route::get('purchases/{id}', [PurchasesController::class, 'show'])->whereNumber('id');
+Route::get('purchases/report', [PurchasesReportController::class, 'getPurchasesReport']);
+Route::get('purchases/report/pdf', [PurchasesReportController::class, 'getPurchasesReport']);
 Route::delete('purchases/{id}', [PurchasesController::class, 'destroy']);
 //routes for PurchasesDetails
 Route::get('purchasesdetails', [PurchasesDetailsController::class, 'index']);
