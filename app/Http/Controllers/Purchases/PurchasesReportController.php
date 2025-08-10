@@ -22,11 +22,11 @@ class PurchasesReportController extends ApiController
             })
             ->where('purchase_date', '>=', $request->start_date)
             ->where('purchase_date', '<=', $request->end_date)
-            ->select('purchases.purchase_date as date', 'purchases.purchase_number as number', 'persons.person_fname', 'persons.person_lastname', 'd.total')
-            ->get();
+            ->select('purchases.purchase_date as date', 'purchases.purchase_number as number', 'persons.person_fname', 'persons.person_lastname', 'd.total');
             if($request->has('entity') and $request->entity != null){
                 $purchases = $purchases->where('person_id', $request->entity);
             }
+            $purchases = $purchases->get();
             if($request->from_view != 'false'){
                 return $this->showAll($purchases, 'api','',200);
             }

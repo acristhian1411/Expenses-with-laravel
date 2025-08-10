@@ -2,6 +2,9 @@
     import axios from 'axios'
     import { onMount } from 'svelte';
     import {formatNumber, unformatNumber} from '@components/utilities/NumberFormat.js';
+    import {Textfield, Autocomplete, SearchPersons} from '@components/FormComponents';
+    import { SearchIcon, CancelIcon } from '@components/Icons/';
+    import {Modal} from '@components/utilities';
     let startDate = new Date().toISOString().slice(0, 10);
     let endDate = new Date().toISOString().slice(0, 10);
     let type = 'ventas'; 
@@ -9,6 +12,22 @@
     let selectedEntity = '';
     let entities = [];
     let report = []
+    let showEntityForm = false;
+    let errors = null;
+    let searchTermClients = '';
+
+    function OpenEntityForm() {
+        showEntityForm = true;
+    }
+
+    function CloseEntityForm() {
+        showEntityForm = false;
+    }
+
+    function selectEntity(item) {
+        selectedEntity = item.detail.person.id;
+        searchTermClients = item.detail.label;
+    }
   
     function getClients(){
         axios.get('/api/persons?p_type_id=2').then((response) => {
@@ -71,20 +90,30 @@
     <title>Reportes de ventas y compras</title>
   </svelte:head>
   
+  {#if showEntityForm == true}
+    <Modal on:close={() => CloseEntityForm()}>
+      <SearchPersons
+        label={type == 'ventas' ? 'Cliente' : 'Proveedor'}
+        type={type == 'ventas' ? 2 : 1}
+        on:selectPerson={selectEntity}
+      />
+    </Modal>
+  {/if}
+
   <h1 align="center" class="text-4xl font-bold mb-8">Reportes</h1>
   
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-    <div>
+  <div class="grid grid-cols-12 md:grid-cols-4 gap-4 mb-6">
+    <div class="col-span-1">
       <!-- svelte-ignore a11y-label-has-associated-control -->
       <label class="block text-sm font-medium mb-1">Fecha desde</label>
       <input type="date" bind:value={startDate} class="w-full border rounded px-2 py-1" />
     </div>
-    <div>
+    <div class="col-span-1">
       <!-- svelte-ignore a11y-label-has-associated-control -->
       <label class="block text-sm font-medium mb-1">Fecha hasta</label>
       <input type="date" bind:value={endDate} class="w-full border rounded px-2 py-1" />
     </div>
-    <div>
+    <div class="col-span-1">
       <!-- svelte-ignore a11y-label-has-associated-control -->
       <label class="block text-sm font-medium mb-1">Tipo de reporte</label>
       <select bind:value={type} class="w-full border rounded px-2 py-1">
@@ -92,22 +121,34 @@
         <option value="compras">Compras</option>
       </select>
     </div>
-    <div>
+    <div class="col-span-1">
       <!-- svelte-ignore a11y-label-has-associated-control -->
       <label class="block text-sm font-medium mb-1">Cliente/Proveedor</label>
-      <select bind:value={selectedEntity} class="w-full border rounded px-2 py-1">
-        <option value="">Todos</option>
-        {#if type == 'ventas'}
-            {#each entities as entity}
-            <option value={entity}>{entity.person_fname} {entity.person_lastname}</option>
-            {/each}
-        {/if}
-        {#if type == 'compras'}
-            {#each providers as provider}
-            <option value={provider}>{provider.person_fname} {provider.person_lastname}</option>
-            {/each}
-        {/if}
-      </select>
+      <div class="grid grid-cols-12 pr-2">
+        <div class="col-span-6">
+          <Textfield
+              errors={errors?.client ? errors.client[0] : []}
+              label=""
+              type="text"
+              bind:value={searchTermClients}
+              required={true}
+          />
+        </div>
+      </div>
+        <div class="col-span-4 flex gap-1 items-center mb-2">
+            <div class="tooltip " data-tip="Buscar cliente">
+                <button  class="btn btn-primary" type="button" on:click={OpenEntityForm}>
+                    <SearchIcon/>
+                </button>
+            </div>
+            <div class="col-span-2 flex gap-1 items-center mb-2">
+              <div class="tooltip " data-tip="Limpiar filtro">
+                  <button  class="btn btn-primary" type="button" on:click={()=>selectEntity({detail:{person:{id:''}}})}>
+                    <CancelIcon/>
+                  </button>
+              </div>
+            </div>
+          </div>
     </div>
   </div>
   

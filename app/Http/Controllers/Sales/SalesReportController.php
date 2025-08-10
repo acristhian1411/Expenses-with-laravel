@@ -21,13 +21,13 @@ class SalesReportController extends ApiController
             })
             ->where('sale_date', '>=', $request->start_date)
             ->where('sale_date', '<=', $request->end_date)
-            ->select('sales.sale_date as date', 'sales.sale_number as number', 'persons.person_fname', 'persons.person_lastname', 'd.total')
-            ->get();
+            ->select('sales.sale_date as date', 'sales.sale_number as number', 'persons.person_fname', 'persons.person_lastname', 'd.total');
+            
             if($request->has('entity') and $request->entity != null){
                 $sales = $sales->where('person_id', $request->entity);
             }
             if($request->from_view != 'false'){
-                return $this->showAll($sales, 'api','',200);
+                return $this->showAll($sales->get(), 'api','',200);
             }
             
             $data = [
@@ -35,7 +35,7 @@ class SalesReportController extends ApiController
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
                 'date' => date('Y-m-d'),
-                'sales' => $sales
+                'sales' => $sales->get()
             ]; 
                   
             $pdf = PDF::loadView('Sales.SalesReport', $data);
